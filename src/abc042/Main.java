@@ -1,15 +1,12 @@
 package abc042;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 public class Main {
 	static final long MOD = 1000000007L;
 
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveC();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -103,10 +100,10 @@ public class Main {
 		long B = sc.nextLong();
 
 		long startRowIndex = H - A;
-		long startColIndex = B + 1;
+		long startColIndex = B + 1L;
 		long answer = 0L;
-		for (long shiftIndex = 0; startRowIndex - shiftIndex > 0 && startColIndex + shiftIndex <= W; shiftIndex++) {
-			answer += pointComb(H, W, H - A - shiftIndex, B + 1 + shiftIndex);
+		for (long shiftIndex = 0L; startRowIndex - shiftIndex > 0L && startColIndex + shiftIndex <= W; shiftIndex++) {
+			answer += pointComb(H, W, H - A - shiftIndex, B + 1L + shiftIndex);
 			answer %= MOD;
 		}
 		System.out.println(answer);
@@ -121,7 +118,8 @@ public class Main {
 	 * @return C(r + c - 2, c - 1) * C(h - r + w - c, w - c)
 	 */
 	private long pointComb(long h, long w, long r, long c) {
-		return combination(r + c - 2, c - 1) * combination(h - r + w - c, w - c);
+		if (r < 1 || c < 1 || r > h || c > w) return 1;
+		return combination(r + c - 2L, c - 1L) * combination(h - r + w - c, w - c);
 	}
 
 	/**
@@ -131,11 +129,11 @@ public class Main {
 	 * @return C(n, m)
 	 */
 	private long combination(long n, long m) {
-		if (n / 2 < m) {
+		if (n / 2L < m) {
 			return combination(n , n - m);
 		}
 		if (m <= 0) {
-			return 1;
+			return 1L;
 		}
 		return (combination(n, m - 1) * (n - m + 1) / m) % MOD;
 	}
