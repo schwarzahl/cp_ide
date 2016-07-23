@@ -1,12 +1,15 @@
 package abc042;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 public class Main {
 	static final long MOD = 1000000007L;
 
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -87,7 +90,7 @@ public class Main {
 			lift = (ctoi >= 10 || next[ctoi] >= 10);
 		}
 		if (lift) {
-			System.out.print("1");
+			System.out.print(next[1]);
 		}
 		System.out.println(answer);
 	}
