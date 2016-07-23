@@ -53,17 +53,28 @@ public class Main {
 			}
 		}
 
+		int L = N.length();
+		String answer = "";
 		boolean lift = false;
 		for (int i = 0; i < N.length(); i++) {
-			if (lift) {
-				System.out.print(next[0]);
+			char c = N.charAt(L - i - 1);
+			int ctoi = c - '0' + (lift ? 1 : 0);
+			int ni = next[ctoi % 10] % 10;
+			if (ctoi == ni) {
+				answer = ni + answer;
 			} else {
-				char c = N.charAt(i);
-				int ctoi = c - '0';
-				System.out.print(next[ctoi]);
-				lift = ctoi != next[ctoi];
+				int AL = answer.length();
+				answer = "" + ni;
+				for (int j = 0; j < AL; j++) {
+					answer = answer + next[0];
+				}
 			}
+			lift = (ctoi >= 10 || next[ctoi] >= 10);
 		}
+		if (lift) {
+			System.out.print("1");
+		}
+		System.out.println(answer);
 	}
 
 	private void solveD() {
