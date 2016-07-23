@@ -1,6 +1,9 @@
 package abc042;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 public class Main {
 	static final long MOD = 1000000007L;
 
@@ -132,7 +135,7 @@ public class Main {
 		if (n / 2L < m) {
 			return combination(n , n - m);
 		}
-		if (m <= 0) {
+		if (n <= 0 || m <= 0) {
 			return 1L;
 		}
 		return (combination(n, m - 1) * (n - m + 1) / m) % MOD;
