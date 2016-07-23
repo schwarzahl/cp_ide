@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -28,6 +28,41 @@ public class Main {
 			System.out.println("YES");
 		} else {
 			System.out.println("NO");
+		}
+	}
+
+	private void solveC() {
+		Scanner sc = new Scanner(System.in);
+		String N = sc.next();
+		int K = sc.nextInt();
+		boolean[] forbid = new boolean[10];
+		int[] next = new int[10];
+		for (int i = 0; i < 10; i++) {
+			forbid[i] = false;
+			next[i] = i;
+		}
+		for (int i = 0; i < K; i++) {
+			forbid[sc.nextInt()] = true;
+		}
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (!forbid[(i + j) % 10]) {
+					next[i] = i + j;
+					break;
+				}
+			}
+		}
+
+		boolean lift = false;
+		for (int i = 0; i < N.length(); i++) {
+			if (lift) {
+				System.out.print(next[0]);
+			} else {
+				char c = N.charAt(i);
+				int ctoi = c - '0';
+				System.out.print(next[ctoi]);
+				lift = ctoi != next[ctoi];
+			}
 		}
 	}
 
