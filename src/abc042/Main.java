@@ -1,12 +1,12 @@
 package abc042;
 
-import java.util.Scanner;
+import java.util.*;
 public class Main {
 	static final long MOD = 1000000007L;
 
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveC();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -29,6 +29,21 @@ public class Main {
 		} else {
 			System.out.println("NO");
 		}
+	}
+
+	private void solveB() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int L = sc.nextInt();
+		List<String> list = new ArrayList<String>();
+		for (int i = 0; i < N; i++) {
+			list.add(sc.next());
+		}
+		Collections.sort(list);
+		for (String str : list) {
+			System.out.print(str);
+		}
+		System.out.println();
 	}
 
 	private void solveC() {
