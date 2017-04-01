@@ -2,76 +2,149 @@ package agc012;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 public class Main {
-	static final long MOD = 1000000007L;
-
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		int five = 0;
-		int seven = 0;
-		for (int i = 0; i < 3; i++) {
-			switch (sc.nextInt()) {
-			case 5:
-				five++;
-				break;
-			case 7:
-				seven++;
-				break;
-			default:
+		int N = sc.nextInt();
+		List<Long> list = new ArrayList<Long>();
+		for (int i = 0; i < N * 3; i++) {
+			list.add(sc.nextLong());
+		}
+		Collections.sort(list);
+		long sum = 0;
+		for (int i = N; i < N * 3; i++) {
+			if (i % 2 == 0) {
+				sum += list.get(i);
 			}
 		}
-		if (five == 2 && seven == 1) {
-			System.out.println("YES");
-		} else {
-			System.out.println("NO");
-		}
+		System.out.println(sum);
 	}
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
-	}
-
-	private void solveC() {
-		Scanner sc = new Scanner(System.in);
-	}
-
-	private void solveD() {
-		Scanner sc = new Scanner(System.in);
-	}
-
-	/**
-	 * h行w列の格子について点(r, c)を通る組み合わせを求めます
-	 * @param h 格子の行数
-	 * @param w 格子の列数
-	 * @param r 通る点の行index
-	 * @param c 通る点の列index
-	 * @return C(r + c - 2, c - 1) * C(h - r + w - c, w - c)
-	 */
-	private long pointComb(long h, long w, long r, long c) {
-		if (r < 1 || c < 1 || r > h || c > w) return 1;
-		return combination(r + c - 2L, c - 1L) * combination(h - r + w - c, w - c);
-	}
-
-	/**
-	 * n個からm個選ぶ組み合わせの数を求めます
-	 * @param n 全体の数
-	 * @param m 選ぶ数
-	 * @return C(n, m)
-	 */
-	private long combination(long n, long m) {
-		if (n / 2L < m) {
-			return combination(n , n - m);
+		int N = sc.nextInt();
+		int M = sc.nextInt();
+		Graph graph = new Graph(N);
+		for (int i = 0; i < M; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			graph.join(a, b);
 		}
-		if (n <= 0 || m <= 0) {
-			return 1L;
+		graph.calc();
+		int Q = sc.nextInt();
+		for (int i = 0; i < Q; i++) {
+			int v = sc.nextInt() - 1;
+			int d = sc.nextInt();
+			int c = sc.nextInt();
+			graph.putColor(v, d, c);
+			//graph.outputString();
 		}
-		return (combination(n, m - 1) * (n - m + 1) / m) % MOD;
+		graph.outputString();
+	}
+
+	class Graph {
+		Set<Long> set;
+		int N;
+		Map<Long, Integer> distMap;
+		Map<Integer, Integer> colorMap;
+		public Graph(int N) {
+			set = new HashSet<Long>();
+			this.N = N;
+			colorMap = new HashMap<Integer, Integer>();
+		}
+		public void join(int a, int b) {
+			long small, large;
+			if (a < b) {
+				small = a;
+				large = b;
+			} else {
+				small = b;
+				large = a;
+			}
+			set.add(small * N + large);
+		}
+		public boolean isJoin(int a, int b) {
+			long small, large;
+			if (a < b) {
+				small = a;
+				large = b;
+			} else {
+				small = b;
+				large = a;
+			}
+			return set.contains(small * N + large);
+		}
+		public void putDist(int a, int b, int dist) {
+			long small, large;
+			if (a < b) {
+				small = a;
+				large = b;
+			} else {
+				small = b;
+				large = a;
+			}
+			distMap.put(small * N + large, dist);
+		}
+		public int getDist(int a, int b) {
+			long small, large;
+			if (a < b) {
+				small = a;
+				large = b;
+			} else {
+				small = b;
+				large = a;
+			}
+			if (!distMap.containsKey(small * N + large)) {
+				return N + 1;
+			}
+			return distMap.get(small * N + large);
+		}
+		public void calc() {
+			distMap = new HashMap<Long, Integer>();
+			for (int i = 0; i < N; i++) {
+				startCalcDist(i, i, 0);
+			}
+		}
+		private void startCalcDist(int here, int origin, int d) {
+			if (this.getDist(here, origin) > d) {
+				this.putDist(here, origin, d);
+			}
+			for (int target = 0; target < N; target++) {
+				if (here != target && this.isJoin(here, target)) {
+					startCalcDist(target, origin, d + 1);
+				}
+			}
+		}
+		public void putColor(int v, int dist, int color) {
+			for (int i = 0; i < N; i++) {
+				if (getDist(v, i) <= dist) {
+					colorMap.put(i, color);
+				}
+			}
+		}
+		public void outputString() {
+			for (int i = 0; i < N; i++) {
+				if (colorMap.containsKey(i)) {
+					System.out.println(colorMap.get(i));
+				} else {
+					System.out.println(0);
+				}
+			}
+			for (Entry<Long, Integer> e : distMap.entrySet()) {
+				System.err.println(((e.getKey() / N) + 1) + "," + ((e.getKey() % N) + 1) + ":" + e.getValue());
+			}
+		}
 	}
 }
