@@ -70,8 +70,9 @@ public class Main {
 		BigInteger MOD = BigInteger.valueOf(1000000007);
 		int n = sc.nextInt();
 		int m = sc.nextInt();
-		BigInteger prev = null;
+		//BigInteger prev = null;
 		BigInteger sum_x = BigInteger.ZERO;
+		/*
 		for (int i = 0; i < n; i++) {
 			BigInteger tmp = BigInteger.valueOf(sc.nextInt());
 			if (prev != null) {
@@ -79,14 +80,23 @@ public class Main {
 			}
 			prev = tmp;
 		}
-		prev = null;
+		*/
+		for (int i = 0; i < n; i++) {
+			sum_x = sum_x.add(BigInteger.valueOf(sc.nextInt()).multiply(BigInteger.valueOf(2 * i - n + 1)));
+		}
+		//prev = null;
 		BigInteger sum_y = BigInteger.ZERO;
+		/*
 		for (int i = 0; i < m; i++) {
 			BigInteger tmp = BigInteger.valueOf(sc.nextInt());
 			if (prev != null) {
 				sum_y = sum_y.add(tmp.subtract(prev).multiply(BigInteger.valueOf(i * (m - i))).remainder(MOD));
 			}
 			prev = tmp;
+		}
+		*/
+		for (int i = 0; i < m; i++) {
+			sum_y = sum_y.add(BigInteger.valueOf(sc.nextInt()).multiply(BigInteger.valueOf(2 * i - m + 1)));
 		}
 		sum_x = sum_x.remainder(MOD);
 		sum_y = sum_y.remainder(MOD);
