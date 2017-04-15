@@ -1,8 +1,9 @@
 package agc013;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 public class Main {
 	public static void main(String[] args){
 		Main main = new Main();
@@ -14,45 +15,33 @@ public class Main {
 		int N = sc.nextInt();
 		int L = sc.nextInt();
 		int T = sc.nextInt();
-		int[] array = new int[N];
-		Set<Integer> set = new HashSet<Integer>();
-		int prev_d = 1;
+		int offset = L;
+		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < N; i++) {
 			int x = sc.nextInt();
 			int d = sc.nextInt();
-			array[i] = x + T * (3 - d * 2);
-			if (prev_d != d) {
-				set.add((i - 1 + N) % N);
+			int g = x + T * (3 - d * 2);
+			list.add(g);
+			if (offset > g) {
+				offset = g;
 			}
 		}
-		while (!set.isEmpty()) {
-			Set<Integer> nextSet = new HashSet<Integer>();
-			for (int i : set) {
-				if (checkAndSwap(array, i, (i + 1) % N, N, L)) {
-					nextSet.add((i - 1 + N) % N);
-					nextSet.add((i + 1) % N);
-				}
+		List<Integer> relativeList = new ArrayList<Integer>();
+		int index = 0;
+		for (int x : list) {
+			relativeList.add((x - offset) % L);
+			if (x - offset >= L) {
+				index += (x - offset) / L;
 			}
-			set = nextSet;
 		}
-		for (int x : array) {
-			System.out.println((x + L) % L);
+		Collections.sort(relativeList);
+		index %= N;
+		for (int x : relativeList.subList(index, N)) {
+			System.out.println((((x + offset) % L) + L) % L);
 		}
-	}
-
-	private boolean checkAndSwap(int[] array, int a, int b, int N, int L) {
-		int offset = 0;
-		if (a == N - 1 && b == 0) {
-			offset = L;
+		for (int x : relativeList.subList(0, index)) {
+			System.out.println((((x + offset) % L) + L) % L);
 		}
-		if (array[a] - offset > array[b]) {
-			//System.err.println("swap " + a + " and " + b + " a.x = " + array[a] + " b.x = " + array[b]);
-			int swap = array[b];
-			array[b] = array[a] - offset;
-			array[a] = swap + offset;
-			return true;
-		}
-		return false;
 	}
 
 	private void solveA() {
