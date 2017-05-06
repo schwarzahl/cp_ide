@@ -13,17 +13,13 @@ public class Main {
 		long b = sc.nextLong();
 		long c = sc.nextLong();
 		int n = 0;
-		if (a % 2 == 1 || b % 2 == 1 || c % 2 == 1) {
-			System.out.println("1");
-			return;
-		}
 		while (true) {
-			if (a == b && b == c) {
-				System.out.println("-1");
-				return;
-			}
 			if (a % 2 == 1 || b % 2 == 1 || c % 2 == 1) {
 				System.out.println(n);
+				return;
+			}
+			if (a == b && b == c) {
+				System.out.println("-1");
 				return;
 			}
 			n++;
