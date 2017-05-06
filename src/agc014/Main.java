@@ -138,42 +138,40 @@ public class Main {
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		boolean[][] graph = new boolean[N + 1][];
-		for (int j = 1; j <= N; j++) {
-			graph[j] = new boolean[N + 1];
-		}
+		Map<Integer, List<Integer>> mapList = new HashMap<>();
 		for (int i = 0; i < N - 1; i++) {
 			int a = sc.nextInt();
 			int b = sc.nextInt();
-			graph[a][b] = true;
-			graph[b][a] = true;
+			if (!mapList.containsKey(a)) {
+				mapList.put(a, new ArrayList<Integer>());
+			}
+			if (!mapList.containsKey(b)) {
+				mapList.put(b, new ArrayList<Integer>());
+			}
+			mapList.get(a).add(b);
+			mapList.get(b).add(a);
 		}
-		if (judge(N, graph)) {
+		if (judge(N, mapList)) {
 			System.out.println("First");
 		} else {
 			System.out.println("Second");
 		}
 	}
 
-	private boolean judge(int N, boolean[][] graph) {
+	private boolean judge(int N, Map<Integer, List<Integer>> graph) {
 		if (N % 2 == 1) {
 			return true;
 		}
-		int[] leafCloseCount = new int[N + 1];
+		int[] leafAdjCount = new int[N + 1];
 		for (int a = 1; a <= N; a++) {
 			int count = 0;
 			int lastNode = 0;
-			for (int b = 1; b <= N; b++) {
-				if (graph[a][b]) {
-					count++;
-					lastNode = b;
-				}
-			}
-			if (count == 1) {
-				leafCloseCount[lastNode]++;
+			List<Integer> adjList = graph.get(a);
+			if (adjList.size() == 1) {
+				leafAdjCount[adjList.get(0)]++;
 			}
 		}
-		for (int count : leafCloseCount) {
+		for (int count : leafAdjCount) {
 			if (count > 1) {
 				return true;
 			}
