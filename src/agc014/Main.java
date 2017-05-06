@@ -80,7 +80,10 @@ public class Main {
 				}
 			}
 		}
-		search(start_r, start_c, 0, dist_map, H, W);
+		if (search(start_r, start_c, 0, dist_map, H, W, K) == 0) {
+			System.out.println(1);
+			return;
+		}
 		int min_dist = H + W;
 		for (int r = 0; r < H; r++) {
 			for (int c = 0; c < W; c++) {
@@ -100,23 +103,31 @@ public class Main {
 				}
 			}
 		}
-		if (min_dist == 0) {
-			System.out.println(1);
-		} else {
-			System.out.println((min_dist - 1) / K + 2);
-		}
+		System.out.println((min_dist - 1) / K + 2);
 	}
 
-	private void search(int r, int c, int dist, int[][] map, int limit_r, int limit_c) {
+	private int search(int r, int c, int dist, int[][] map, int limit_r, int limit_c, int K) {
+		if (dist > K) {
+			return -1;
+		}
 		if (r < 0 || c < 0 || r >= limit_r || c >= limit_c) {
-			return;
+			return 0;
 		}
 		if (dist < map[r][c]) {
 			map[r][c] = dist;
-			search(r - 1, c, dist + 1, map, limit_r, limit_c);
-			search(r, c - 1, dist + 1, map, limit_r, limit_c);
-			search(r + 1, c, dist + 1, map, limit_r, limit_c);
-			search(r, c + 1, dist + 1, map, limit_r, limit_c);
+			if (search(r - 1, c, dist + 1, map, limit_r, limit_c, K) == 0) {
+				return 0;
+			}
+			if (search(r, c - 1, dist + 1, map, limit_r, limit_c, K) == 0) {
+				return 0;
+			}
+			if (search(r + 1, c, dist + 1, map, limit_r, limit_c, K) == 0) {
+				return 0;
+			}
+			if (search(r, c + 1, dist + 1, map, limit_r, limit_c, K) == 0) {
+				return 0;
+			}
 		}
+		return -1;
 	}
 }
