@@ -84,35 +84,28 @@ public class Main {
 
 		Map<Integer, Long> pointMap = new HashMap<>();
 		Set<Integer> calcPointSet = new HashSet<>();
-		calcPointSet.add(N);
-		pointMap.put(N, 0L);
-		int calcNum = 0;
-		while (!calcPointSet.isEmpty()) {
-			Set<Integer> nextCalcPointSet = new HashSet<>();
-			for (Integer point : calcPointSet) {
-				for (int i = 1; i <= N; i++) {
-					if (bmap[i][point]) {
-						long now = pointMap.get(point);
-						long path = map[i][point];
-						if (!pointMap.containsKey(i)) {
-							pointMap.put(i, now + path);
-							nextCalcPointSet.add(i);
-						} else {
-							long target = pointMap.get(i);
-							if (target < now + path) {
-								pointMap.put(i, now + path);
-								nextCalcPointSet.add(i);
+		calcPointSet.add(1);
+		pointMap.put(1, 0L);
+		for (int calcNum = 0; calcNum < N; calcNum++) {
+			for (int src = 1; src <= N; src++) {
+				for (int dest = 1; dest <= N; dest++) {
+					if (bmap[src][dest] && pointMap.containsKey(src)) {
+						long destValue = Long.MIN_VALUE / 3;
+						if (pointMap.containsKey(dest)) {
+							destValue = pointMap.get(dest);
+						}
+						long nextValue = pointMap.get(src) + map[src][dest];
+						if (destValue < nextValue) {
+							pointMap.put(dest, nextValue);
+							if (calcNum == N - 1) {
+								System.out.println("inf");
+								return;
 							}
 						}
 					}
 				}
 			}
-			calcPointSet = nextCalcPointSet;
-			if (++calcNum > (N + 1)) {
-				System.out.println("inf");
-				return;
-			}
 		}
-		System.out.println(pointMap.get(1));
+		System.out.println(pointMap.get(N));
 	}
 }
