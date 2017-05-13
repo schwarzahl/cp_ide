@@ -108,8 +108,41 @@ public class Main {
 			}
 		}
 
-		reachableFromGoal[N] = true;
-		System.out.println(search(1, N, bmap, map, N, 0, new HashSet<Integer>(), reachableFromGoal));
+		Map<Integer, Long> pointMap = new HashMap<>();
+		for (int i = 1; i < N; i++) {
+			if (bmap[i][N]) {
+				pointMap.put(i, map[i][N]);
+			}
+		}
+		boolean[] calced = new boolean[N + 1];
+		while (true) {
+			boolean isFin = true;
+			Set<Integer> nowKeySets = new HashSet<>(pointMap.keySet());
+			for (Integer key : nowKeySets) {
+				if (!calced[key]) {
+					isFin = false;
+					calced[key] = true;
+					for (int i = 1; i < N; i++) {
+						if (bmap[i][key]) {
+							long now = pointMap.get(key);
+							long path = map[i][key];
+							if (!pointMap.containsKey(i)) {
+								pointMap.put(i, now + path);
+							} else {
+								long target = pointMap.get(i);
+								if (target < now + path) {
+									pointMap.put(i, now + path);
+								}
+							}
+						}
+					}
+				}
+			}
+			if (isFin) {
+				break;
+			}
+		}
+		System.out.println(pointMap.get(1));
 	}
 
 	void searchFront(int point, boolean[] bools, boolean[][] map, int N, int depth) {
