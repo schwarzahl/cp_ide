@@ -82,126 +82,37 @@ public class Main {
 			bmap[a][b] = true;
 		}
 
-		boolean[] reachableFromStart = new boolean[N + 1];
-		boolean[] reachableFromGoal = new boolean[N + 1];
-
-		for (int i = 1; i <= N; i++) {
-			if (bmap[1][i]) {
-				searchFront(i, reachableFromStart, bmap, N, 0);
-			}
-			if (bmap[i][N]) {
-				searchBack(i, reachableFromGoal, bmap, N, 0);
-			}
-		}
-
-		for (int i = 1; i <= N; i++) {
-			if (reachableFromStart[i] && reachableFromGoal[i]) {
-				for (int j = 1; j <= N; j++) {
-					if (bmap[i][j]) {
-						Long result = search(j, i, bmap, map, N, 0, null, null);
-						if (result != null && result > 0L) {
-							System.out.println("inf");
-							return;
-						}
-					}
-				}
-			}
-		}
-
 		Map<Integer, Long> pointMap = new HashMap<>();
-		for (int i = 1; i < N; i++) {
-			if (bmap[i][N]) {
-				pointMap.put(i, map[i][N]);
-			}
-		}
-		boolean[] calced = new boolean[N + 1];
-		while (true) {
-			boolean isFin = true;
-			Set<Integer> nowKeySets = new HashSet<>(pointMap.keySet());
-			for (Integer key : nowKeySets) {
-				if (!calced[key]) {
-					isFin = false;
-					calced[key] = true;
-					for (int i = 1; i < N; i++) {
-						if (bmap[i][key]) {
-							long now = pointMap.get(key);
-							long path = map[i][key];
-							if (!pointMap.containsKey(i)) {
+		Set<Integer> calcPointSet = new HashSet<>();
+		calcPointSet.add(N);
+		pointMap.put(N, 0L);
+		int calcNum = 0;
+		while (!calcPointSet.isEmpty()) {
+			Set<Integer> nextCalcPointSet = new HashSet<>();
+			for (Integer point : calcPointSet) {
+				for (int i = 1; i <= N; i++) {
+					if (bmap[i][point]) {
+						long now = pointMap.get(point);
+						long path = map[i][point];
+						if (!pointMap.containsKey(i)) {
+							pointMap.put(i, now + path);
+							nextCalcPointSet.add(i);
+						} else {
+							long target = pointMap.get(i);
+							if (target < now + path) {
 								pointMap.put(i, now + path);
-							} else {
-								long target = pointMap.get(i);
-								if (target < now + path) {
-									pointMap.put(i, now + path);
-								}
+								nextCalcPointSet.add(i);
 							}
 						}
 					}
 				}
 			}
-			if (isFin) {
-				break;
+			calcPointSet = nextCalcPointSet;
+			if (++calcNum > (N + 1)) {
+				System.out.println("inf");
+				return;
 			}
 		}
 		System.out.println(pointMap.get(1));
-	}
-
-	void searchFront(int point, boolean[] bools, boolean[][] map, int N, int depth) {
-		if (depth > 2000 || bools[point]) {
-			return;
-		}
-		bools[point] = true;
-		for (int i = 1; i <= N; i++) {
-			if (map[point][i]) {
-				searchFront(i, bools, map, N, depth + 1);
-			}
-		}
-	}
-
-	void searchBack(int point, boolean[] bools, boolean[][] map, int N, int depth) {
-		if (depth > 2000 || bools[point]) {
-			return;
-		}
-		bools[point] = true;
-		for (int i = 1; i <= N; i++) {
-			if (map[i][point]) {
-				searchBack(i, bools, map, N, depth + 1);
-			}
-		}
-	}
-
-	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth, Set<Integer> set, boolean[] rfg) {
-		if (set != null && set.contains(point)) {
-			return null;
-		}
-		if (depth > 2000) {
-			return null;
-		}
-		if (point == target) {
-			return 0L;
-		}
-		Long maxLong = null;
-		for (int i = 1; i <= N; i++) {
-			if (bmap[point][i] && (rfg == null || rfg[i])) {
-				Long value = search(i, target, bmap, map, N, depth + 1, makeNewSet(set, point), rfg);
-				if (value != null) {
-					value += map[point][i];
-					if (maxLong == null) {
-						maxLong = value;
-					} else if(maxLong < value) {
-						maxLong = value;
-					}
-				}
-			}
-		}
-		return maxLong;
-	}
-
-	Set<Integer> makeNewSet(Set<Integer> set, int point) {
-		if (set == null) {
-			return null;
-		}
-		Set<Integer> newSet = new HashSet<>(set);
-		newSet.add(point);
-		return newSet;
 	}
 }
