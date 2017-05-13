@@ -98,7 +98,7 @@ public class Main {
 			if (reachableFromStart[i] && reachableFromGoal[i]) {
 				for (int j = 1; j <= N; j++) {
 					if (bmap[i][j]) {
-						Long result = search(j, i, bmap, map, N, 0, null);
+						Long result = search(j, i, bmap, map, N, 0, null, null);
 						if (result != null && result > 0L) {
 							System.out.println("inf");
 							return;
@@ -108,7 +108,7 @@ public class Main {
 			}
 		}
 
-		System.out.println(search(1, N, bmap, map, N, 0, new HashSet<Integer>()));
+		System.out.println(search(1, N, bmap, map, N, 0, new HashSet<Integer>(), reachableFromGoal));
 	}
 
 	void searchFront(int point, boolean[] bools, boolean[][] map, int N, int depth) {
@@ -135,7 +135,7 @@ public class Main {
 		}
 	}
 
-	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth, Set<Integer> set) {
+	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth, Set<Integer> set, boolean[] rfg) {
 		if (set != null && set.contains(point)) {
 			return null;
 		}
@@ -147,8 +147,8 @@ public class Main {
 		}
 		Long maxLong = null;
 		for (int i = 1; i <= N; i++) {
-			if (bmap[point][i]) {
-				Long value = search(i, target, bmap, map, N, depth + 1, makeNewSet(set, point));
+			if (bmap[point][i] && (rfg == null || rfg[i])) {
+				Long value = search(i, target, bmap, map, N, depth + 1, makeNewSet(set, point), rfg);
 				if (value != null) {
 					value += map[point][i];
 					if (maxLong == null) {
