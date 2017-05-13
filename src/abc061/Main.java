@@ -1,8 +1,10 @@
 package abc061;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 public class Main {
 	public static void main(String[] args){
 		Main main = new Main();
@@ -96,7 +98,7 @@ public class Main {
 			if (reachableFromStart[i] && reachableFromGoal[i]) {
 				for (int j = 1; j <= N; j++) {
 					if (bmap[i][j]) {
-						Long result = search(j, i, bmap, map, N, 0);
+						Long result = search(j, i, bmap, map, N, 0, null);
 						if (result != null && result > 0L) {
 							System.out.println("inf");
 							return;
@@ -106,7 +108,7 @@ public class Main {
 			}
 		}
 
-		System.out.println(search(1, N, bmap, map, N, 0));
+		System.out.println(search(1, N, bmap, map, N, 0, new HashSet<Integer>()));
 	}
 
 	void searchFront(int point, boolean[] bools, boolean[][] map, int N, int depth) {
@@ -133,7 +135,7 @@ public class Main {
 		}
 	}
 
-	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth) {
+	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth, Set<Integer> set) {
 		if (depth > 2000) {
 			return null;
 		}
@@ -142,8 +144,8 @@ public class Main {
 		}
 		Long maxLong = null;
 		for (int i = 1; i <= N; i++) {
-			if (bmap[point][i]) {
-				Long value = search(i, target, bmap, map, N, depth + 1);
+			if (bmap[point][i] && (set == null || !set.contains(i))) {
+				Long value = search(i, target, bmap, map, N, depth + 1, makeNewSet(set, point));
 				if (value != null) {
 					value += map[point][i];
 					if (maxLong == null) {
@@ -155,5 +157,14 @@ public class Main {
 			}
 		}
 		return maxLong;
+	}
+
+	Set<Integer> makeNewSet(Set<Integer> set, int point) {
+		if (set == null) {
+			return null;
+		}
+		Set<Integer> newSet = new HashSet<>(set);
+		newSet.add(point);
+		return newSet;
 	}
 }
