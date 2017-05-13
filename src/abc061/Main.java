@@ -68,44 +68,45 @@ public class Main {
 		int N = sc.nextInt();
 		int M = sc.nextInt();
 
-		long[][] map = new long[N + 1][];
-		boolean[][] bmap = new boolean[N + 1][];
-		for (int j = 1; j <= N; j++) {
-			map[j] = new long[N + 1];
-			bmap[j] = new boolean[N + 1];
-		}
+		Set<Edge> edgeSet = new HashSet<Edge>();
 		for (int i = 0; i < M; i++) {
-			int a = sc.nextInt();
-			int b = sc.nextInt();
-			long c = sc.nextLong();
-			map[a][b] = c;
-			bmap[a][b] = true;
+			Edge e = new Edge();
+			e.src = sc.nextInt();
+			e.dest = sc.nextInt();
+			e.cost = sc.nextLong();
+			edgeSet.add(e);
 		}
 
 		Map<Integer, Long> pointMap = new HashMap<>();
-		Set<Integer> calcPointSet = new HashSet<>();
-		calcPointSet.add(1);
 		pointMap.put(1, 0L);
-		for (int calcNum = 0; calcNum < N; calcNum++) {
-			for (int src = 1; src <= N; src++) {
-				for (int dest = 1; dest <= N; dest++) {
-					if (bmap[src][dest] && pointMap.containsKey(src)) {
-						long destValue = Long.MIN_VALUE / 3;
-						if (pointMap.containsKey(dest)) {
-							destValue = pointMap.get(dest);
-						}
-						long nextValue = pointMap.get(src) + map[src][dest];
-						if (destValue < nextValue) {
-							pointMap.put(dest, nextValue);
-							if (calcNum == N - 1) {
-								System.out.println("inf");
-								return;
-							}
-						}
+		Long ans = null;
+		for (int calcNum = 1; calcNum < 2 * N; calcNum++) {
+			for (Edge e : edgeSet) {
+				if (pointMap.containsKey(e.src)) {
+					long destValue = Long.MIN_VALUE;
+					if (pointMap.containsKey(e.dest)) {
+						destValue = pointMap.get(e.dest);
+					}
+					long nextValue = pointMap.get(e.src) + e.cost;
+					if (destValue < nextValue) {
+						pointMap.put(e.dest, nextValue);
 					}
 				}
 			}
+			if (calcNum == N - 1) {
+				ans = pointMap.get(N);
+			}
 		}
-		System.out.println(pointMap.get(N));
+		if (ans.equals(pointMap.get(N))) {
+			System.out.println(ans);
+		} else {
+			System.out.println("inf");
+		}
+	}
+
+	class Edge {
+		public int src;
+		public int dest;
+		public long cost;
 	}
 }
