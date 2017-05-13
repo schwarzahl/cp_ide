@@ -136,6 +136,9 @@ public class Main {
 	}
 
 	Long search(int point, int target, boolean[][] bmap, long[][] map, int N, int depth, Set<Integer> set) {
+		if (set != null && set.contains(point)) {
+			return null;
+		}
 		if (depth > 2000) {
 			return null;
 		}
@@ -144,7 +147,7 @@ public class Main {
 		}
 		Long maxLong = null;
 		for (int i = 1; i <= N; i++) {
-			if (bmap[point][i] && (set == null || !set.contains(i))) {
+			if (bmap[point][i]) {
 				Long value = search(i, target, bmap, map, N, depth + 1, makeNewSet(set, point));
 				if (value != null) {
 					value += map[point][i];
