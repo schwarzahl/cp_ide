@@ -108,6 +108,7 @@ public class Main {
 			}
 		}
 
+		reachableFromGoal[N] = true;
 		System.out.println(search(1, N, bmap, map, N, 0, new HashSet<Integer>(), reachableFromGoal));
 	}
 
