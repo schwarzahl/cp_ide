@@ -67,24 +67,33 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 
-		List<Long> list = new ArrayList<Long>();
+		List<Numb> list = new ArrayList<>();
 		for (int i = 0; i < 3 * N; i++) {
-			list.add(sc.nextLong());
+			list.add(new Numb(sc.nextLong(), i));
 		}
+		list.sort((o1, o2) -> o1.value > o2.value ? 1 : -1);
 		List<BigInteger> scoreList = new ArrayList<>();
 		for (int splitIndex = 0; splitIndex <= N; splitIndex++) {
-			List<Long> pre = list.subList(0, N + splitIndex);
-			List<Long> suf = list.subList(N + splitIndex, 3 * N);
-
+			final int index = splitIndex;
 			BigInteger score = BigInteger.ZERO;
-			for (long l : pre.stream().mapToLong(i -> i).sorted().skip(splitIndex).toArray()) {
-				score = score.add(BigInteger.valueOf(l));
+			for (Object numb : list.stream().filter(i -> i.index < N + index).skip(splitIndex).toArray()) {
+				score = score.add(BigInteger.valueOf(((Numb)numb).value));
 			}
-			for (long l : suf.stream().mapToLong(i -> i).sorted().limit(N).toArray()) {
-				score = score.subtract(BigInteger.valueOf(l));
+			for (Object numb : list.stream().filter(i -> i.index >= N + index).limit(N).toArray()) {
+				score = score.subtract(BigInteger.valueOf(((Numb)numb).value));
 			}
 			scoreList.add(score);
 		}
 		System.out.println(scoreList.stream().max((o1, o2) -> o1.compareTo(o2)).get());
+	}
+
+	class Numb {
+		public long value;
+		public int index;
+
+		public Numb(long value, int index) {
+			this.value = value;
+			this.index = index;
+		}
 	}
 }
