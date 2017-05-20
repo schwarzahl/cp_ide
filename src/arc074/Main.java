@@ -72,7 +72,7 @@ public class Main {
 			list.add(sc.nextLong());
 		}
 		List<BigInteger> scoreList = new ArrayList<>();
-		for (int splitIndex = 0; splitIndex < N; splitIndex++) {
+		for (int splitIndex = 0; splitIndex <= N; splitIndex++) {
 			List<Long> pre = list.subList(0, N + splitIndex);
 			List<Long> suf = list.subList(N + splitIndex, 3 * N);
 
