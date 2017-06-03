@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveE();
+		main.solveD();
 	}
 
 	private void solveC() {
@@ -55,9 +55,9 @@ public class Main {
 			if (isWin(count, A, B, list)) {
 				maxNum = count;
 			} else {
-				minNum = count;
+				minNum = count + 1;
 			}
-		} while (minNum + 1 < maxNum);
+		} while (minNum < maxNum);
 		System.out.println(maxNum);
 	}
 
