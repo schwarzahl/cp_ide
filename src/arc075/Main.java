@@ -58,13 +58,16 @@ public class Main {
 				minNum = count + 1;
 			}
 		} while (minNum < maxNum);
-		System.out.println(minNum);
+		System.out.println(maxNum);
 	}
 
 	private boolean isWin(long count, long A, long B, List<Integer> hps) {
 		long sum = 0;
 		for (int hp : hps) {
-			sum += (hp - count * B + A - B - 1) / (A - B);
+			long num = (hp - count * B + A - B - 1) / (A - B);
+			if (num > 0) {
+				sum += num;
+			}
 		}
 		return sum <= count;
 	}
