@@ -58,7 +58,7 @@ public class Main {
 				minNum = count + 1;
 			}
 		} while (minNum < maxNum);
-		System.out.println(maxNum);
+		System.out.println(minNum);
 	}
 
 	private boolean isWin(long count, long A, long B, List<Integer> hps) {
