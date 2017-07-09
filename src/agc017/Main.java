@@ -5,7 +5,55 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveB();
+		main.solveA();
+	}
+
+	private void solveA() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int P = sc.nextInt();
+		int zeroNum = 0;
+		int oneNum = 0;
+		long ans = 0L;
+		for (int i = 0; i < N; i++) {
+			if (sc.nextInt() % 2 == 0) {
+				zeroNum++;
+			} else {
+				oneNum++;
+			}
+		}
+		if (P == 0) {
+			ans++;
+		}
+		for (int i = 1; i <= N; i++) {
+			for (int z = 0; z <= zeroNum && z <= i; z++) {
+				int o = i - z;
+				if (o <= oneNum && o % 2 == P) {
+					ans += comb(zeroNum, z) * comb(oneNum, o);
+				}
+			}
+		}
+		System.out.println(ans);
+	}
+
+	private long comb(long A, long B) {
+		if (A < B) {
+			return 0L;
+		}
+		if (B == 0) {
+			return 1L;
+		}
+		if (A / 2 < B) {
+			return comb(A, A - B);
+		}
+		long ret = 1L;
+		for (long i = A; i > A - B; i--) {
+			ret *= i;
+		}
+		for (long i = B; i > 0; i--) {
+			ret /= i;
+		}
+		return ret;
 	}
 
 	private void solveB() {
