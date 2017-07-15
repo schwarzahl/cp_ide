@@ -30,10 +30,10 @@ public class Main {
 			cMap.get(b).add(a);
 		}
 		int[] parentMap = new int[N + 1];
-		int[] childNum = new int[N + 1];
+		Map<Integer, Set<Integer>> childMap = new HashMap<>();
 		for (int i = 1; i<= N; i++) {
 			parentMap[i] = 0;
-			childNum[i] = 0;
+			childMap.put(i, new HashSet<>());
 		}
 		List<Integer> list = new ArrayList<>();
 		list.add(1);
@@ -42,18 +42,14 @@ public class Main {
 		while (!list.isEmpty()) {
 			List<Integer> nextList = new ArrayList<>();
 			for (int parent : list) {
-				for (int i = 1; i <= N; i++) {
-					if (cMap.get(parent).contains(i) && parentMap[parent] != i ) {
+				for (int i : cMap.get(parent)) {
+					if (parentMap[parent] != i ) {
 						parentMap[i] = parent;
-						int node = parent;
-						while(node != 0) {
-							childNum[node]++;
-							node = parentMap[node];
-						}
 						nextList.add(i);
 						if (i == N) {
 							sDepth = depth;
 						}
+						childMap.get(parent).add(i);
 					}
 				}
 			}
@@ -64,13 +60,21 @@ public class Main {
 		for (int i = 0; i < (sDepth - 1) / 2; i++) {
 			jNode = parentMap[jNode];
 		}
-		int fNum = childNum[1] - childNum[jNode] - 1;
-		int sNum = childNum[jNode];
+		int sNum = getChildNum(jNode, childMap);
+		int fNum = N - 2 - sNum;
 		if (fNum > sNum) {
 			System.out.println("Fennec");
 		} else {
 			System.out.println("Snuke");
 		}
+	}
+
+	private int getChildNum(int node, Map<Integer, Set<Integer>> childMap) {
+		int sum = 0;
+		for (int child : childMap.get(node)) {
+			sum += getChildNum(child, childMap) + 1;
+		}
+		return sum;
 	}
 
 	private void solveC() {
