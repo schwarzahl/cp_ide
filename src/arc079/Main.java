@@ -5,7 +5,34 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveE();
+	}
+
+	private void solveE() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		long[] a = new long[N];
+		long answer = 0L;
+		for (int i = 0; i < N; i++) {
+			a[i] = sc.nextLong();
+		}
+		while(true) {
+			long plus = 0L;
+			for (int i = 0; i < N; i++) {
+				long div = a[i] / N;
+				plus += div;
+				a[i] = (a[i] % N) - div;
+			}
+			if (plus == 0) {
+				break;
+			} else {
+				answer += plus;
+				for (int i = 0; i < N; i++) {
+					a[i] += plus;
+				}
+			}
+		}
+		System.out.println(answer);
 	}
 
 	private void solveD() {
