@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveD() {
@@ -62,13 +62,11 @@ public class Main {
 			}
 		}
 		int num = 0;
-		if (four > 0) {
-			num += four * 2 + 1;
-		}
 		if (two > 1) {
 			num += two - 1;
 		}
-		if (num < N) {
+		num += four * 2;
+		if (num < N - 1) {
 			System.out.println("No");
 		} else {
 			System.out.println("Yes");
