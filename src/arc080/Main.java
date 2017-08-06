@@ -27,7 +27,7 @@ public class Main {
 			num += four * 2 + 1;
 		}
 		if (two > 1) {
-			num += two;
+			num += two - 1;
 		}
 		if (num < N) {
 			System.out.println("No");
