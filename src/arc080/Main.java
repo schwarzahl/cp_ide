@@ -19,11 +19,13 @@ public class Main {
 		int right;
 		Pair prev;
 		Pair next;
+		boolean del;
 
 		public Pair(int left, int right, Pair prev) {
 			this.left = left;
 			this.right = right;
 			this.prev = prev;
+			this.del = false;
 		}
 
 		public int max() {
@@ -71,16 +73,19 @@ public class Main {
 		ArrayDeque<Integer> answer = new ArrayDeque<>();
 		while (!queue.isEmpty()) {
 			Pair p = queue.poll();
+			if (p.del) {
+				continue;
+			}
+			if (p.prev != null) {
+				p.prev.del = true;
+			}
+			if (p.next != null) {
+				p.next.del = true;
+			}
 			if (p.prev != null && p.next != null) {
 				Pair new_p = new Pair(p.prev.left, p.next.right, p.prev.prev);
 				new_p.next = p.next.next;
 				queue.add(new_p);
-			}
-			if (p.prev != null) {
-				queue.remove(p.prev);
-			}
-			if (p.next != null) {
-				queue.remove(p.next);
 			}
 			answer.addFirst(p.right);
 			answer.addFirst(p.left);
