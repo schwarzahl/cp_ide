@@ -1,6 +1,9 @@
 package arc081;
 
+import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Main {
 	public static void main(String[] args) {
@@ -12,24 +15,30 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 
-		int[] a = new int[100000001];
+		TreeMap<Integer, Integer> map = new TreeMap<>(Collections.reverseOrder());
 		for (int i = 0; i < N; i++) {
-			a[sc.nextInt()]++;
+			int a = sc.nextInt();
+			if (map.containsKey(a)) {
+				map.put(a, map.get(a) + 1);
+			} else {
+				map.put(a, 1);
+			}
 		}
 		long max = 0;
 		long secMax = 0;
-		for (int i = 100000000; i >= 0 && secMax == 0; i--) {
+		for (Entry<Integer, Integer> entry : map.entrySet()) {
 			if (max == 0) {
-				if (a[i] > 3) {
-					max = i;
-					secMax = i;
-				} else if (a[i] > 1) {
-					max = i;
+				if (entry.getValue() > 3) {
+					max = entry.getKey();
+					secMax = entry.getKey();
+				} else if (entry.getValue() > 1) {
+					max = entry.getKey();
 				}
-			} else {
-				if (a[i] > 1) {
-					secMax = i;
-				}
+			} else if (entry.getValue() > 1) {
+				secMax = entry.getKey();
+			}
+			if (secMax > 0) {
+				break;
 			}
 		}
 		System.out.println(max * secMax);
