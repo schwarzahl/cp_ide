@@ -10,6 +10,8 @@ public class Main {
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println(sc.nextInt() * 5);
+		int R = sc.nextInt();
+		int G = sc.nextInt();
+		System.out.println(2 * G - R);
 	}
 }
