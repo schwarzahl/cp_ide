@@ -47,8 +47,10 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		long K = sc.nextLong();
 		int min = sum(K);
-		for (long l = 1; l < pow(min); l++) {
+		long fin = Long.MAX_VALUE;
+		for (long l = 1; l*K <= fin; l++) {
 			int tmp = sum(l*K);
+			fin = getNewFin(fin, tmp);
 			if (min > tmp) {
 				min = tmp;
 			}
@@ -56,12 +58,18 @@ public class Main {
 		System.out.println(min);
 	}
 
-	private long pow(int digit) {
-		long ret = 1;
+	private long getNewFin(long oldFin, int digit) {
+		long newFin = 1;
+		long curFin = oldFin;
 		for (int i = 0; i < digit; i++) {
-			ret *= 10;
+			curFin /= 10;
+			newFin *= 10;
 		}
-		return ret;
+		if (curFin > 0) {
+			return newFin;
+		} else {
+			return oldFin;
+		}
 	}
 
 	private int sum(long num) {
