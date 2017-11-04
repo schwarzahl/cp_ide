@@ -12,17 +12,17 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int[] aList = new int[N];
-		int[] bList = new int[N];
-		int[] cList = new int[N];
+		long[] aList = new long[N];
+		long[] bList = new long[N];
+		long[] cList = new long[N];
 		for (int i = 0; i < N; i++) {
-			aList[i] = sc.nextInt();
+			aList[i] = sc.nextLong();
 		}
 		for (int i = 0; i < N; i++) {
-			bList[i] = sc.nextInt();
+			bList[i] = sc.nextLong();
 		}
 		for (int i = 0; i < N; i++) {
-			cList[i] = sc.nextInt();
+			cList[i] = sc.nextLong();
 		}
 		Arrays.sort(aList);
 		Arrays.sort(bList);
