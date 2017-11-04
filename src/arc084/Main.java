@@ -38,7 +38,7 @@ public class Main {
 			while (i_c < N && bList[i_b] >= cList[i_c]) {
 				i_c++;
 			}
-			sum+=(i_a)*(N-i_c);
+			sum+=((long)i_a)*((long)N-(long)i_c);
 		}
 		System.out.println(sum);
 	}
