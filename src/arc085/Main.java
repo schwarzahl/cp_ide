@@ -58,13 +58,13 @@ public class Main {
 			a[i] = sc.nextInt();
 			sum += a[i];
 		}
-		for (int x = 100; x > 0; x--) {
+		for (int x = N; x > 0; x--) {
 			long tmp = 0L;
-			for (int nx = x; nx <= 100; nx += x) {
+			for (int nx = x; nx <= N; nx += x) {
 				tmp += a[nx];
 			}
 			if (tmp < 0) {
-				for (int nx = x; nx <= 100; nx += x) {
+				for (int nx = x; nx <= N; nx += x) {
 					a[nx] = 0;
 				}
 				sum -= tmp;
