@@ -58,29 +58,16 @@ public class Main {
 			a[i] = sc.nextInt();
 			sum += a[i];
 		}
-		int min_x = -1;
-		while (min_x != 0) {
-			min_x = 0;
-			long min = 0L;
-			for (int x = 1; x <= 100; x++) {
-				long tmp = 0L;
-				for (int i = 1; i <= N; i++) {
-					if (i % x == 0) {
-						tmp += a[i];
-					}
-				}
-				if (min > tmp) {
-					min = tmp;
-					min_x = x;
-				}
+		for (int x = 100; x > 0; x--) {
+			long tmp = 0L;
+			for (int nx = x; nx <= 100; nx += x) {
+				tmp += a[nx];
 			}
-			if (min_x != 0) {
-				for (int i = 1; i <= N; i++) {
-					if (i % min_x == 0) {
-						a[i] = 0;
-					}
+			if (tmp < 0) {
+				for (int nx = x; nx <= 100; nx += x) {
+					a[nx] = 0;
 				}
-				sum -= min;
+				sum -= tmp;
 			}
 		}
 		System.out.println(sum);
