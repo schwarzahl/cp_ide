@@ -3,6 +3,7 @@ package am1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Main {
 	public static void main(String[] args) {
@@ -15,10 +16,17 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int V = sc.nextInt();
 		int E = sc.nextInt();
+		long[] point = new long[V+1];
 		for (int i = 0; i < E; i++) {
 			int u = sc.nextInt();
 			int v = sc.nextInt();
 			int w = sc.nextInt();
+			point[u] += w;
+			point[v] += w;
+		}
+		TreeMap<Long, Integer> tmap = new TreeMap<>();
+		for (int i = 1; i <= V; i++) {
+			tmap.put(point[i], i);
 		}
 		int Vemb = sc.nextInt();
 		int Eemb = sc.nextInt();
@@ -68,9 +76,10 @@ public class Main {
 		}
 
 		// output
-		for (int v_ind = 1; v_ind <= V; v_ind++) {
-			Position pos = list.get(Vemb - v_ind);
-			System.out.println(v_ind + " " + map[pos.y][pos.x]);
+		int v_ind = 1;
+		for (int g_ind : tmap.values()) {
+			Position pos = list.get(Vemb - v_ind++);
+			System.out.println(g_ind + " " + map[pos.y][pos.x]);
 		}
 	}
 
