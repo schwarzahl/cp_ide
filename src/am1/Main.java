@@ -136,6 +136,8 @@ public class Main {
 		while (vMap.size() < V) {
 			long max = -1;
 			int max_vid = 0;
+			int max_x = -1;
+			int max_y = -1;
 			int max_eid = -1;
 			for (int sx = lx - 1; sx <= rx + 1; sx++) {
 				for (int sy = uy - 1; sy <= uy + 1; sy++) {
@@ -156,6 +158,8 @@ public class Main {
 									max = sum;
 									max_vid = vid;
 									max_eid = eid;
+									max_x = sx;
+									max_y = sy;
 								}
 							}
 						}
@@ -163,6 +167,18 @@ public class Main {
 				}
 			}
 			vMap.put(max_eid, max_vid);
+			if (lx > max_x) {
+				lx = max_x;
+			}
+			if (rx < max_x) {
+				rx = max_x;
+			}
+			if (uy > max_y) {
+				uy = max_y;
+			}
+			if (dy < max_y) {
+				dy = max_y;
+			}
 		}
 
 		// output
