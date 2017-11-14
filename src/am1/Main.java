@@ -18,12 +18,16 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int V = sc.nextInt();
 		int E = sc.nextInt();
-		List<Edge> edges = new ArrayList<>();
+		int[][] edges = new int[V+1][];
+		for (int i = 1; i <= V; i++) {
+			edges[i] = new int[V+1];
+		}
 		for (int i = 0; i < E; i++) {
 			int u = sc.nextInt();
 			int v = sc.nextInt();
 			int w = sc.nextInt();
-			edges.add(new Edge(u, v, w));
+			edges[u][v] = w;
+			edges[v][u] = w;
 		}
 		int Vemb = sc.nextInt();
 		int Eemb = sc.nextInt();
@@ -31,7 +35,6 @@ public class Main {
 			int a = sc.nextInt();
 			int b = sc.nextInt();
 		}
-		edges.sort((e1, e2) -> e2.w - e1.w);
 
 		// create embmap
 		int N = (int)Math.round(Math.sqrt(Vemb));
@@ -62,7 +65,7 @@ public class Main {
 			int uy = 1;
 			int dy = N;
 			while (list.size() < Vemb) {
-				list.add(new Position(px, py));
+				list.add(new Position(px, py, map[py][px]));
 				px += sx[pd];
 				py += sy[pd];
 				if (sx[pd] > 0 && px == rx) {
@@ -85,68 +88,48 @@ public class Main {
 		// calc
 		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
 		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+		// Key=emb_id, Value=g_id
 		Map<Integer, Integer> vMap = new HashMap<>();
-		for (Edge edge : edges) {
-			boolean isExistU = vMap.containsKey(edge.u);
-			boolean isExistV = vMap.containsKey(edge.v);
-
-			if (!isExistU && !isExistV) {
-				for (Position pos : list) {
-					int id = map[pos.y][pos.x];
-					if (!vMap.containsValue(id)) {
-						vMap.put(edge.u, id);
-						isExistU = true;
-						break;
+		for (Position pos : list) {
+			long max = -1;
+			int max_vid = 0;
+			for (int vid = 1; vid <= V; vid++) {
+				if (!vMap.containsValue(vid)) {
+					long sum = 0L;
+					for (int ad = 0; ad < 8; ad++) {
+						int tmp_x = pos.x + ax[ad];
+						int tmp_y = pos.y + ay[ad];
+						int add_id = map[tmp_y][tmp_x];
+						if (vMap.containsKey(add_id)) {
+							sum += edges[vid][vMap.get(add_id)];
+						}
+					}
+					if (max < sum) {
+						max = sum;
+						max_vid = vid;
 					}
 				}
 			}
-			Integer origin = null;
-			Integer add = null;
-			if (!isExistU && isExistV) {
-				origin = edge.v;
-				add = edge.u;
-			}
-			if (isExistU && !isExistV) {
-				origin = edge.u;
-				add = edge.v;
-			}
-			if (origin != null && add != null) {
-				for (int ad = 0; ad < 8; ad++) {
-					int origin_id = vMap.get(origin);
-					int tmp_x = ((origin_id - 1) % N) + 1 + ax[ad];
-					int tmp_y = ((origin_id - 1) / N) + 1 + ay[ad];
-					int add_id = map[tmp_y][tmp_x];
-					if (add_id != 0 && !vMap.containsValue(add_id)) {
-						vMap.put(add, add_id);
-						break;
-					}
-				}
-			}
-		}
-		for (int v_i = 1; v_i <= V; v_i++) {
-			if (!vMap.containsKey(v_i)) {
-				for (Position pos : list) {
-					int id = map[pos.y][pos.x];
-					if (!vMap.containsValue(id)) {
-						vMap.put(v_i, id);
-						break;
-					}
-				}
+			vMap.put(pos.id, max_vid);
+			if (vMap.size() >= V) {
+				break;
 			}
 		}
 
 		// output
 		for (Map.Entry<Integer, Integer> entry : vMap.entrySet()) {
-			System.out.println(entry.getKey() + " " + entry.getValue());
+			System.out.println(entry.getValue() + " " + entry.getKey());
 		}
 	}
 
 	class Position {
 		public int x;
 		public int y;
-		public Position(int x, int y) {
+		public int id;
+		public Position(int x, int y, int id) {
 			this.x = x;
 			this.y = y;
+			this.id = id;
 		}
 	}
 
