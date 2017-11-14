@@ -1,9 +1,6 @@
 package am1;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -52,42 +49,7 @@ public class Main {
 			map[N+1][i] = 0;
 		}
 
-		// run and create list
-		List<Position> list = new ArrayList<>();
-		{
-			int px = 1;
-			int py = 1;
-			int pd = 0;
-			int[] sx = {1, 0, -1, 0};
-			int[] sy = {0, 1, 0, -1};
-			int lx = 1;
-			int rx = N;
-			int uy = 1;
-			int dy = N;
-			while (list.size() < Vemb) {
-				list.add(new Position(px, py, map[py][px]));
-				px += sx[pd];
-				py += sy[pd];
-				if (sx[pd] > 0 && px == rx) {
-					uy++;
-					pd = (pd + 1) % 4;
-				} else if (sy[pd] > 0 && py == dy) {
-					rx--;
-					pd = (pd + 1) % 4;
-				} else if (sx[pd] < 0 && px == lx) {
-					dy--;
-					pd = (pd + 1) % 4;
-				} else if (sy[pd] < 0 && py == uy) {
-					lx++;
-					pd = (pd + 1) % 4;
-				}
-			}
-			Collections.reverse(list);
-		}
-
 		// calc
-		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
-		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 		// Key=emb_id, Value=g_id
 		Map<Integer, Integer> vMap = new HashMap<>();
 		{
@@ -108,31 +70,16 @@ public class Main {
 					}
 				}
 			}
-			vMap.put(list.get(1).id, max_v1);
-			vMap.put(list.get(2).id, max_v2);
-			vMap.put(list.get(3).id, max_v3);
+			vMap.put(map[N/2][N/2], max_v1);
+			vMap.put(map[N/2+1][N/2], max_v2);
+			vMap.put(map[N/2][N/2+1], max_v3);
 		}
-		int lx = N;
-		int rx = 0;
-		int uy = N;
-		int dy = 0;
-		{
-			for (int i = 0; i < 4; i++) {
-				Position pos = list.get(i);
-				if (lx > pos.x) {
-					lx = pos.x;
-				}
-				if (rx < pos.x) {
-					rx = pos.x;
-				}
-				if (uy > pos.y) {
-					uy = pos.y;
-				}
-				if (dy < pos.y) {
-					dy = pos.y;
-				}
-			}
-		}
+		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+		int lx = N/2;
+		int rx = N/2+1;
+		int uy = N/2;
+		int dy = N/2+1;
 		while (vMap.size() < V) {
 			long max = -1;
 			int max_vid = 0;
@@ -167,46 +114,15 @@ public class Main {
 				}
 			}
 			vMap.put(max_eid, max_vid);
-			if (lx > max_x) {
-				lx = max_x;
-			}
-			if (rx < max_x) {
-				rx = max_x;
-			}
-			if (uy > max_y) {
-				uy = max_y;
-			}
-			if (dy < max_y) {
-				dy = max_y;
-			}
+			if (lx > max_x) lx = max_x;
+			if (rx < max_x) rx = max_x;
+			if (uy > max_y) uy = max_y;
+			if (dy < max_y) dy = max_y;
 		}
 
 		// output
 		for (Map.Entry<Integer, Integer> entry : vMap.entrySet()) {
 			System.out.println(entry.getValue() + " " + entry.getKey());
 		}
-	}
-
-	class Position {
-		public int x;
-		public int y;
-		public int id;
-		public Position(int x, int y, int id) {
-			this.x = x;
-			this.y = y;
-			this.id = id;
-		}
-	}
-
-	class Edge {
-		public int u;
-		public int v;
-		public int w;
-		public Edge(int u, int v, int w) {
-			this.u = u;
-			this.v = v;
-			this.w = w;
-		}
-
 	}
 }
