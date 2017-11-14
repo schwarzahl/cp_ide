@@ -1,9 +1,11 @@
 package am1;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class Main {
 	public static void main(String[] args) {
@@ -16,17 +18,12 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int V = sc.nextInt();
 		int E = sc.nextInt();
-		long[] point = new long[V+1];
+		List<Edge> edges = new ArrayList<>();
 		for (int i = 0; i < E; i++) {
 			int u = sc.nextInt();
 			int v = sc.nextInt();
 			int w = sc.nextInt();
-			point[u] += w;
-			point[v] += w;
-		}
-		TreeMap<Long, Integer> tmap = new TreeMap<>();
-		for (int i = 1; i <= V; i++) {
-			tmap.put(point[i], i);
+			edges.add(new Edge(u, v, w));
 		}
 		int Vemb = sc.nextInt();
 		int Eemb = sc.nextInt();
@@ -34,28 +31,35 @@ public class Main {
 			int a = sc.nextInt();
 			int b = sc.nextInt();
 		}
+		edges.sort((a, b) -> b.w - a.w);
 
 		// create embmap
 		int N = (int)Math.round(Math.sqrt(Vemb));
-		int[][] map = new int[N][N];
+		int[][] map = new int[N+2][N+2];
 		for (int i = 0; i < N; i++) {
-			map[i] = new int[N];
+			map[i] = new int[N+2];
 		}
 		for (int i = 0; i < Vemb; i++) {
-			map[i/N][i%N] = i+1;
+			map[(i/N)+1][0] = 0;
+			map[(i/N)+1][(i%N)+1] = i+1;
+			map[(i/N)+1][N+1] = 0;
+		}
+		for (int i = 0; i < N+2; i++) {
+			map[0][i] = 0;
+			map[N+1][i] = 0;
 		}
 
 		// run and create list
 		List<Position> list = new ArrayList<>();
-		int px = 0;
-		int py = 0;
+		int px = 1;
+		int py = 1;
 		int pd = 0;
 		int[] sx = {1, 0, -1, 0};
 		int[] sy = {0, 1, 0, -1};
-		int lx = 0;
-		int rx = N - 1;
-		int uy = 0;
-		int dy = N - 1;
+		int lx = 1;
+		int rx = N;
+		int uy = 1;
+		int dy = N;
 		while (list.size() < Vemb) {
 			list.add(new Position(px, py));
 			px += sx[pd];
@@ -74,12 +78,53 @@ public class Main {
 				pd = (pd + 1) % 4;
 			}
 		}
+		Collections.reverse(list);
+
+		// calc
+		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+		Map<Integer, Integer> vMap = new HashMap<>();
+		for (Edge edge : edges) {
+			boolean isExistU = vMap.containsKey(edge.u);
+			boolean isExistV = vMap.containsKey(edge.v);
+
+			if (!isExistU && !isExistV) {
+				for (Position pos : list) {
+					int id = map[pos.y][pos.x];
+					if (!vMap.containsValue(id)) {
+						vMap.put(edge.u, id);
+						isExistU = true;
+						break;
+					}
+				}
+			}
+			Integer origin = null;
+			Integer add = null;
+			if (!isExistU && isExistV) {
+				origin = edge.v;
+				add = edge.u;
+			}
+			if (isExistU && !isExistV) {
+				origin = edge.u;
+				add = edge.v;
+			}
+			if (origin != null && add != null) {
+				for (int ad = 0; ad < 8; ad++) {
+					int origin_id = vMap.get(origin);
+					int tmp_x = ((origin_id - 1) % N) + 1 + ax[ad];
+					int tmp_y = ((origin_id - 1) / N) + 1 + ay[ad];
+					int add_id = map[tmp_y][tmp_x];
+					if (add_id != 0 && !vMap.containsValue(add_id)) {
+						vMap.put(add, add_id);
+						break;
+					}
+				}
+			}
+		}
 
 		// output
-		int v_ind = 1;
-		for (int g_ind : tmap.values()) {
-			Position pos = list.get(Vemb - v_ind++);
-			System.out.println(g_ind + " " + map[pos.y][pos.x]);
+		for (Map.Entry<Integer, Integer> entry : vMap.entrySet()) {
+			System.out.println(entry.getKey() + " " + entry.getValue());
 		}
 	}
 
@@ -90,5 +135,17 @@ public class Main {
 			this.x = x;
 			this.y = y;
 		}
+	}
+
+	class Edge {
+		public int u;
+		public int v;
+		public int w;
+		public Edge(int u, int v, int w) {
+			this.u = u;
+			this.v = v;
+			this.w = w;
+		}
+
 	}
 }
