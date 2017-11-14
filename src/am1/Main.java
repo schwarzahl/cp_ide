@@ -31,7 +31,7 @@ public class Main {
 			int a = sc.nextInt();
 			int b = sc.nextInt();
 		}
-		edges.sort((a, b) -> b.w - a.w);
+		edges.sort((e1, e2) -> e2.w - e1.w);
 
 		// create embmap
 		int N = (int)Math.round(Math.sqrt(Vemb));
@@ -51,34 +51,36 @@ public class Main {
 
 		// run and create list
 		List<Position> list = new ArrayList<>();
-		int px = 1;
-		int py = 1;
-		int pd = 0;
-		int[] sx = {1, 0, -1, 0};
-		int[] sy = {0, 1, 0, -1};
-		int lx = 1;
-		int rx = N;
-		int uy = 1;
-		int dy = N;
-		while (list.size() < Vemb) {
-			list.add(new Position(px, py));
-			px += sx[pd];
-			py += sy[pd];
-			if (sx[pd] > 0 && px == rx) {
-				uy++;
-				pd = (pd + 1) % 4;
-			} else if (sy[pd] > 0 && py == dy) {
-				rx--;
-				pd = (pd + 1) % 4;
-			} else if (sx[pd] < 0 && px == lx) {
-				dy--;
-				pd = (pd + 1) % 4;
-			} else if (sy[pd] < 0 && py == uy) {
-				lx++;
-				pd = (pd + 1) % 4;
+		{
+			int px = 1;
+			int py = 1;
+			int pd = 0;
+			int[] sx = {1, 0, -1, 0};
+			int[] sy = {0, 1, 0, -1};
+			int lx = 1;
+			int rx = N;
+			int uy = 1;
+			int dy = N;
+			while (list.size() < Vemb) {
+				list.add(new Position(px, py));
+				px += sx[pd];
+				py += sy[pd];
+				if (sx[pd] > 0 && px == rx) {
+					uy++;
+					pd = (pd + 1) % 4;
+				} else if (sy[pd] > 0 && py == dy) {
+					rx--;
+					pd = (pd + 1) % 4;
+				} else if (sx[pd] < 0 && px == lx) {
+					dy--;
+					pd = (pd + 1) % 4;
+				} else if (sy[pd] < 0 && py == uy) {
+					lx++;
+					pd = (pd + 1) % 4;
+				}
 			}
+			Collections.reverse(list);
 		}
-		Collections.reverse(list);
 
 		// calc
 		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
@@ -116,6 +118,17 @@ public class Main {
 					int add_id = map[tmp_y][tmp_x];
 					if (add_id != 0 && !vMap.containsValue(add_id)) {
 						vMap.put(add, add_id);
+						break;
+					}
+				}
+			}
+		}
+		for (int v_i = 1; v_i <= V; v_i++) {
+			if (!vMap.containsKey(v_i)) {
+				for (Position pos : list) {
+					int id = map[pos.y][pos.x];
+					if (!vMap.containsValue(id)) {
+						vMap.put(v_i, id);
 						break;
 					}
 				}
