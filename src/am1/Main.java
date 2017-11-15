@@ -15,9 +15,9 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int V = sc.nextInt();
 		int E = sc.nextInt();
-		int[][] edges = new int[V+1][];
-		for (int i = 1; i <= V; i++) {
-			edges[i] = new int[V+1];
+		int[][] edges = new int[V+4][];
+		for (int i = 1; i <= V+3; i++) {
+			edges[i] = new int[V+4];
 		}
 		for (int i = 0; i < E; i++) {
 			int u = sc.nextInt();
@@ -49,20 +49,74 @@ public class Main {
 			map[N+1][i] = 0;
 		}
 
+		// run and create list
+		Position[] spiral = new Position[Vemb];
+		{
+			int px = 1;
+			int py = 1;
+			int pd = 0;
+			int[] sx = {1, 0, -1, 0};
+			int[] sy = {0, 1, 0, -1};
+			int lx = 1;
+			int rx = N;
+			int uy = 1;
+			int dy = N;
+			for (int i = Vemb - 1; i >= 0; i--) {
+				spiral[i] = new Position(px, py, map[py][px]);
+				px += sx[pd];
+				py += sy[pd];
+				if (sx[pd] > 0 && px == rx) {
+					uy++;
+					pd = (pd + 1) % 4;
+				} else if (sy[pd] > 0 && py == dy) {
+					rx--;
+					pd = (pd + 1) % 4;
+				} else if (sx[pd] < 0 && px == lx) {
+					dy--;
+					pd = (pd + 1) % 4;
+				} else if (sy[pd] < 0 && py == uy) {
+					lx++;
+					pd = (pd + 1) % 4;
+				}
+			}
+		}
+
 		// calc
+		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 		// Key=emb_id, Value=g_id
 		Map<Integer, Integer> vMap = new HashMap<>();
-		{
+		for (int s_id = 0; s_id < V; s_id += 3) {
 			int max_v1 = 0;
 			int max_v2 = 0;
 			int max_v3 = 0;
-			long max = 0L;
-			for (int v1 = 1; v1 <= V; v1++) {
-				for (int v2 = v1 + 1; v2 <= V; v2++) {
-					for (int v3 = v2 + 1; v3 <= V; v3++) {
-						long tmp = edges[v1][v2] + edges[v2][v3] + edges[v3][v1];
-						if (max < tmp) {
-							max = tmp;
+			long max = -1L;
+			for (int v1 = 1; v1 <= V+2; v1++) {
+				if (vMap.containsValue(v1)) continue;
+				for (int v2 = 1; v2 <= V+2; v2++) {
+					if (vMap.containsValue(v2)) continue;
+					if (v1 == v2) continue;
+					for (int v3 = 1; v3 <= V+2; v3++) {
+						if (vMap.containsValue(v3)) continue;
+						if (v1 == v3 || v2 == v3) continue;
+						Map<Integer, Integer> tmpVmap = new HashMap<>(vMap);
+						tmpVmap.put(spiral[s_id].id, v1);
+						tmpVmap.put(spiral[s_id+1].id, v2);
+						tmpVmap.put(spiral[s_id+2].id, v3);
+						int[] vs = {v1, v2, v3};
+						long sum = 0L;
+						for (int oid = 0; oid < 3; oid++) {
+							for (int ad = 0; ad < 8; ad++) {
+								int tmp_x = spiral[s_id + oid].x + ax[ad];
+								int tmp_y = spiral[s_id + oid].y + ay[ad];
+								int add_id = map[tmp_y][tmp_x];
+								if (tmpVmap.containsKey(add_id)) {
+									sum += edges[vs[oid]][tmpVmap.get(add_id)];
+								}
+							}
+						}
+						if (max < sum) {
+							max = sum;
 							max_v1 = v1;
 							max_v2 = v2;
 							max_v3 = v3;
@@ -70,59 +124,27 @@ public class Main {
 					}
 				}
 			}
-			vMap.put(map[N/2][N/2], max_v1);
-			vMap.put(map[N/2+1][N/2], max_v2);
-			vMap.put(map[N/2][N/2+1], max_v3);
-		}
-		int[] ax = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
-		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
-		int lx = N/2;
-		int rx = N/2+1;
-		int uy = N/2;
-		int dy = N/2+1;
-		while (vMap.size() < V) {
-			long max = -1;
-			int max_vid = 0;
-			int max_x = -1;
-			int max_y = -1;
-			int max_eid = -1;
-			for (int sx = lx - 1; sx <= rx + 1; sx++) {
-				for (int sy = uy - 1; sy <= uy + 1; sy++) {
-					int eid = map[sy][sx];
-					if (eid != 0 && !vMap.containsKey(eid)) {
-						for (int vid = 1; vid <= V; vid++) {
-							if (!vMap.containsValue(vid)) {
-								long sum = 0L;
-								for (int ad = 0; ad < 8; ad++) {
-									int tmp_x = sx + ax[ad];
-									int tmp_y = sy + ay[ad];
-									int add_id = map[tmp_y][tmp_x];
-									if (vMap.containsKey(add_id)) {
-										sum += edges[vid][vMap.get(add_id)];
-									}
-								}
-								if (max < sum) {
-									max = sum;
-									max_vid = vid;
-									max_eid = eid;
-									max_x = sx;
-									max_y = sy;
-								}
-							}
-						}
-					}
-				}
-			}
-			vMap.put(max_eid, max_vid);
-			if (lx > max_x) lx = max_x;
-			if (rx < max_x) rx = max_x;
-			if (uy > max_y) uy = max_y;
-			if (dy < max_y) dy = max_y;
+			vMap.put(spiral[s_id].id, max_v1);
+			vMap.put(spiral[s_id+1].id, max_v2);
+			vMap.put(spiral[s_id+2].id, max_v3);
 		}
 
 		// output
 		for (Map.Entry<Integer, Integer> entry : vMap.entrySet()) {
-			System.out.println(entry.getValue() + " " + entry.getKey());
+			if (entry.getValue() <= V) {
+				System.out.println(entry.getValue() + " " + entry.getKey());
+			}
+		}
+	}
+
+	class Position {
+		public int x;
+		public int y;
+		public int id;
+		public Position(int x, int y, int id) {
+			this.x = x;
+			this.y = y;
+			this.id = id;
 		}
 	}
 }
