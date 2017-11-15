@@ -15,9 +15,9 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int V = sc.nextInt();
 		int E = sc.nextInt();
-		int[][] edges = new int[V+4][];
-		for (int i = 1; i <= V+3; i++) {
-			edges[i] = new int[V+4];
+		int[][] edges = new int[V+3][];
+		for (int i = 1; i <= V+2; i++) {
+			edges[i] = new int[V+3];
 		}
 		for (int i = 0; i < E; i++) {
 			int u = sc.nextInt();
@@ -86,37 +86,17 @@ public class Main {
 		int[] ay = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 		// Key=emb_id, Value=g_id
 		Map<Integer, Integer> vMap = new HashMap<>();
-		for (int s_id = 0; s_id < V; s_id += 3) {
+		{
 			int max_v1 = 0;
 			int max_v2 = 0;
 			int max_v3 = 0;
-			long max = -1L;
-			for (int v1 = 1; v1 <= V+2; v1++) {
-				if (vMap.containsValue(v1)) continue;
-				for (int v2 = 1; v2 <= V+2; v2++) {
-					if (vMap.containsValue(v2)) continue;
-					if (v1 == v2) continue;
-					for (int v3 = 1; v3 <= V+2; v3++) {
-						if (vMap.containsValue(v3)) continue;
-						if (v1 == v3 || v2 == v3) continue;
-						Map<Integer, Integer> tmpVmap = new HashMap<>(vMap);
-						tmpVmap.put(spiral[s_id].id, v1);
-						tmpVmap.put(spiral[s_id+1].id, v2);
-						tmpVmap.put(spiral[s_id+2].id, v3);
-						int[] vs = {v1, v2, v3};
-						long sum = 0L;
-						for (int oid = 0; oid < 3; oid++) {
-							for (int ad = 0; ad < 8; ad++) {
-								int tmp_x = spiral[s_id + oid].x + ax[ad];
-								int tmp_y = spiral[s_id + oid].y + ay[ad];
-								int add_id = map[tmp_y][tmp_x];
-								if (tmpVmap.containsKey(add_id)) {
-									sum += edges[vs[oid]][tmpVmap.get(add_id)];
-								}
-							}
-						}
-						if (max < sum) {
-							max = sum;
+			long max = 0L;
+			for (int v1 = 1; v1 <= V; v1++) {
+				for (int v2 = v1 + 1; v2 <= V; v2++) {
+					for (int v3 = v2 + 1; v3 <= V; v3++) {
+						long tmp = edges[v1][v2] + edges[v2][v3] + edges[v3][v1];
+						if (max < tmp) {
+							max = tmp;
 							max_v1 = v1;
 							max_v2 = v2;
 							max_v3 = v3;
@@ -124,9 +104,43 @@ public class Main {
 					}
 				}
 			}
+			vMap.put(spiral[0].id, max_v1);
+			vMap.put(spiral[1].id, max_v2);
+			vMap.put(spiral[2].id, max_v3);
+		}
+		for (int s_id = 3; s_id < V; s_id += 2) {
+			int max_v1 = 0;
+			int max_v2 = 0;
+			long max = -1L;
+			for (int v1 = 1; v1 <= V+1; v1++) {
+				if (vMap.containsValue(v1)) continue;
+				for (int v2 = 1; v2 <= V+1; v2++) {
+					if (vMap.containsValue(v2)) continue;
+					if (v1 == v2) continue;
+					Map<Integer, Integer> tmpVmap = new HashMap<>(vMap);
+					tmpVmap.put(spiral[s_id].id, v1);
+					tmpVmap.put(spiral[s_id+1].id, v2);
+					int[] vs = {v1, v2};
+					long sum = 0L;
+					for (int oid = 0; oid < 2; oid++) {
+						for (int ad = 0; ad < 8; ad++) {
+							int tmp_x = spiral[s_id + oid].x + ax[ad];
+							int tmp_y = spiral[s_id + oid].y + ay[ad];
+							int add_id = map[tmp_y][tmp_x];
+							if (tmpVmap.containsKey(add_id)) {
+								sum += edges[vs[oid]][tmpVmap.get(add_id)];
+							}
+						}
+					}
+					if (max < sum) {
+						max = sum;
+						max_v1 = v1;
+						max_v2 = v2;
+					}
+				}
+			}
 			vMap.put(spiral[s_id].id, max_v1);
 			vMap.put(spiral[s_id+1].id, max_v2);
-			vMap.put(spiral[s_id+2].id, max_v3);
 		}
 
 		// output
