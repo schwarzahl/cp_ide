@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args){
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -30,6 +30,46 @@ public class Main {
 		} else {
 			System.out.println("No");
 		}
+	}
+
+	private void solveC() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int[][] F = new int[N + 1][];
+		for (int i = 1; i <= N; i++) {
+			F[i] = new int[10];
+			for (int j = 0; j < 10; j++) {
+				F[i][j] = sc.nextInt();
+			}
+		}
+		int[][] P = new int[N + 1][];
+		for (int i = 1; i <= N; i++) {
+			P[i] = new int[11];
+			for (int j = 0; j <= 10; j++) {
+				P[i][j] = sc.nextInt();
+			}
+		}
+		long max = Long.MIN_VALUE;
+		for (int pat = 1; pat < 1024; pat++) {
+			long current = 0L;
+			int[] M = new int[10];
+			int tmp = pat;
+			for (int i = 0; i < 10; i++) {
+				M[i] = tmp % 2;
+				tmp /= 2;
+			}
+			for (int i = 1; i <= N; i++) {
+				int count = 0;
+				for (int j = 0; j < 10; j++) {
+					count += F[i][j] * M[j];
+				}
+				current += P[i][count];
+			}
+			if (max < current) {
+				max = current;
+			}
+		}
+		System.out.println(max);
 	}
 
 	private void solveD() {
