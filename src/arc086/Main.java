@@ -2,13 +2,15 @@ package arc086;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveE();
 	}
 
 	private void solveC() {
@@ -79,5 +81,42 @@ public class Main {
 		} else {
 			System.out.println(0);
 		}
+	}
+
+	private void solveE() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		int[] level = new int[N + 1];
+		int[] parent = new int[N + 1];
+		Map<Integer, List<Integer>> child = new HashMap<>();
+		level[0] = 1;
+		int max_level = 0;
+		child.put(0, new ArrayList<>());
+		for (int i = 1; i <= N; i++) {
+			child.put(i, new ArrayList<>());
+			parent[i] = sc.nextInt();
+			child.get(parent[i]).add(i);
+			level[i] = level[parent[i]] + 1;
+			if (max_level < level[i]) {
+				max_level = level[i];
+			}
+		}
+		int[][] zero = new int[N + 1][max_level + 1];
+		int[][] one = new int[N + 1][max_level + 1];
+		for (int i = 0; i <= N; i++) {
+			zero[i] = new int[max_level + 1];
+			one[i] = new int[max_level + 1];
+		}
+		for (int current_level = max_level; current_level > 1; current_level--) {
+			for (int i = 0; i <= N; i++) {
+				if (level[i] == current_level) {
+					int ch_total = 1;
+					for (Integer children : child.get(i)) {
+						
+					}
+				}
+			}
+		}
+		System.out.println(max_level);
 	}
 }
