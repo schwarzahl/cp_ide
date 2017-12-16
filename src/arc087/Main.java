@@ -2,7 +2,6 @@ package arc087;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -80,8 +79,8 @@ public class Main {
 				ys.add(charge);
 			}
 		}
-		Collections.sort(xs, Comparator.reverseOrder());
-		Collections.sort(ys, Comparator.reverseOrder());
+		Collections.sort(xs);
+		Collections.sort(ys);
 		int sum_x = 0;
 		for (int tmp_x : xs) {
 			sum_x += tmp_x;
@@ -100,13 +99,23 @@ public class Main {
 	}
 
 	private boolean search(List<Integer> list, int start_index, int diff) {
-		for (int index = start_index; index < list.size(); index++) {
-			int num = list.get(index);
-			if (num * 2 <= diff) {
-				if (search(list, start_index + 1, diff - num * 2)) {
+		Set<Integer> sums = new HashSet<>();
+		sums.add(0);
+		for (int tmp : list) {
+			Set<Integer> new_sums = new HashSet<>(sums);
+			if (tmp > diff) {
+				break;
+			}
+			for (int sum : sums) {
+				int next = sum + tmp * 2;
+				if (next < diff) {
+					new_sums.add(next);
+				}
+				if (next == diff) {
 					return true;
 				}
 			}
+			sums = new_sums;
 		}
 		return diff == 0;
 	}
