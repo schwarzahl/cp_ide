@@ -3,12 +3,10 @@ package arc074;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Main {
 	public static void main(String[] args){
@@ -43,7 +41,7 @@ public class Main {
 				}
 			}
 		}
-		FlowResolver fr = new BfsFlowResolver(graph);
+		FlowResolver fr = new IddfsFlowResolver(graph);
 		int ans = fr.maxFlow(SOURCE, TARGET);
 		if (ans >= INF) {
 			System.out.println(-1);
@@ -256,7 +254,8 @@ public class Main {
 			int sum = 0;
 			int limitDepth = 0;
 			while (isExistFlow(from, to)) {
-				int currentFlow = flow(from, to,Integer.MAX_VALUE / 3, 0, limitDepth);
+				boolean[] passed = new boolean[graph.getVertexNum()];
+				int currentFlow = flow(from, to,Integer.MAX_VALUE / 3, 0, limitDepth, passed);
 				sum += currentFlow;
 				if (currentFlow == 0) {
 					limitDepth++;
@@ -272,9 +271,11 @@ public class Main {
 		 * @param current_flow ここまでの流量
 		 * @param depth 探索(ネスト)の深さ
 		 * @param limitDepth 深さ制限
+		 * @param passed 既に通った節点か否かを格納した配列
 		 * @return 終点(target)に流した流量/戻りのグラフの流量
 		 */
-		private int flow(int from, int to, int current_flow, int depth, int limitDepth) {
+		private int flow(int from, int to, int current_flow, int depth, int limitDepth, boolean[] passed) {
+			passed[from] = true;
 			if (from == to) {
 				return current_flow;
 			}
@@ -282,10 +283,13 @@ public class Main {
 				return 0;
 			}
 			for (int id = 0; id < graph.getVertexNum(); id++) {
+				if (passed[id]) {
+					continue;
+				}
 				Optional<Integer> cost = graph.getCost(from, id);
 				if (cost.orElse(0) > 0) {
 					int nextFlow = current_flow < cost.get() ? current_flow : cost.get();
-					int returnFlow = flow(id, to, nextFlow, depth+1, limitDepth);
+					int returnFlow = flow(id, to, nextFlow, depth+1, limitDepth, passed);
 					if (returnFlow > 0) {
 						graph.link(from, id, cost.get() - returnFlow);
 						graph.link(id, from, graph.getCost(id, from).orElse(0) + returnFlow);
