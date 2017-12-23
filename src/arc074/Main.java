@@ -41,7 +41,7 @@ public class Main {
 				}
 			}
 		}
-		FlowResolver fr = new IddfsFlowResolver(graph);
+		FlowResolver fr = new DfsFlowResolver(graph);
 		int ans = fr.maxFlow(SOURCE, TARGET);
 		if (ans >= INF) {
 			System.out.println(-1);
@@ -234,13 +234,12 @@ public class Main {
 	}
 
 	/**
-	 * IDDFS(反復深化深さ優先探索)による実装
-	 * 終了条件は同じ節点を2度通らないDFS(深さ優先探索)で0が返ってきたとき
-	 * ほぼDinic法なので計算量はO(E*V*V)のはず (E:辺の数, V:節点の数)
+	 * DFS(深さ優先探索)による実装
+	 * 計算量はO(E*MaxFlow)のはず (E:辺の数, MaxFlow:最大フロー)
 	 */
-	class IddfsFlowResolver implements FlowResolver {
+	class DfsFlowResolver implements FlowResolver {
 		private Graph graph;
-		public IddfsFlowResolver(Graph graph) {
+		public DfsFlowResolver(Graph graph) {
 			this.graph = graph;
 		}
 
@@ -252,15 +251,11 @@ public class Main {
 		 */
 		public int maxFlow(int from, int to) {
 			int sum = 0;
-			int limitDepth = 0;
-			while (isExistFlow(from, to)) {
-				boolean[] passed = new boolean[graph.getVertexNum()];
-				int currentFlow = flow(from, to,Integer.MAX_VALUE / 3, 0, limitDepth, passed);
+			int currentFlow;
+			do {
+				currentFlow = flow(from, to,Integer.MAX_VALUE / 3, new boolean[graph.getVertexNum()]);
 				sum += currentFlow;
-				if (currentFlow == 0) {
-					limitDepth++;
-				}
-			}
+			} while (currentFlow > 0);
 			return sum;
 		}
 
@@ -269,18 +264,13 @@ public class Main {
 		 * @param from 現在いる節点のID
 		 * @param to 終点(target)のID
 		 * @param current_flow ここまでの流量
-		 * @param depth 探索(ネスト)の深さ
-		 * @param limitDepth 深さ制限
 		 * @param passed 既に通った節点か否かを格納した配列
 		 * @return 終点(target)に流した流量/戻りのグラフの流量
 		 */
-		private int flow(int from, int to, int current_flow, int depth, int limitDepth, boolean[] passed) {
+		private int flow(int from, int to, int current_flow, boolean[] passed) {
 			passed[from] = true;
 			if (from == to) {
 				return current_flow;
-			}
-			if (depth >= limitDepth) {
-				return 0;
 			}
 			for (int id = 0; id < graph.getVertexNum(); id++) {
 				if (passed[id]) {
@@ -289,7 +279,7 @@ public class Main {
 				Optional<Integer> cost = graph.getCost(from, id);
 				if (cost.orElse(0) > 0) {
 					int nextFlow = current_flow < cost.get() ? current_flow : cost.get();
-					int returnFlow = flow(id, to, nextFlow, depth+1, limitDepth, passed);
+					int returnFlow = flow(id, to, nextFlow, passed);
 					if (returnFlow > 0) {
 						graph.link(from, id, cost.get() - returnFlow);
 						graph.link(id, from, graph.getCost(id, from).orElse(0) + returnFlow);
@@ -298,38 +288,6 @@ public class Main {
 				}
 			}
 			return 0;
-		}
-
-		/**
-		 * fromからtoに0以上の流量を流せるか調べる
-		 * @param from 始点(source)のID
-		 * @param to 終点(target)のID
-		 * @return 0以上流せればtrue
-		 */
-		private boolean isExistFlow(int from, int to) {
-			boolean[] passed = new boolean[graph.getVertexNum()];
-			return search(from, to, passed);
-		}
-
-		/**
-		 * 今までに通ったことのない節点だけを調べるDFS(深さ優先探索)
-		 * 計算量は高々O(V)のはず (V:節点の数)
-		 * @param from 現在いる節点のID
-		 * @param to 終点(target)のID
-		 * @param passed 通過済みの節点IDにtrueが格納されている配列
-		 * @return toに0以上流せればtrue
-		 */
-		private boolean search(int from, int to, boolean[] passed) {
-			if (from == to) {
-				return true;
-			}
-			passed[from] = true;
-			for (int id = 0; id < graph.getVertexNum(); id++) {
-				if (!passed[id] && graph.getCost(from, id).orElse(0) > 0 && search(id, to, passed)) {
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 }
