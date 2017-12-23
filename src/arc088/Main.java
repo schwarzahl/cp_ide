@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -35,8 +35,19 @@ public class Main {
 
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		String S = sc.next();
+		int N = S.length();
+		int ans;
+		Character prev = null;
+		for (ans = N / 2 + 1; ans <= N; ans++) {
+			char right = S.charAt(ans - 1);
+			char left = S.charAt(N - ans);
+			if (left != right || (prev != null && prev != right)) {
+				break;
+			}
+			prev = right;
+		}
+		System.out.println(ans - 1);
 	}
 
 	private void solveE() {
