@@ -108,7 +108,7 @@ public class Main {
 			int sum = 0;
 			int limitDepth = 0;
 			while (isExistFlow(from, to)) {
-				int currentFlow = flow(from, to,Integer.MAX_VALUE / 3, 0, limitDepth);
+				int currentFlow = flow(from, to,Integer.MAX_VALUE / 3, 0, limitDepth, new boolean[graph.getVertexNum()]);
 				sum += currentFlow;
 				if (currentFlow == 0) {
 					limitDepth++;
@@ -124,9 +124,11 @@ public class Main {
 		 * @param current_flow ここまでの流量
 		 * @param depth 探索(ネスト)の深さ
 		 * @param limitDepth 深さ制限
+		 * @param passed 既に通った節点か否かを格納した配列
 		 * @return 終点(target)に流した流量/戻りのグラフの流量
 		 */
-		private int flow(int from, int to, int current_flow, int depth, int limitDepth) {
+		private int flow(int from, int to, int current_flow, int depth, int limitDepth, boolean[] passed) {
+			passed[from] = true;
 			if (from == to) {
 				return current_flow;
 			}
@@ -134,10 +136,13 @@ public class Main {
 				return 0;
 			}
 			for (int id = 0; id < graph.getVertexNum(); id++) {
+				if (passed[id]) {
+					continue;
+				}
 				Optional<Integer> cost = graph.getCost(from, id);
 				if (cost.orElse(0) > 0) {
 					int nextFlow = current_flow < cost.get() ? current_flow : cost.get();
-					int returnFlow = flow(id, to, nextFlow, depth+1, limitDepth);
+					int returnFlow = flow(id, to, nextFlow, depth+1, limitDepth, passed);
 					if (returnFlow > 0) {
 						graph.link(from, id, cost.get() - returnFlow);
 						graph.link(id, from, graph.getCost(id, from).orElse(0) + returnFlow);
