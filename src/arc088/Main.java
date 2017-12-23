@@ -23,8 +23,14 @@ public class Main {
 
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		long X = sc.nextLong();
+		long Y = sc.nextLong();
+		int ans = 0;
+		while (X <= Y) {
+			X *= 2;
+			ans++;
+		}
+		System.out.println(ans);
 	}
 
 	private void solveD() {
