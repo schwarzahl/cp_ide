@@ -1,12 +1,16 @@
 package arc088;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveE();
 	}
 
 	private void solveA() {
@@ -52,8 +56,91 @@ public class Main {
 
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		String S = sc.next();
+		int N = S.length();
+		char[] array = S.toCharArray();
+		Map<Character, Integer> map = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			char asc = array[i];
+			if (!map.containsKey(asc)) {
+				map.put(asc, 0);
+			}
+			map.put(asc, map.get(asc) + 1);
+		}
+		Character odd = null;
+		for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+			if (entry.getValue() % 2 == 1) {
+				if (odd != null) {
+					System.out.println("-1");
+					return;
+				}
+				odd = entry.getKey();
+			}
+		}
+		if (N % 2 == 1 && odd == null) {
+			System.out.println("-1");
+			return;
+		}
+		int ans = 0;
+		if (odd != null) {
+			if (N % 2 == 0) {
+				System.out.println("-1");
+				return;
+			}
+			int oddNum = map.get(odd);
+			int count = 0;
+			int oddIndex = -1;
+			for (int index = 0; index < N; index++) {
+				if (array[index] == odd) {
+					if (++count > oddNum / 2) {
+						oddIndex = index;
+					}
+				}
+			}
+			char[] newArray = new char[N - 1];
+			for (int i = 0; i < N; i++) {
+				if (oddIndex == i) {
+					continue;
+				}
+				newArray[i - (oddIndex < i ? 1 : 0)] = array[i];
+			}
+			ans += N / 2 - oddIndex;
+			array = newArray;
+		}
+		Set<Integer> rights = new HashSet<>();
+		int oddShift = 0;
+		for (int left = 0; left < N; left++) {
+			char source = array[left];
+			if (source == '_') {
+				continue;
+			}
+			int right;
+			for (right = N - 1; right > left; right--) {
+				char target = array[right];
+				if (source == target) {
+					int shift = 0;
+					for (int prev : rights) {
+						shift += prev < right ? 1 : 0;
+						shift += prev < left ? 1 : 0;
+					}
+					ans += N - right - left - 1 + shift - oddShift;
+					array[left] = '_';
+					array[right] = '_';
+					rights.add(right);
+					break;
+				}
+			}
+			if (right == left) {
+				int shift = 0;
+				for (int prev : rights) {
+					shift += prev < left ? 1 : 0;
+				}
+				ans += N / 2 - left + shift;
+				rights.add(left);
+				oddShift = 1;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	private void solveF() {
