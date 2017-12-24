@@ -57,42 +57,53 @@ public class Main {
 
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		char[] S = sc.next().toCharArray();
-		char[] T = sc.next().toCharArray();
-		int s_i = 0;
-		int t_i = 0;
-		while (s_i < S.length && t_i < T.length) {
-			if (S[s_i] == T[t_i]) {
-				s_i++;
-				t_i++;
-			} else {
-				if (T[t_i] == 'B') {
-					t_i++;
-				} else if (S[s_i] == 'A') {
-					s_i++;
-				} else {
-					System.out.println("NO");
-					return;
+		String S = sc.next();
+		String T = sc.next();
+		int del_a = 0;
+		int add_b = 0;
+		for (int i = 0; i < S.length(); i++) {
+			if (S.charAt(i) == 'A') {
+				del_a++;
+			}
+			if (S.charAt(i) == 'B') {
+				add_b--;
+			}
+		}
+		for (int i = 0; i < T.length(); i++) {
+			if (T.charAt(i) == 'A') {
+				del_a--;
+			}
+			if (T.charAt(i) == 'B') {
+				add_b++;
+			}
+		}
+		Set<String> set = new HashSet<>();
+		set.add(S);
+		for (int i = 0; i < del_a; i++) {
+			Set<String> newSet = new HashSet<>();
+			for (String str : set) {
+				for (int j = 0; j < str.length(); j++) {
+					if (str.charAt(j) == 'A') {
+						newSet.add(str.substring(0, j) + str.substring(j + 1));
+					}
 				}
 			}
+			set = newSet;
 		}
-		while (s_i < S.length) {
-			if (S[s_i] == 'A') {
-				s_i++;
-			} else {
-				System.out.println("NO");
-				return;
+		for (int i = 0; i < add_b; i++) {
+			Set<String> newSet = new HashSet<>();
+			for (String str : set) {
+				for (int j = 0; j <= str.length(); j++) {
+					newSet.add(str.substring(0, j) + "B" + str.substring(j));
+				}
 			}
+			set = newSet;
 		}
-		while (t_i < T.length) {
-			if (T[t_i] == 'B') {
-				t_i++;
-			} else {
-				System.out.println("NO");
-				return;
-			}
+		if (set.contains(T)) {
+			System.out.println("YES");
+		} else {
+			System.out.println("NO");
 		}
-		System.out.println("YES");
 	}
 
 	private void solveF() {
