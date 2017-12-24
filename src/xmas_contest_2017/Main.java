@@ -10,11 +10,11 @@ import java.util.StringJoiner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveA();
 	}
 
 	private void solveA() {
-		System.out.println("BBABA");
+		System.out.println("BBBAAABBAAAABAB");
 	}
 
 	private void solveB() {
