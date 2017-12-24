@@ -1,9 +1,11 @@
 package xmas_contest_2017;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringJoiner;
 
 public class Main {
 	public static void main(String[] args) {
@@ -68,18 +70,46 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		long M = sc.nextLong();
-		long[] x = new long[N];
-		Set<Long> sums = new HashSet<>();
+		long[] x = new long[N + 2];
 		x[0] = 0L;
 		x[1] = 1L;
-		sums.add(x[0] + x[1]);
-		long next = 2L;
-		for (int i = 2; i < N; i++) {
-			for (; next <= M; next++) {
-				if (!sums.contains(next)) {
-					
+		x[2] = 2L;
+		x[3] = 4L;
+		long add = 3L;
+		int index = 0;
+		for (int i = 3; i < N; i += 3) {
+			while (add >= x[index]) {
+				if (add == x[index]) {
+					add++;
+				} else {
+					index++;
 				}
 			}
+			x[i] = x[i-1] * 2;
+			x[i+1] = x[i] + add;
+			x[i+2] = x[i + 1] + add;
+			add++;
+		}
+		{
+			StringJoiner sj = new StringJoiner(" ");
+			Arrays.stream(x).limit(N).forEach(asc -> sj.add(String.valueOf(asc)));
+			System.out.printf("%s\n", sj.toString());
+		}
+		int Q = sc.nextInt();
+		for (int i = 0; i < Q; i++) {
+			long sum = sc.nextLong();
+			int left = 0;
+			int right = N - 1;
+			while (true) {
+				if (x[left] + x[right] < sum) {
+					left++;
+				} else if (x[left] + x[right] > sum) {
+					right--;
+				} else {
+					break;
+				}
+			}
+			System.out.printf("%s\n", left + " " + right);
 		}
 	}
 
