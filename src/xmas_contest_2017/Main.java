@@ -90,20 +90,26 @@ public class Main {
 			}
 			set = newSet;
 		}
+		Set<String> Tset = new HashSet<>();
+		Tset.add(T);
 		for (int i = 0; i < add_b; i++) {
 			Set<String> newSet = new HashSet<>();
-			for (String str : set) {
-				for (int j = 0; j <= str.length(); j++) {
-					newSet.add(str.substring(0, j) + "B" + str.substring(j));
+			for (String str : Tset) {
+				for (int j = 0; j < str.length(); j++) {
+					if (str.charAt(j) == 'B') {
+						newSet.add(str.substring(0, j) + str.substring(j + 1));
+					}
 				}
 			}
-			set = newSet;
+			Tset = newSet;
 		}
-		if (set.contains(T)) {
-			System.out.println("YES");
-		} else {
-			System.out.println("NO");
+		for (String s_str : set) {
+			if (Tset.contains(s_str)) {
+				System.out.println("YES");
+				return;
+			}
 		}
+		System.out.println("NO");
 	}
 
 	private void solveF() {
