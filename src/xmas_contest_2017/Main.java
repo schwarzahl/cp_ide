@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -14,9 +14,24 @@ public class Main {
 	}
 
 	private void solveB() {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		System.out.println("17 17");
+		System.out.println("*7102tsetnoCsamX*");
+		System.out.println("X...............7");
+		System.out.println("m...............1");
+		System.out.println("a...............0");
+		System.out.println("s...............2");
+		System.out.println("C...............t");
+		System.out.println("o...............s");
+		System.out.println("n...............e");
+		System.out.println("t...............t");
+		System.out.println("e...............n");
+		System.out.println("s...............o");
+		System.out.println("t...............C");
+		System.out.println("2...............s");
+		System.out.println("0...............a");
+		System.out.println("1...............m");
+		System.out.println("7...............X");
+		System.out.println("*XmasContest2017*");
 	}
 
 	private void solveC() {
