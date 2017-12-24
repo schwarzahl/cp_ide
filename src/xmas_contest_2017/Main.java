@@ -14,24 +14,24 @@ public class Main {
 	}
 
 	private void solveB() {
-		System.out.println("17 17");
-		System.out.println("*7102tsetnoCsamX*");
-		System.out.println("X...............7");
-		System.out.println("m...............1");
-		System.out.println("a...............0");
-		System.out.println("s...............2");
-		System.out.println("C...............t");
-		System.out.println("o...............s");
-		System.out.println("n...............e");
-		System.out.println("t...............t");
-		System.out.println("e...............n");
-		System.out.println("s...............o");
-		System.out.println("t...............C");
-		System.out.println("2...............s");
-		System.out.println("0...............a");
-		System.out.println("1...............m");
-		System.out.println("7...............X");
-		System.out.println("*XmasContest2017*");
+		System.out.println("17 16");
+		System.out.println("...............*");
+		System.out.println("..............X7");
+		System.out.println(".............m1.");
+		System.out.println("............a0..");
+		System.out.println("...........s2...");
+		System.out.println("..........Ct....");
+		System.out.println(".........os.....");
+		System.out.println("........ne......");
+		System.out.println(".......tt.......");
+		System.out.println("......en........");
+		System.out.println(".....so.........");
+		System.out.println("....tC..........");
+		System.out.println("...2s...........");
+		System.out.println("..0a............");
+		System.out.println(".1m.............");
+		System.out.println("7X..............");
+		System.out.println("*...............");
 	}
 
 	private void solveC() {
