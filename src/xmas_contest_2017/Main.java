@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveH();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -39,9 +39,10 @@ public class Main {
 	}
 
 	private void solveC() {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		System.out.println("c = b 1000 b");
+		System.out.println("d = c + c");
+		System.out.println("e = c 0110 d");
+		System.out.println("a = a + e");
 	}
 
 	private void solveD() {
