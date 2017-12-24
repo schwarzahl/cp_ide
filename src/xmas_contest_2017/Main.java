@@ -1,12 +1,14 @@
 package xmas_contest_2017;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveG();
+		main.solveH();
 	}
 
 	private void solveA() {
@@ -65,7 +67,20 @@ public class Main {
 	private void solveH() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		long M = sc.nextLong();
+		long[] x = new long[N];
+		Set<Long> sums = new HashSet<>();
+		x[0] = 0L;
+		x[1] = 1L;
+		sums.add(x[0] + x[1]);
+		long next = 2L;
+		for (int i = 2; i < N; i++) {
+			for (; next <= M; next++) {
+				if (!sums.contains(next)) {
+					
+				}
+			}
+		}
 	}
 
 	private void solveI() {
