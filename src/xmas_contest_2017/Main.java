@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveE();
 	}
 
 	private void solveA() {
@@ -57,8 +57,42 @@ public class Main {
 
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		char[] S = sc.next().toCharArray();
+		char[] T = sc.next().toCharArray();
+		int s_i = 0;
+		int t_i = 0;
+		while (s_i < S.length && t_i < T.length) {
+			if (S[s_i] == T[t_i]) {
+				s_i++;
+				t_i++;
+			} else {
+				if (T[t_i] == 'B') {
+					t_i++;
+				} else if (S[s_i] == 'A') {
+					s_i++;
+				} else {
+					System.out.println("NO");
+					return;
+				}
+			}
+		}
+		while (s_i < S.length) {
+			if (S[s_i] == 'A') {
+				s_i++;
+			} else {
+				System.out.println("NO");
+				return;
+			}
+		}
+		while (t_i < T.length) {
+			if (T[t_i] == 'B') {
+				t_i++;
+			} else {
+				System.out.println("NO");
+				return;
+			}
+		}
+		System.out.println("YES");
 	}
 
 	private void solveF() {
