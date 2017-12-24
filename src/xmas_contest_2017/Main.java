@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveG();
 	}
 
 	private void solveA() {
@@ -53,6 +53,22 @@ public class Main {
 	}
 
 	private void solveF() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		System.out.println(N);
+	}
+
+	private void solveG() {
+		System.out.println("ACEFGHNPQSYZ");
+	}
+
+	private void solveH() {
+		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt();
+		System.out.println(N);
+	}
+
+	private void solveI() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		System.out.println(N);
