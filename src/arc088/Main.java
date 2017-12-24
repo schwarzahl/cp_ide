@@ -1,7 +1,9 @@
 package arc088;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
@@ -11,18 +13,6 @@ public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.solveE();
-	}
-
-	private void solveA() {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-	}
-
-	private void solveB() {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
 	}
 
 	private void solveC() {
@@ -67,80 +57,96 @@ public class Main {
 			}
 			map.put(asc, map.get(asc) + 1);
 		}
-		Character odd = null;
-		for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-			if (entry.getValue() % 2 == 1) {
-				if (odd != null) {
-					System.out.println("-1");
+		int oddNum = 0;
+		int[] target = new int[N];
+		Map<Character, List<Integer>> count = new HashMap<>();
+		int left = 0;
+		for (int i = 0; i < N; i++) {
+			char asc = array[i];
+			if (!count.containsKey(asc)) {
+				count.put(asc, new ArrayList<>());
+			}
+			List<Integer> list = count.get(asc);
+			int num = map.get(asc);
+			if (list.size() < num / 2) {
+				target[i] = left++;
+			} else if (num % 2 == 1 && list.size() == (num - 1) / 2) {
+				if (++oddNum > 1) {
+					System.out.println(-1);
 					return;
 				}
-				odd = entry.getKey();
+				target[i] = N / 2;
+			} else {
+				target[i] = N - list.get(num - list.size() - 1) - 1;
+			}
+			list.add(target[i]);
+		}
+		BinaryIndexedTree bit = new BinaryIndexedTree(262144);
+		long sum = 0;
+		for (int i = 0; i < N; i++) {
+			long tmp = bit.getSum(N - target[i] - 1);
+			sum += tmp;
+			bit.add(N - target[i] - 1, 1);
+		}
+		System.out.println(sum);
+	}
+
+	class BinaryIndexedTree {
+		long[] array;
+		int size;
+		public BinaryIndexedTree(int size) {
+			this.size = size;
+			array = new long[size];
+		}
+		public void add(int index, long value) {
+			int p = size;
+			int d = size / 2;
+			while (d > 0) {
+				if (p - d > index) {
+					array[p - 1] += value;
+					p -= d;
+				}
+				d /= 2;
+			}
+			array[p - 1] += value;
+		}
+		public long getSum(int index) {
+			int p = index + 1;
+			long ret = array[p - 1];
+			int a = 2;
+			while (p - a / 2 - 1 >= 0) {
+				if (p % a > 0) {
+					p -= a / 2;
+					ret += array[p - 1];
+				}
+				a *= 2;
+			}
+			return ret;
+		}
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < size; i++) {
+				sb.append(String.format("%3d", array[i]));
+			}
+			return sb.toString();
+		}
+	}
+
+	private int countGreater(int[][] maxList, int level, int left, int base, int right, int[] pow) {
+		int sum = 0;
+		if (maxList[level][left] > base) {
+			if (level == 0) {
+				return 1;
+			}
+			if (pow[level - 1] * left * 2 < right) {
+				sum += countGreater(maxList, level - 1, left * 2, base, right, pow);
+			}
+			if (pow[level - 1] * (left * 2 + 1) < right) {
+				sum += countGreater(maxList, level - 1, left * 2 + 1, base, right, pow);
 			}
 		}
-		if (N % 2 == 1 && odd == null) {
-			System.out.println("-1");
-			return;
-		}
-		int ans = 0;
-		if (odd != null) {
-			if (N % 2 == 0) {
-				System.out.println("-1");
-				return;
-			}
-			int oddNum = map.get(odd);
-			int count = 0;
-			int oddIndex = -1;
-			for (int index = 0; index < N; index++) {
-				if (array[index] == odd) {
-					if (++count > oddNum / 2) {
-						oddIndex = index;
-					}
-				}
-			}
-			char[] newArray = new char[N - 1];
-			for (int i = 0; i < N; i++) {
-				if (oddIndex == i) {
-					continue;
-				}
-				newArray[i - (oddIndex < i ? 1 : 0)] = array[i];
-			}
-			ans += N / 2 - oddIndex;
-			array = newArray;
-		}
-		Set<Integer> rights = new HashSet<>();
-		int oddShift = 0;
-		for (int left = 0; left < N; left++) {
-			char source = array[left];
-			if (source == '_') {
-				continue;
-			}
-			int right;
-			for (right = N - 1; right > left; right--) {
-				char target = array[right];
-				if (source == target) {
-					int shift = 0;
-					for (int prev : rights) {
-						shift += prev < right ? 1 : 0;
-						shift += prev < left ? 1 : 0;
-					}
-					ans += N - right - left - 1 + shift - oddShift;
-					array[left] = '_';
-					array[right] = '_';
-					rights.add(right);
-					break;
-				}
-			}
-			if (right == left) {
-				int shift = 0;
-				for (int prev : rights) {
-					shift += prev < left ? 1 : 0;
-				}
-				ans += N / 2 - left + shift;
-				rights.add(left);
-				oddShift = 1;
-			}
-		}
-		System.out.println(ans);
+		return sum;
 	}
 
 	private void solveF() {
