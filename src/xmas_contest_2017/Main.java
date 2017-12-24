@@ -39,10 +39,14 @@ public class Main {
 	}
 
 	private void solveC() {
-		System.out.println("c = b 1000 b");
-		System.out.println("d = c + c");
-		System.out.println("e = c 0110 d");
-		System.out.println("a = a + e");
+		// B = not A -> 255-A
+		System.out.println("b = a 1000 a");
+		// D = not 0 -> 255
+		System.out.println("d = c 1000 c");
+		// E = (255 - A) + 255 -> 254 - A
+		System.out.println("e = b + d");
+		// A = not E - > 255 - (254 - A) -> A + 1
+		System.out.println("a = e 1000 e");
 	}
 
 	private void solveD() {
