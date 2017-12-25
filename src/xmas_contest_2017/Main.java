@@ -59,26 +59,34 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		char[] S = sc.next().toCharArray();
 		char[] T = sc.next().toCharArray();
-		if (search(S, T, 0, 0)) {
+		boolean[][] memo = new boolean[1001][];
+		for (int i = 0; i < 1001; i++) {
+			memo[i] = new boolean[1001];
+		}
+		if (search(S, T, 0, 0, memo)) {
 			System.out.println("YES");
 		} else {
 			System.out.println("NO");
 		}
 	}
 
-	private boolean search(char[] S, char[] T, int s_index, int t_index) {
+	private boolean search(char[] S, char[] T, int s_index, int t_index, boolean[][] memo) {
+		if (memo[s_index][t_index]) {
+			return false;
+		}
+		memo[s_index][t_index] = true;
 		if (s_index == S.length && t_index == T.length) {
 			return true;
 		}
 		boolean ans = false;
 		if (s_index < S.length && S[s_index] == 'A') {
-			ans |= search(S, T, s_index + 1, t_index);
+			ans |= search(S, T, s_index + 1, t_index, memo);
 		}
 		if (t_index < T.length && T[t_index] == 'B') {
-			ans |= search(S, T, s_index, t_index + 1);
+			ans |= search(S, T, s_index, t_index + 1, memo);
 		}
 		if (s_index < S.length && t_index < T.length && S[s_index] == T[t_index]) {
-			ans |= search(S, T, s_index + 1, t_index + 1);
+			ans |= search(S, T, s_index + 1, t_index + 1, memo);
 		}
 		return ans;
 	}
