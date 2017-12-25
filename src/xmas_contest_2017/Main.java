@@ -57,59 +57,30 @@ public class Main {
 
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		String S = sc.next();
-		String T = sc.next();
-		int del_a = 0;
-		int add_b = 0;
-		for (int i = 0; i < S.length(); i++) {
-			if (S.charAt(i) == 'A') {
-				del_a++;
-			}
-			if (S.charAt(i) == 'B') {
-				add_b--;
-			}
+		char[] S = sc.next().toCharArray();
+		char[] T = sc.next().toCharArray();
+		if (search(S, T, 0, 0)) {
+			System.out.println("YES");
+		} else {
+			System.out.println("NO");
 		}
-		for (int i = 0; i < T.length(); i++) {
-			if (T.charAt(i) == 'A') {
-				del_a--;
-			}
-			if (T.charAt(i) == 'B') {
-				add_b++;
-			}
+	}
+
+	private boolean search(char[] S, char[] T, int s_index, int t_index) {
+		if (s_index == S.length && t_index == T.length) {
+			return true;
 		}
-		Set<String> set = new HashSet<>();
-		set.add(S);
-		for (int i = 0; i < del_a; i++) {
-			Set<String> newSet = new HashSet<>();
-			for (String str : set) {
-				for (int j = 0; j < str.length(); j++) {
-					if (str.charAt(j) == 'A') {
-						newSet.add(str.substring(0, j) + str.substring(j + 1));
-					}
-				}
-			}
-			set = newSet;
+		boolean ans = false;
+		if (s_index < S.length && S[s_index] == 'A') {
+			ans |= search(S, T, s_index + 1, t_index);
 		}
-		Set<String> Tset = new HashSet<>();
-		Tset.add(T);
-		for (int i = 0; i < add_b; i++) {
-			Set<String> newSet = new HashSet<>();
-			for (String str : Tset) {
-				for (int j = 0; j < str.length(); j++) {
-					if (str.charAt(j) == 'B') {
-						newSet.add(str.substring(0, j) + str.substring(j + 1));
-					}
-				}
-			}
-			Tset = newSet;
+		if (t_index < T.length && T[t_index] == 'B') {
+			ans |= search(S, T, s_index, t_index + 1);
 		}
-		for (String s_str : set) {
-			if (Tset.contains(s_str)) {
-				System.out.println("YES");
-				return;
-			}
+		if (s_index < S.length && t_index < T.length && S[s_index] == T[t_index]) {
+			ans |= search(S, T, s_index + 1, t_index + 1);
 		}
-		System.out.println("NO");
+		return ans;
 	}
 
 	private void solveF() {
