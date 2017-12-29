@@ -2,11 +2,12 @@ package code_forces.good_bye_2017;
 
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.StringJoiner;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -95,7 +96,28 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		double R = 0.0 + sc.nextInt();
+		double[] x = new double[N];
+		double[] y = new double[N];
+		for (int i = 0; i < N; i++) {
+			x[i] = 0.0 + sc.nextInt();
+			double max_y = R;
+			for (int j = 0; j < i; j++) {
+				double dy = 4 * R * R - (x[i] - x[j]) * (x[i] - x[j]);
+				if (dy >= 0) {
+					double tmp_y = y[j] + Math.sqrt(dy);
+					if (max_y < tmp_y) {
+						max_y = tmp_y;
+					}
+				}
+			}
+			y[i] = max_y;
+		}
+		StringJoiner sj = new StringJoiner(" ");
+		for (int i = 0; i < N; i++) {
+			sj.add(String.valueOf(y[i]));
+		}
+		System.out.println(sj.toString());
 	}
 
 	private void solveD() {
