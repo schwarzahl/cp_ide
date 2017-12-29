@@ -7,7 +7,7 @@ import java.util.StringJoiner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveF();
 	}
 
 	private void solveA() {
@@ -135,7 +135,105 @@ public class Main {
 	private void solveF() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		long[] x = new long[N];
+		String[] c = new String[N];
+		long min_green_x = Long.MAX_VALUE / 3;
+		long max_green_x = 0L;
+		Long prev_red_x = null;
+		Long prev_blue_x = null;
+		Long prev_gr_dist = null;
+		Long prev_gb_dist = null;
+		long ans = 0L;
+		for (int i = 0; i < N; i++) {
+			x[i] = sc.nextLong();
+			c[i] = sc.next();
+			if (c[i].equals("G")) {
+				if (min_green_x > x[i]) {
+					min_green_x = x[i];
+				}
+				if (max_green_x < x[i]) {
+					max_green_x = x[i];
+				}
+				if (prev_red_x != null) {
+					long tmp = x[i] - prev_red_x;
+					if (prev_gr_dist == null) {
+						ans += tmp;
+					} else {
+						if (tmp < prev_gr_dist) {
+							ans += tmp;
+						} else {
+							ans += prev_gr_dist;
+						}
+						prev_gr_dist = null;
+					}
+					prev_red_x = null;
+				}
+				if (prev_blue_x != null) {
+					long tmp = x[i] - prev_blue_x;
+					if (prev_gb_dist == null) {
+						ans += tmp;
+					} else {
+						if (tmp < prev_gb_dist) {
+							ans += tmp;
+						} else {
+							ans += prev_gb_dist;
+						}
+						prev_gb_dist = null;
+					}
+					prev_blue_x = null;
+				}
+			} else if (c[i].equals("R")) {
+				if (prev_red_x == null) {
+					prev_red_x = x[i];
+					if (max_green_x > 0L) {
+						prev_gr_dist = x[i] - max_green_x;
+					}
+				} else {
+					long tmp = x[i] - prev_red_x;
+					if (prev_gr_dist == null) {
+						ans += tmp;
+					} else {
+						if (prev_gr_dist < tmp) {
+							ans += prev_gr_dist;
+							prev_gr_dist = tmp;
+						} else {
+							ans += tmp;
+						}
+					}
+					prev_red_x = x[i];
+				}
+			} else if (c[i].equals("B")) {
+				if (prev_blue_x == null) {
+					prev_blue_x = x[i];
+					if (max_green_x > 0L) {
+						prev_gb_dist = x[i] - max_green_x;
+					}
+				} else {
+					long tmp = x[i] - prev_blue_x;
+					if (prev_gb_dist == null) {
+						ans += tmp;
+					} else {
+						if (prev_gb_dist < tmp) {
+							ans += prev_gb_dist;
+							prev_gb_dist = tmp;
+						} else {
+							ans += tmp;
+						}
+					}
+					prev_blue_x = x[i];
+				}
+			}
+		}
+		if (prev_gr_dist != null) {
+			ans += prev_gr_dist;
+		}
+		if (prev_gb_dist != null) {
+			ans += prev_gb_dist;
+		}
+		if (max_green_x > min_green_x) {
+			ans += max_green_x - min_green_x;
+		}
+		System.out.println(ans);
 	}
 
 	interface Graph {
