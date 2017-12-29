@@ -1,5 +1,7 @@
 package code_forces.good_bye_2017;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.StringJoiner;
@@ -135,105 +137,67 @@ public class Main {
 	private void solveF() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		long[] x = new long[N];
-		String[] c = new String[N];
-		long min_green_x = Long.MAX_VALUE / 3;
-		long max_green_x = 0L;
-		Long prev_red_x = null;
-		Long prev_blue_x = null;
-		Long prev_gr_dist = null;
-		Long prev_gb_dist = null;
+		List<Long> redList = new ArrayList<>();
+		List<Long> blueList = new ArrayList<>();
+		Long prev_green_x = null;
 		long ans = 0L;
 		for (int i = 0; i < N; i++) {
-			x[i] = sc.nextLong();
-			c[i] = sc.next();
-			if (c[i].equals("G")) {
-				if (min_green_x > x[i]) {
-					min_green_x = x[i];
+			long x = sc.nextLong();
+			String color = sc.next();
+			if (color.equals("G")) {
+				long red = calc(redList, prev_green_x, x);
+				long blue = calc(blueList, prev_green_x, x);
+				long green = 0L;
+				if (prev_green_x != null) {
+					green = x - prev_green_x;
 				}
-				if (max_green_x < x[i]) {
-					max_green_x = x[i];
-				}
-				if (prev_red_x != null) {
-					long tmp = x[i] - prev_red_x;
-					if (prev_gr_dist == null) {
-						ans += tmp;
-					} else {
-						if (tmp < prev_gr_dist) {
-							ans += tmp;
-						} else {
-							ans += prev_gr_dist;
-						}
-						prev_gr_dist = null;
-					}
-					prev_red_x = null;
-				}
-				if (prev_blue_x != null) {
-					long tmp = x[i] - prev_blue_x;
-					if (prev_gb_dist == null) {
-						ans += tmp;
-					} else {
-						if (tmp < prev_gb_dist) {
-							ans += tmp;
-						} else {
-							ans += prev_gb_dist;
-						}
-						prev_gb_dist = null;
-					}
-					prev_blue_x = null;
-				}
-			} else if (c[i].equals("R")) {
-				if (prev_red_x == null) {
-					prev_red_x = x[i];
-					if (max_green_x > 0L) {
-						prev_gr_dist = x[i] - max_green_x;
-					}
+				if (green > 0L && red + blue > green) {
+					ans += green * 2;
 				} else {
-					long tmp = x[i] - prev_red_x;
-					if (prev_gr_dist == null) {
-						ans += tmp;
-					} else {
-						if (prev_gr_dist < tmp) {
-							ans += prev_gr_dist;
-							prev_gr_dist = tmp;
-						} else {
-							ans += tmp;
-						}
-					}
-					prev_red_x = x[i];
+					ans += green + red + blue;
 				}
-			} else if (c[i].equals("B")) {
-				if (prev_blue_x == null) {
-					prev_blue_x = x[i];
-					if (max_green_x > 0L) {
-						prev_gb_dist = x[i] - max_green_x;
-					}
-				} else {
-					long tmp = x[i] - prev_blue_x;
-					if (prev_gb_dist == null) {
-						ans += tmp;
-					} else {
-						if (prev_gb_dist < tmp) {
-							ans += prev_gb_dist;
-							prev_gb_dist = tmp;
-						} else {
-							ans += tmp;
-						}
-					}
-					prev_blue_x = x[i];
-				}
+				prev_green_x = x;
+				redList = new ArrayList<>();
+				blueList = new ArrayList<>();
+			}
+			if (color.equals("R")) {
+				redList.add(x);
+			}
+			if (color.equals("B")) {
+				blueList.add(x);
 			}
 		}
-		if (prev_gr_dist != null) {
-			ans += prev_gr_dist;
-		}
-		if (prev_gb_dist != null) {
-			ans += prev_gb_dist;
-		}
-		if (max_green_x > min_green_x) {
-			ans += max_green_x - min_green_x;
-		}
+		ans += calc(redList, prev_green_x, null);
+		ans += calc(blueList, prev_green_x, null);
 		System.out.println(ans);
+	}
+
+	private long calc(List<Long> list, Long left, Long right) {
+		if (list.isEmpty()) {
+			return 0L;
+		}
+		long sum = 0L;
+		long max = 0L;
+		Long prev = left;
+		for (long x : list) {
+			if (prev != null) {
+				sum += x - prev;
+				if (max < x - prev) {
+					max = x - prev;
+				}
+			}
+			prev = x;
+		}
+		if (right != null && prev != null) {
+			sum += right - prev;
+			if (max < right - prev) {
+				max = right - prev;
+			}
+		}
+		if (left != null && right != null) {
+			return sum - max;
+		}
+		return sum;
 	}
 
 	interface Graph {
