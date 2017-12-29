@@ -11,8 +11,19 @@ public class Main {
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N*N-5);
+		String str = sc.next();
+		long answer = str.chars().filter(
+				asc -> asc == 'a'
+					|| asc == 'i'
+					|| asc == 'u'
+					|| asc == 'e'
+					|| asc == 'o'
+					|| asc == '1'
+					|| asc == '3'
+					|| asc == '5'
+					|| asc == '7'
+					|| asc == '9').count();
+		System.out.println(answer);
 	}
 
 	private void solveB() {
