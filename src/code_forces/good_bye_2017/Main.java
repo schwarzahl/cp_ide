@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -29,7 +29,67 @@ public class Main {
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int M = sc.nextInt();
+		sc.nextLine();
+		char[][] map = new char[N + 2][M + 2];
+		map[0] = new char[M + 2];
+		map[N + 1] = new char[M + 2];
+		int s_r = -1;
+		int s_c = -1;
+		for (int c = 0; c < M + 2; c++) {
+			map[0][c] = '#';
+			map[N + 1][c] = '#';
+		}
+		for (int r = 1; r <= N; r++) {
+			map[r][0] = '#';
+			String line = sc.nextLine();
+			for (int c = 1; c <= M; c++) {
+				map[r][c] = line.charAt(c - 1);
+				if (map[r][c] == 'S') {
+					s_r = r;
+					s_c = c;
+				}
+			}
+			map[r][M + 1] = '#';
+		}
+		String inst = sc.next();
+		long ans = 0L;
+		for (int left = 0; left < 4; left++) {
+			for (int up = 0; up < 4; up++) {
+				for (int right = 0; right < 4; right++) {
+					for (int down = 0; down < 4; down++) {
+						if (left == up || left == right || left == down || up == right || up == down || right == down) {
+							continue;
+						}
+						int r_r = s_r;
+						int r_c = s_c;
+						for (int i = 0; i < inst.length(); i++) {
+							char asc = inst.charAt(i);
+							if (asc == '0' + left) {
+								r_c--;
+							}
+							if (asc == '0' + up) {
+								r_r--;
+							}
+							if (asc == '0' + right) {
+								r_c++;
+							}
+							if (asc == '0' + down) {
+								r_r++;
+							}
+							if (map[r_r][r_c] == '#') {
+								break;
+							}
+							if (map[r_r][r_c] == 'E') {
+								ans++;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		System.out.println(ans);
 	}
 
 	private void solveC() {
