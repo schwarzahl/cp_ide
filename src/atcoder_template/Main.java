@@ -242,13 +242,15 @@ public class Main {
 
 		/**
 		 * 素数判定の上限となる値を指定してユーティリティを初期化
-		 * @param limit 素数判定の上限
+		 * @param limit 素数判定の上限(この値以上が素数であるか判定しない)
 		 */
 		public PrimeNumberUtils(long limit) {
 			primes = new ArrayList<>();
 			isPrimeArray = new boolean[limit < Integer.MAX_VALUE ? (int)limit : Integer.MAX_VALUE];
-			primes.add(2L);
-			isPrimeArray[2] = true;
+			if (limit > 2) {
+				primes.add(2L);
+				isPrimeArray[2] = true;
+			}
 
 			for (long i = 3; i < limit; i += 2L) {
 				if (isPrime(i, primes)) {
