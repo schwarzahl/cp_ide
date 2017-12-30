@@ -181,4 +181,53 @@ public class Main {
 			return sum;
 		}
 	}
+
+	interface UnionFind {
+		void union(int A, int B);
+		boolean judge(int A, int B);
+	}
+
+	/**
+	 * 配列によるUnionFindの実装
+	 */
+	class ArrayUnionFind implements UnionFind {
+		int[] parent;
+		int[] rank;
+		public ArrayUnionFind(int size) {
+			parent = new int[size];
+			for (int i = 0; i < size; i++) {
+				parent[i] = i;
+			}
+			rank = new int[size];
+		}
+
+		@Override
+		public void union(int A, int B) {
+			int rootA = root(A);
+			int rootB = root(B);
+			if (rootA != rootB) {
+				if (rank[rootA] < rank[rootB]) {
+					parent[rootA] = rootB;
+				} else {
+					parent[rootB] = rootA;
+					if (rank[rootA] == rank[rootB]) {
+						rank[rootA]++;
+					}
+				}
+			}
+		}
+
+		@Override
+		public boolean judge(int A, int B) {
+			return root(A) == root(B);
+		}
+
+		protected int root(int id) {
+			if (parent[id] == id) {
+				return id;
+			}
+			parent[id] = root(parent[id]);
+			return parent[id];
+		}
+	}
 }
