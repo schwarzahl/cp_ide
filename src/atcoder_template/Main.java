@@ -238,31 +238,32 @@ public class Main {
 	 */
 	class PrimeNumberUtils {
 		boolean[] isPrimeArray;
-		List<Long> primes;
+		List<Integer> primes;
 
 		/**
 		 * 素数判定の上限となる値を指定してユーティリティを初期化
 		 * @param limit 素数判定の上限(この値以上が素数であるか判定しない)
 		 */
-		public PrimeNumberUtils(long limit) {
+		public PrimeNumberUtils(int limit) {
+			if (limit > 10000000) {
+				System.err.println("上限の値が高すぎるため素数ユーティリティの初期化でTLEする可能性が大変高いです");
+			}
 			primes = new ArrayList<>();
-			isPrimeArray = new boolean[limit < Integer.MAX_VALUE ? (int)limit : Integer.MAX_VALUE];
+			isPrimeArray = new boolean[limit];
 			if (limit > 2) {
-				primes.add(2L);
+				primes.add(2);
 				isPrimeArray[2] = true;
 			}
 
-			for (long i = 3; i < limit; i += 2L) {
+			for (int i = 3; i < limit; i += 2) {
 				if (isPrime(i, primes)) {
 					primes.add(i);
-					if (i < Integer.MAX_VALUE) {
-						isPrimeArray[(int) i] = true;
-					}
+					isPrimeArray[i] = true;
 				}
 			}
 		}
 
-		public List<Long> getPrimeNumberList() {
+		public List<Integer> getPrimeNumberList() {
 			return primes;
 		}
 
@@ -270,12 +271,8 @@ public class Main {
 			return isPrimeArray[n];
 		}
 
-		public boolean isPrime(long n) {
-			return primes.contains(n);
-		}
-
-		private boolean isPrime(long n, List<Long> primes) {
-			for (long prime : primes) {
+		private boolean isPrime(int n, List<Integer> primes) {
+			for (int prime : primes) {
 				if (n % prime == 0) {
 					return false;
 				}
