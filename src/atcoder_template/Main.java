@@ -1,5 +1,7 @@
 package atcoder_template;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -228,6 +230,58 @@ public class Main {
 			}
 			parent[id] = root(parent[id]);
 			return parent[id];
+		}
+	}
+
+	/**
+	 * 素数のユーティリティ
+	 */
+	class PrimeNumberUtils {
+		boolean[] isPrimeArray;
+		List<Long> primes;
+
+		/**
+		 * 素数判定の上限となる値を指定してユーティリティを初期化
+		 * @param limit 素数判定の上限
+		 */
+		public PrimeNumberUtils(long limit) {
+			primes = new ArrayList<>();
+			isPrimeArray = new boolean[limit < Integer.MAX_VALUE ? (int)limit : Integer.MAX_VALUE];
+			primes.add(2L);
+			isPrimeArray[2] = true;
+
+			for (long i = 3; i < limit; i += 2L) {
+				if (isPrime(i, primes)) {
+					primes.add(i);
+					if (i < Integer.MAX_VALUE) {
+						isPrimeArray[(int) i] = true;
+					}
+				}
+			}
+		}
+
+		public List<Long> getPrimeNumberList() {
+			return primes;
+		}
+
+		public boolean isPrime(int n) {
+			return isPrimeArray[n];
+		}
+
+		public boolean isPrime(long n) {
+			return primes.contains(n);
+		}
+
+		private boolean isPrime(long n, List<Long> primes) {
+			for (long prime : primes) {
+				if (n % prime == 0) {
+					return false;
+				}
+				if (prime > Math.sqrt(n)) {
+					break;
+				}
+			}
+			return true;
 		}
 	}
 }
