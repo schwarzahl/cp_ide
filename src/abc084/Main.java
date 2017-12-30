@@ -6,31 +6,98 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveD();
 	}
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N*84);
+		System.out.println(48 - N);
 	}
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		String C = sc.next();
+		for (int i = 0; i < A; i++) {
+			if (C.charAt(i) == '-') {
+				System.out.println("No");
+				return;
+			}
+		}
+		if (C.charAt(A) != '-') {
+			System.out.println("No");
+			return;
+		}
+		for (int i = A + 1; i < A + B + 1; i++) {
+			if (C.charAt(i) == '-') {
+				System.out.println("No");
+				return;
+			}
+		}
+		System.out.println("Yes");
 	}
 
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int[] C = new int[N + 1];
+		int[] S = new int[N + 1];
+		int[] F = new int[N + 1];
+		for (int i = 1; i < N; i++) {
+			C[i] = sc.nextInt();
+			S[i] = sc.nextInt();
+			F[i] = sc.nextInt();
+		}
+		F[N] = 1;
+		for (int start = 1; start < N; start++) {
+			long current_time = S[start];
+			for (int i = start; i < N; i++) {
+				current_time += C[i];
+				if (current_time < S[i + 1]) {
+					current_time = S[i + 1];
+				}
+				if (current_time % F[i + 1] > 0) {
+					current_time = (current_time + F[i + 1]) / F[i + 1];
+				}
+			}
+			System.out.println(current_time);
+		}
+		System.out.println(0);
 	}
 
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		int Q = sc.nextInt();
+		boolean[] primes = new boolean[100001];
+		boolean[] n2017 = new boolean[100001];
+		int[] sum = new int[100001];
+		primes[2] = true;
+		for (int i = 3; i < 100001; i++) {
+			primes[i] = isPrime(i);
+		}
+		for (int i = 1; i < 100001; i += 2) {
+			n2017[i] = primes[i] && primes[(i + 1) / 2];
+		}
+		sum[0] = 0;
+		for (int i = 1; i < 100001; i++) {
+			sum[i] = sum[i - 1] + (n2017[i] ? 1 : 0);
+		}
+		for (int i = 0; i < Q; i++) {
+			int l = sc.nextInt();
+			int r = sc.nextInt();
+			System.out.println(sum[r] - sum[l - 1]);
+		}
+	}
+
+	private boolean isPrime(int n) {
+		for (int i = 2; i < 1 + Math.sqrt(n); i++) {
+			if (n % i == 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	interface Graph {
