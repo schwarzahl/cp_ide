@@ -197,12 +197,13 @@ public class Main {
 
 	/**
 	 * ArrayUnionFindの拡張
+	 * MapSetで根の添字から根にぶら下がる頂点の集合が取得できるようにした
 	 * getSetメソッドをO(logN * logN)に落とせているはず
 	 * ただしunionメソッドは2倍の計算量になっているので注意(オーダーは変わらないはず)
 	 */
-	class CustomUnionFind extends ArrayUnionFind {
+	class SetUnionFind extends ArrayUnionFind {
 		Map<Integer, Set<Integer>> map;
-		public CustomUnionFind(int size) {
+		public SetUnionFind(int size) {
 			super(size);
 			map = new HashMap<>();
 			for (int i = 0; i < size; i++) {
