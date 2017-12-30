@@ -1,12 +1,14 @@
 package abc084;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -68,15 +70,11 @@ public class Main {
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
 		int Q = sc.nextInt();
-		boolean[] primes = new boolean[100001];
+		PrimeNumberUtils pnu = new PrimeNumberUtils(100001);
 		boolean[] n2017 = new boolean[100001];
 		int[] sum = new int[100001];
-		primes[2] = true;
-		for (int i = 3; i < 100001; i++) {
-			primes[i] = isPrime(i);
-		}
 		for (int i = 1; i < 100001; i += 2) {
-			n2017[i] = primes[i] && primes[(i + 1) / 2];
+			n2017[i] = pnu.isPrime(i) && pnu.isPrime((i + 1) / 2);
 		}
 		sum[0] = 0;
 		for (int i = 1; i < 100001; i++) {
@@ -89,13 +87,58 @@ public class Main {
 		}
 	}
 
-	private boolean isPrime(int n) {
-		for (int i = 2; i < 1 + Math.sqrt(n); i++) {
-			if (n % i == 0) {
-				return false;
+	/**
+	 * 素数のユーティリティ
+	 */
+	class PrimeNumberUtils {
+		boolean[] isPrimeArray;
+		List<Long> primes;
+
+		/**
+		 * 素数判定の上限となる値を指定してユーティリティを初期化
+		 * @param limit 素数判定の上限
+		 */
+		public PrimeNumberUtils(long limit) {
+			primes = new ArrayList<>();
+			isPrimeArray = new boolean[limit < Integer.MAX_VALUE ? (int)limit : Integer.MAX_VALUE];
+			if (limit > 2) {
+				primes.add(2L);
+				isPrimeArray[2] = true;
+			}
+
+			for (long i = 3; i < limit; i += 2L) {
+				if (isPrime(i, primes)) {
+					primes.add(i);
+					if (i < Integer.MAX_VALUE) {
+						isPrimeArray[(int) i] = true;
+					}
+				}
 			}
 		}
-		return true;
+
+		public List<Long> getPrimeNumberList() {
+			return primes;
+		}
+
+		public boolean isPrime(int n) {
+			return isPrimeArray[n];
+		}
+
+		public boolean isPrime(long n) {
+			return primes.contains(n);
+		}
+
+		private boolean isPrime(long n, List<Long> primes) {
+			for (long prime : primes) {
+				if (n % prime == 0) {
+					return false;
+				}
+				if (prime > Math.sqrt(n)) {
+					break;
+				}
+			}
+			return true;
+		}
 	}
 
 	interface Graph {
