@@ -1,9 +1,14 @@
 package atcoder_template;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class Main {
 	public static void main(String[] args) {
@@ -187,20 +192,52 @@ public class Main {
 	interface UnionFind {
 		void union(int A, int B);
 		boolean judge(int A, int B);
+		Set<Integer> getSet(int id);
+	}
+
+	/**
+	 * ArrayUnionFindの拡張
+	 * getSetメソッドをO(logN * logN)に落とせているはず
+	 * ただしunionメソッドは2倍の計算量になっているので注意(オーダーは変わらないはず)
+	 */
+	class CustomUnionFind extends ArrayUnionFind {
+		Map<Integer, Set<Integer>> map;
+		public CustomUnionFind(int size) {
+			super(size);
+			map = new HashMap<>();
+			for (int i = 0; i < size; i++) {
+				map.put(i, new HashSet<>());
+				map.get(i).add(i);
+			}
+		}
+
+		@Override
+		protected void unionTo(int source, int dest) {
+			super.unionTo(source, dest);
+			map.get(dest).addAll(map.get(source));
+		}
+
+		@Override
+		public Set<Integer> getSet(int id) {
+			return map.get(root(id));
+		}
 	}
 
 	/**
 	 * 配列によるUnionFindの実装
+	 * getSetメソッドはO(NlogN)なのでTLEに注意
 	 */
 	class ArrayUnionFind implements UnionFind {
 		int[] parent;
 		int[] rank;
+		int size;
 		public ArrayUnionFind(int size) {
 			parent = new int[size];
 			for (int i = 0; i < size; i++) {
 				parent[i] = i;
 			}
 			rank = new int[size];
+			this.size = size;
 		}
 
 		@Override
@@ -209,9 +246,9 @@ public class Main {
 			int rootB = root(B);
 			if (rootA != rootB) {
 				if (rank[rootA] < rank[rootB]) {
-					parent[rootA] = rootB;
+					unionTo(rootA, rootB);
 				} else {
-					parent[rootB] = rootA;
+					unionTo(rootB, rootA);
 					if (rank[rootA] == rank[rootB]) {
 						rank[rootA]++;
 					}
@@ -219,9 +256,20 @@ public class Main {
 			}
 		}
 
+		protected void unionTo(int source, int dest) {
+			parent[source] = dest;
+		}
+
 		@Override
 		public boolean judge(int A, int B) {
 			return root(A) == root(B);
+		}
+
+		@Override
+		public Set<Integer> getSet(int id) {
+			Set<Integer> set = new HashSet<>();
+			IntStream.range(0, size).filter(i -> judge(i, id)).forEach(set::add);
+			return set;
 		}
 
 		protected int root(int id) {
