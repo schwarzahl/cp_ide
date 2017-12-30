@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -42,29 +42,27 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int[] C = new int[N + 1];
-		int[] S = new int[N + 1];
-		int[] F = new int[N + 1];
+		long[] C = new long[N + 1];
+		long[] S = new long[N + 1];
+		long[] F = new long[N + 1];
 		for (int i = 1; i < N; i++) {
-			C[i] = sc.nextInt();
-			S[i] = sc.nextInt();
-			F[i] = sc.nextInt();
+			C[i] = sc.nextLong();
+			S[i] = sc.nextLong();
+			F[i] = sc.nextLong();
 		}
-		F[N] = 1;
-		for (int start = 1; start < N; start++) {
-			long current_time = S[start];
+		for (int start = 1; start <= N; start++) {
+			long current_time = 0L;
 			for (int i = start; i < N; i++) {
+				if (current_time < S[i]) {
+					current_time = S[i];
+				}
+				if (current_time % F[i] > 0) {
+					current_time = (current_time + F[i]) / F[i] * F[i];
+				}
 				current_time += C[i];
-				if (current_time < S[i + 1]) {
-					current_time = S[i + 1];
-				}
-				if (current_time % F[i + 1] > 0) {
-					current_time = (current_time + F[i + 1]) / F[i + 1];
-				}
 			}
 			System.out.println(current_time);
 		}
-		System.out.println(0);
 	}
 
 	private void solveD() {
