@@ -1,6 +1,7 @@
 package abc085;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -60,7 +61,27 @@ public class Main {
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		long H = sc.nextInt();
+		List<Long> list = new ArrayList<>();
+		for (int i = 0; i < N; i++) {
+			list.add(sc.nextLong() * 10L);
+			list.add(sc.nextLong() * 10L + 1L);
+		}
+		Collections.sort(list, Collections.reverseOrder());
+		int ans = 0;
+		for (long damage : list) {
+			if (H <= 0) {
+				break;
+			}
+			if (damage % 10 == 1) {
+				H -= damage / 10;
+				ans++;
+			} else {
+				ans += Math.ceil(1.0 * H / (damage / 10));
+				break;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface Graph {
