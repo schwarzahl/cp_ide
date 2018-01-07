@@ -42,7 +42,7 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		int Y = sc.nextInt();
-		for (int c = (Y / 1000) % 10; c <= N; c++) {
+		for (int c = (Y / 1000) % 5; c <= N; c += 5) {
 			for (int b = 0; b <= N - c; b++) {
 				int tmp = c * 1000 + b * 5000 + (N - b - c) * 10000;
 				if (Y > tmp) {
