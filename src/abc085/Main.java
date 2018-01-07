@@ -13,25 +13,48 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveC();
 	}
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N*3+1);
+		String S = sc.next();
+		System.out.println(S.substring(0, 3) + "8" + S.substring(4));
 	}
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int[] d = new int[101];
+		for (int i = 0; i < N; i++) {
+			d[sc.nextInt()]++;
+		}
+		int ans = 0;
+		for (int i = 0; i < 101; i++) {
+			if (d[i] > 0) {
+				ans++;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int Y = sc.nextInt();
+		for (int c = (Y / 1000) % 10; c <= N; c++) {
+			for (int b = 0; b <= N - c; b++) {
+				int tmp = c * 1000 + b * 5000 + (N - b - c) * 10000;
+				if (Y > tmp) {
+					break;
+				}
+				if (Y == tmp) {
+					System.out.println((N - b - c) + " " + b + " " + c);
+					return;
+				}
+			}
+		}
+		System.out.println("-1 -1 -1");
 	}
 
 	private void solveD() {
