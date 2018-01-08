@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveE();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -48,12 +48,12 @@ public class Main {
 				childNum[parents[i]]++;
 			}
 		}
-		System.out.println(judge(childNum) ? "Yes" : "No");
+		System.out.println(judge(childNum, isParent) ? "Yes" : "No");
 	}
 
-	private boolean judge(int[] childNum) {
-		for (int num : childNum) {
-			if (num == 1 || num == 2) {
+	private boolean judge(int[] childNum, boolean[] isParent) {
+		for (int i = 0; i < childNum.length; i++) {
+			if (childNum[i] < 3 && isParent[i]) {
 				return false;
 			}
 		}
