@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveE();
 	}
 
 	private void solveA() {
@@ -133,8 +133,89 @@ public class Main {
 
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
+		Map<Integer, String> map = new HashMap<>();
+		map.put(Integer.parseInt("00001111", 2), "x");
+		map.put(Integer.parseInt("00110011", 2), "y");
+		map.put(Integer.parseInt("01010101", 2), "z");
+		{
+			Map<Integer, String> newMap = new HashMap<>();
+			for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				int key = entry.getKey();
+				String value = entry.getValue();
+				newMap.put(key, value);
+				newMap.put((~key & ~Integer.MIN_VALUE) % 256, "!" + value);
+			}
+			map = newMap;
+		}
+		{
+			Map<Integer, String> newMap = new HashMap<>();
+			for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				int key = entry.getKey();
+				String value = entry.getValue();
+				newMap.put(key, value);
+				int notKey = (~key & ~Integer.MIN_VALUE) % 256;
+				for (Map.Entry<Integer, String> entry2 : map.entrySet()) {
+					int key2 = entry2.getKey();
+					String value2 = entry2.getValue();
+					updateMap(key & key2, value + "&" + value2, newMap);
+					updateMap(key | key2, value + "|" + value2, newMap);
+					int notKey2 = (~key2 & ~Integer.MIN_VALUE) % 256;
+					for (Map.Entry<Integer, String> entry3 : map.entrySet()) {
+						int key3 = entry3.getKey();
+						String value3 = entry3.getValue();
+						updateMap(key & key2 & key3, value + "&" + value2 + "&" + value3, newMap);
+						updateMap(key | key2 | key3, value + "|" + value2 + "|" + value3, newMap);
+						updateMap(key | (key2 & key3), value + "|" + value2 + "&" + value3, newMap);
+						updateMap((key & key2) | key3, value + "&" + value2 + "|" + value3, newMap);
+						updateMap((key | key2) & key3, "(" + value + "|" + value2 + ")&" + value3, newMap);
+						updateMap(key & (key2 | key3), value + "&(" + value2 + "|" + value3 + ")", newMap);
+						updateMap((notKey & key2) | (key & notKey2) | key3, notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + "|" + value3, newMap);
+						updateMap((notKey & key2) | (key & notKey2) | key3, value3 + "|" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2), newMap);
+						updateMap(((notKey & key2) | (key & notKey2)) & key3, "(" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + ")&" + value3, newMap);
+						updateMap(((notKey & key2) | (key & notKey2)) & key3, value3 + "&(" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + ")", newMap);
+					}
+				}
+			}
+			map = newMap;
+		}
+		{
+			Map<Integer, String> newMap = new HashMap<>();
+			for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				int key = entry.getKey();
+				String value = entry.getValue();
+				newMap.put(key, value);
+				for (Map.Entry<Integer, String> entry2 : map.entrySet()) {
+					int key2 = entry2.getKey();
+					String value2 = entry2.getValue();
+					updateMap(key & key2, "(" + value + ")&(" + value2 + ")", newMap);
+					updateMap(key | key2, "(" + value + ")|(" + value2 + ")", newMap);
+				}
+			}
+			map = newMap;
+		}
 		int N = sc.nextInt();
-		System.out.println(N);
+		for (int i = 0; i < N; i++) {
+			System.out.println(map.get(Integer.parseInt(sc.next(), 2)));
+		}
+	}
+
+	private String notString(String value) {
+		if (value.charAt(0) == '!') {
+			return value.substring(1);
+		}
+		return "!" + value;
+	}
+
+	private void updateMap(int key, String value, Map<Integer, String> map) {
+		int minLength = Integer.MAX_VALUE / 3;
+		String minStr = null;
+		if (map.containsKey(key)) {
+			minStr = map.get(key);
+			minLength = minStr.length();
+		}
+		if (minLength > value.length() || (minLength == value.length() && minStr != null && minStr.compareTo(value) > 0)) {
+			map.put(key, value);
+		}
 	}
 
 	private void solveF() {
