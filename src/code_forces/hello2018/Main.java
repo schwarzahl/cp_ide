@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -34,7 +34,29 @@ public class Main {
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int[] parents = new int[N + 1];
+		boolean[] isParent = new boolean[N + 1];
+		for (int i = 2; i <= N; i++) {
+			int parent = sc.nextInt();
+			parents[i] = parent;
+			isParent[parent] = true;
+		}
+		int[] childNum = new int[N + 1];
+		for (int i = 2; i <= N; i++) {
+			if (!isParent[i]) {
+				childNum[parents[i]]++;
+			}
+		}
+		System.out.println(judge(childNum) ? "Yes" : "No");
+	}
+
+	private boolean judge(int[] childNum) {
+		for (int num : childNum) {
+			if (num == 1 || num == 2) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void solveC() {
