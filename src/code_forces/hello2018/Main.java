@@ -1,6 +1,7 @@
 package code_forces.hello2018;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -62,7 +63,66 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int L = sc.nextInt();
+		Bottle[] bottles = new Bottle[N];
+		{
+			long liter = 1;
+			for (int i = 0; i < N; i++) {
+				bottles[i] = new Bottle(sc.nextLong(), liter);
+				liter *= 2;
+			}
+		}
+		Arrays.sort(bottles, ((o1, o2) -> o1.getValue() > o2.getValue() ? -1 : (o1.getValue() < o2.getValue() ? 1 : 0)));
+
+		Map<Long, Long> costToLiter = new HashMap<>();
+		costToLiter.put(0L, 0L);
+		for (Bottle b : bottles) {
+			Map<Long, Long> newMap = new HashMap<>();
+			for (Map.Entry<Long, Long> entry : costToLiter.entrySet()) {
+				long cost = entry.getKey();
+				long liter = entry.getValue();
+				updateMap(cost, liter, newMap);
+				long num = (L - liter) / b.liter;
+				if (num >= 0) {
+					updateMap(cost + b.cost * num, liter + b.liter * num, newMap);
+					updateMap(cost + b.cost * (num + 1), liter + b.liter * (num + 1), newMap);
+				}
+			}
+			costToLiter = newMap;
+		}
+		long minCost = Long.MAX_VALUE / 2 - 1;
+		for (Map.Entry<Long, Long> entry : costToLiter.entrySet()) {
+			long cost = entry.getKey();
+			long liter = entry.getValue();
+			if (liter >= L && minCost > cost) {
+				minCost = cost;
+			}
+		}
+		System.out.println(minCost);
+	}
+
+	private void updateMap(long cost, long liter, Map<Long, Long> map) {
+		long max = 0L;
+		if (map.containsKey(cost)) {
+			max = map.get(cost);
+		}
+		if (max < liter) {
+			map.put(cost, liter);
+		}
+	}
+
+	private class Bottle {
+		long cost;
+		long liter;
+
+		public Bottle(long cost, long liter) {
+			this.cost = cost;
+			this.liter = liter;
+		}
+
+		public double getValue() {
+			return 1.0 * liter / cost;
+		}
 	}
 
 	private void solveD() {
