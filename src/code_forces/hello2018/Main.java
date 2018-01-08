@@ -19,7 +19,16 @@ public class Main {
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N*3+1);
+		int M = sc.nextInt();
+		if (N >= 27) {
+			System.out.println(M);
+		} else {
+			int mod = 1;
+			for (int i = 0; i < N; i++) {
+				mod *= 2;
+			}
+			System.out.println(M % mod);
+		}
 	}
 
 	private void solveB() {
