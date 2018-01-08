@@ -131,89 +131,75 @@ public class Main {
 		System.out.println(N);
 	}
 
+	private class Expression {
+		String string;
+		int level = 0;
+
+		public Expression(String string, int level) {
+			this.string = string;
+			this.level = level;
+		}
+	}
+
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		Map<Integer, String> map = new HashMap<>();
-		map.put(Integer.parseInt("00001111", 2), "x");
-		map.put(Integer.parseInt("00110011", 2), "y");
-		map.put(Integer.parseInt("01010101", 2), "z");
-		{
-			Map<Integer, String> newMap = new HashMap<>();
-			for (Map.Entry<Integer, String> entry : map.entrySet()) {
+		Map<Integer, Expression> map = new HashMap<>();
+		map.put(Integer.parseInt("00001111", 2), new Expression("x", 0));
+		map.put(Integer.parseInt("00110011", 2), new Expression("y", 0));
+		map.put(Integer.parseInt("01010101", 2), new Expression("z", 0));
+		for (int i = 0; i < 6; i++) {
+			Map<Integer, Expression> newMap = new HashMap<>(map);
+			for (Map.Entry<Integer, Expression> entry : map.entrySet()) {
 				int key = entry.getKey();
-				String value = entry.getValue();
-				newMap.put(key, value);
-				newMap.put((~key & ~Integer.MIN_VALUE) % 256, "!" + value);
-			}
-			map = newMap;
-		}
-		{
-			Map<Integer, String> newMap = new HashMap<>();
-			for (Map.Entry<Integer, String> entry : map.entrySet()) {
-				int key = entry.getKey();
-				String value = entry.getValue();
-				newMap.put(key, value);
-				int notKey = (~key & ~Integer.MIN_VALUE) % 256;
-				for (Map.Entry<Integer, String> entry2 : map.entrySet()) {
-					int key2 = entry2.getKey();
-					String value2 = entry2.getValue();
-					updateMap(key & key2, value + "&" + value2, newMap);
-					updateMap(key | key2, value + "|" + value2, newMap);
-					int notKey2 = (~key2 & ~Integer.MIN_VALUE) % 256;
-					for (Map.Entry<Integer, String> entry3 : map.entrySet()) {
-						int key3 = entry3.getKey();
-						String value3 = entry3.getValue();
-						updateMap(key & key2 & key3, value + "&" + value2 + "&" + value3, newMap);
-						updateMap(key | key2 | key3, value + "|" + value2 + "|" + value3, newMap);
-						updateMap(key | (key2 & key3), value + "|" + value2 + "&" + value3, newMap);
-						updateMap((key & key2) | key3, value + "&" + value2 + "|" + value3, newMap);
-						updateMap((key | key2) & key3, "(" + value + "|" + value2 + ")&" + value3, newMap);
-						updateMap(key & (key2 | key3), value + "&(" + value2 + "|" + value3 + ")", newMap);
-						updateMap((notKey & key2) | (key & notKey2) | key3, notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + "|" + value3, newMap);
-						updateMap((notKey & key2) | (key & notKey2) | key3, value3 + "|" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2), newMap);
-						updateMap(((notKey & key2) | (key & notKey2)) & key3, "(" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + ")&" + value3, newMap);
-						updateMap(((notKey & key2) | (key & notKey2)) & key3, value3 + "&(" + notString(value) + "&" + value2 + "|" + value + "&" + notString(value2) + ")", newMap);
-					}
+				Expression value = entry.getValue();
+				if (value.level > 0) {
+					updateMap((~key & ~Integer.MIN_VALUE) % 256, new Expression("!(" + value.string + ")", 1), newMap);
+				} else {
+					updateMap((~key & ~Integer.MIN_VALUE) % 256, new Expression("!" + value.string, 1), newMap);
 				}
-			}
-			map = newMap;
-		}
-		{
-			Map<Integer, String> newMap = new HashMap<>();
-			for (Map.Entry<Integer, String> entry : map.entrySet()) {
-				int key = entry.getKey();
-				String value = entry.getValue();
-				newMap.put(key, value);
-				for (Map.Entry<Integer, String> entry2 : map.entrySet()) {
+				for (Map.Entry<Integer, Expression> entry2 : map.entrySet()) {
 					int key2 = entry2.getKey();
-					String value2 = entry2.getValue();
-					updateMap(key & key2, "(" + value + ")&(" + value2 + ")", newMap);
-					updateMap(key | key2, "(" + value + ")|(" + value2 + ")", newMap);
+					Expression value2 = entry2.getValue();
+					{
+						String str1 = value.string;
+						String str2 = value2.string;
+						if (value.level > 2) {
+							str1 = "(" + str1 + ")";
+						}
+						if (value2.level > 2) {
+							str2 = "(" + str2 + ")";
+						}
+						updateMap(key & key2, new Expression(str1 + "&" + str2, 2), newMap);
+					}
+					{
+						String str1 = value.string;
+						String str2 = value2.string;
+						if (value.level > 3) {
+							str1 = "(" + str1 + ")";
+						}
+						if (value2.level > 3) {
+							str2 = "(" + str2 + ")";
+						}
+						updateMap(key | key2, new Expression(str1 + "|" + str2, 3), newMap);
+					}
 				}
 			}
 			map = newMap;
 		}
 		int N = sc.nextInt();
 		for (int i = 0; i < N; i++) {
-			System.out.println(map.get(Integer.parseInt(sc.next(), 2)));
+			System.out.println(map.get(Integer.parseInt(sc.next(), 2)).string);
 		}
 	}
 
-	private String notString(String value) {
-		if (value.charAt(0) == '!') {
-			return value.substring(1);
-		}
-		return "!" + value;
-	}
-
-	private void updateMap(int key, String value, Map<Integer, String> map) {
+	private void updateMap(int key, Expression value, Map<Integer, Expression> map) {
 		int minLength = Integer.MAX_VALUE / 3;
 		String minStr = null;
 		if (map.containsKey(key)) {
-			minStr = map.get(key);
+			minStr = map.get(key).string;
 			minLength = minStr.length();
 		}
-		if (minLength > value.length() || (minLength == value.length() && minStr != null && minStr.compareTo(value) > 0)) {
+		if (minLength > value.string.length() || (minLength == value.string.length() && minStr != null && minStr.compareTo(value.string) > 0)) {
 			map.put(key, value);
 		}
 	}
