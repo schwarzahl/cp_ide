@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveE();
 	}
 
 	private void solveA() {
@@ -123,76 +123,90 @@ public class Main {
 		System.out.println(N);
 	}
 
-	private class Expression {
-		String string;
-		int level = 0;
-
-		public Expression(String string, int level) {
-			this.string = string;
-			this.level = level;
-		}
-	}
-
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
-		Map<Integer, Expression> map = new HashMap<>();
-		map.put(Integer.parseInt("00001111", 2), new Expression("x", 0));
-		map.put(Integer.parseInt("00110011", 2), new Expression("y", 0));
-		map.put(Integer.parseInt("01010101", 2), new Expression("z", 0));
-		for (int i = 0; i < 6; i++) {
-			Map<Integer, Expression> newMap = new HashMap<>(map);
-			for (Map.Entry<Integer, Expression> entry : map.entrySet()) {
-				int key = entry.getKey();
-				Expression value = entry.getValue();
-				if (value.level > 0) {
-					updateMap((~key & ~Integer.MIN_VALUE) % 256, new Expression("!(" + value.string + ")", 1), newMap);
-				} else {
-					updateMap((~key & ~Integer.MIN_VALUE) % 256, new Expression("!" + value.string, 1), newMap);
-				}
-				for (Map.Entry<Integer, Expression> entry2 : map.entrySet()) {
-					int key2 = entry2.getKey();
-					Expression value2 = entry2.getValue();
-					{
-						String str1 = value.string;
-						String str2 = value2.string;
-						if (value.level > 2) {
-							str1 = "(" + str1 + ")";
-						}
-						if (value2.level > 2) {
-							str2 = "(" + str2 + ")";
-						}
-						updateMap(key & key2, new Expression(str1 + "&" + str2, 2), newMap);
+		String[][] map = new String[256][];
+		for (int i = 0; i < 256; i++) {
+			map[i] = new String[3];
+		}
+		map[Integer.parseInt("00001111", 2)][0] = "x";
+		map[Integer.parseInt("00110011", 2)][0] = "y";
+		map[Integer.parseInt("01010101", 2)][0] = "z";
+		for (int i = 0; i < 3; i++) {
+			for (int key1 = 0; key1 < 256; key1++) {
+				for (int level1 = 0; level1 < 3; level1++) {
+					String str1 = map[key1][level1];
+					if (str1 == null) {
+						continue;
 					}
-					{
-						String str1 = value.string;
-						String str2 = value2.string;
-						if (value.level > 3) {
-							str1 = "(" + str1 + ")";
+					if (level1 > 0) {
+						updateMap((~key1 & ~Integer.MIN_VALUE) % 256, "!(" + str1 + ")", 0, map);
+					} else {
+						updateMap((~key1 & ~Integer.MIN_VALUE) % 256, "!" + str1, 0, map);
+					}
+					for (int key2 = 0; key2 < 256; key2++) {
+						for (int level2 = 0; level2 < 3; level2++) {
+							String str2 = map[key2][level2];
+							if (str2 == null) {
+								continue;
+							}
+							{
+								String str_a = str1;
+								String str_b = str2;
+								if (level1 > 1) {
+									str_a = "(" + str_a + ")";
+								}
+								if (level2 > 1) {
+									str_b = "(" + str_b + ")";
+								}
+								updateMap(key1 & key2, str_a + "&" + str_b, 1, map);
+							}
+							{
+								String str_a = str1;
+								String str_b = str2;
+								if (level1 > 2) {
+									str_a = "(" + str_a + ")";
+								}
+								if (level2 > 2) {
+									str_b = "(" + str_b + ")";
+								}
+								updateMap(key1 | key2, str_a + "|" + str_b, 2, map);
+							}
 						}
-						if (value2.level > 3) {
-							str2 = "(" + str2 + ")";
-						}
-						updateMap(key | key2, new Expression(str1 + "|" + str2, 3), newMap);
 					}
 				}
 			}
-			map = newMap;
+		}
+		String[] best = new String[256];
+		for (int i = 0; i < 256; i++) {
+			best[i] = map[i][0];
+			if (isShort(best[i], map[i][1])) {
+				best[i] = map[i][1];
+			}
+			if (isShort(best[i], map[i][2])) {
+				best[i] = map[i][2];
+			}
 		}
 		int N = sc.nextInt();
 		for (int i = 0; i < N; i++) {
-			System.out.println(map.get(Integer.parseInt(sc.next(), 2)).string);
+			System.out.println(best[Integer.parseInt(sc.next(), 2)]);
 		}
 	}
 
-	private void updateMap(int key, Expression value, Map<Integer, Expression> map) {
-		int minLength = Integer.MAX_VALUE / 3;
-		String minStr = null;
-		if (map.containsKey(key)) {
-			minStr = map.get(key).string;
-			minLength = minStr.length();
+	/**
+	 * true : target is shorter than base
+	 */
+	private boolean isShort(String base, String target) {
+		if (base == null) {
+			return true;
 		}
-		if (minLength > value.string.length() || (minLength == value.string.length() && minStr != null && minStr.compareTo(value.string) > 0)) {
-			map.put(key, value);
+		return base.length() > target.length() || (base.length() == target.length() && base.compareTo(target) > 0);
+	}
+
+	private void updateMap(int key, String value, int level, String[][] map) {
+		String prev = map[key][level];
+		if (isShort(prev, value)) {
+			map[key][level] = value;
 		}
 	}
 
