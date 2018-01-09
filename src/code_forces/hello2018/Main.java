@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -64,41 +64,33 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		int L = sc.nextInt();
-		Bottle[] bottles = new Bottle[N];
+		long[] costs = new long[30];
 		{
-			long liter = 1;
-			for (int i = 0; i < N; i++) {
-				bottles[i] = new Bottle(sc.nextLong(), liter);
-				liter *= 2;
+			costs[0] = sc.nextLong();
+			for (int i = 1; i < N; i++) {
+				costs[i] = Math.min(costs[i - 1] * 2, sc.nextLong());
+			}
+			for (int i = N; i < 30; i++) {
+				costs[i] = costs[i - 1] * 2;
 			}
 		}
-		Arrays.sort(bottles, ((o1, o2) -> o1.getValue() > o2.getValue() ? -1 : (o1.getValue() < o2.getValue() ? 1 : 0)));
 
-		Map<Long, Long> costToLiter = new HashMap<>();
-		costToLiter.put(0L, 0L);
-		for (Bottle b : bottles) {
-			Map<Long, Long> newMap = new HashMap<>();
-			for (Map.Entry<Long, Long> entry : costToLiter.entrySet()) {
-				long cost = entry.getKey();
-				long liter = entry.getValue();
-				updateMap(cost, liter, newMap);
-				long num = (L - liter) / b.liter;
-				if (num >= 0) {
-					updateMap(cost + b.cost * num, liter + b.liter * num, newMap);
-					updateMap(cost + b.cost * (num + 1), liter + b.liter * (num + 1), newMap);
+		long ans = Long.MAX_VALUE / 3;
+		long sum = 0L;
+		for (int i = 29; i >= 0 && L > 0; i--) {
+			if ((L >> i) > 0) {
+				L -= 1 << i;
+				sum += costs[i];
+			} else {
+				if (ans > costs[i]) {
+					ans = costs[i] + sum;
 				}
 			}
-			costToLiter = newMap;
 		}
-		long minCost = Long.MAX_VALUE / 2 - 1;
-		for (Map.Entry<Long, Long> entry : costToLiter.entrySet()) {
-			long cost = entry.getKey();
-			long liter = entry.getValue();
-			if (liter >= L && minCost > cost) {
-				minCost = cost;
-			}
+		if (ans > sum) {
+			ans = sum;
 		}
-		System.out.println(minCost);
+		System.out.println(ans);
 	}
 
 	private void updateMap(long cost, long liter, Map<Long, Long> map) {
