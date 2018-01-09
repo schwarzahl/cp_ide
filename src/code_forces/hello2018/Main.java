@@ -64,25 +64,25 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		int L = sc.nextInt();
-		long[] costs = new long[30];
+		long[] costs = new long[32];
 		{
 			costs[0] = sc.nextLong();
 			for (int i = 1; i < N; i++) {
 				costs[i] = Math.min(costs[i - 1] * 2, sc.nextLong());
 			}
-			for (int i = N; i < 30; i++) {
+			for (int i = N; i < 32; i++) {
 				costs[i] = costs[i - 1] * 2;
 			}
 		}
 
 		long ans = Long.MAX_VALUE / 3;
 		long sum = 0L;
-		for (int i = 29; i >= 0 && L > 0; i--) {
+		for (int i = 31; i >= 0 && L > 0; i--) {
 			if ((L >> i) > 0) {
 				L -= 1 << i;
 				sum += costs[i];
 			} else {
-				if (ans > costs[i]) {
+				if (ans > costs[i] + sum) {
 					ans = costs[i] + sum;
 				}
 			}
