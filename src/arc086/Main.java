@@ -84,39 +84,66 @@ public class Main {
 	}
 
 	private void solveE() {
+		final long MOD_NUM = 1000000007L;
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int[] level = new int[N + 1];
 		int[] parent = new int[N + 1];
 		Map<Integer, List<Integer>> child = new HashMap<>();
-		level[0] = 1;
-		int max_level = 0;
-		child.put(0, new ArrayList<>());
+		int[] level = new int[N + 1];
+		int[] level_num = new int [N + 1];
+		level_num[0] = 1;
 		for (int i = 1; i <= N; i++) {
-			child.put(i, new ArrayList<>());
 			parent[i] = sc.nextInt();
-			child.get(parent[i]).add(i);
 			level[i] = level[parent[i]] + 1;
-			if (max_level < level[i]) {
-				max_level = level[i];
+			level_num[level[i]]++;
+			if (!child.containsKey(parent[i])) {
+				child.put(parent[i], new ArrayList<>());
 			}
+			child.get(parent[i]).add(i);
 		}
-		int[][] zero = new int[N + 1][max_level + 1];
-		int[][] one = new int[N + 1][max_level + 1];
-		for (int i = 0; i <= N; i++) {
-			zero[i] = new int[max_level + 1];
-			one[i] = new int[max_level + 1];
-		}
-		for (int current_level = max_level; current_level > 1; current_level--) {
+		long ans = 0L;
+		for (int d = 0; d <= N; d++) {
+			if (level_num[d] == 0) {
+				continue;
+			}
+			long[][] dp = new long[N + 1][];
 			for (int i = 0; i <= N; i++) {
-				if (level[i] == current_level) {
-					int ch_total = 1;
-					for (Integer children : child.get(i)) {
-						
+				dp[i] = new long[2];
+			}
+			for (int i = N; i >= 0; i--) {
+				if (level[i] == d) {
+					dp[i][0] = 1;
+					dp[i][1] = 1;
+				} else {
+					long sum = 0L;
+					long all_mul = 1L;
+					if (child.containsKey(i)) {
+						for (int child_id : child.get(i)) {
+							long mul = 1L;
+							for (int child_id2 : child.get(i)) {
+								mul = (mul * dp[child_id][child_id == child_id2 ? 1 : 0]) % MOD_NUM;
+							}
+							sum += mul;
+							all_mul = (((dp[child_id][0] + dp[child_id][1]) % MOD_NUM) * all_mul) % MOD_NUM;
+						}
+					}
+					if (sum > 0) {
+						dp[i][0] = (all_mul - sum + MOD_NUM) % MOD_NUM;
+						dp[i][1] = sum % MOD_NUM;
 					}
 				}
 			}
+			ans += (dp[0][1] * pow2(N + 1 - level_num[d], MOD_NUM)) % MOD_NUM;
+			System.err.println(d + ":" + dp[0][1]);
 		}
-		System.out.println(max_level);
+		System.out.println(ans);
+	}
+
+	private long pow2(int n, long MOD_NUM) {
+		long ret = 1L;
+		for (int i = 0; i < n; i++) {
+			ret = (ret * 2) % MOD_NUM;
+		}
+		return ret;
 	}
 }
