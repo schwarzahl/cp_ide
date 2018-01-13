@@ -19,7 +19,17 @@ public class Main {
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N*36 + 17);
+		int K = sc.nextInt();
+		int min = Integer.MAX_VALUE / 3;
+		for (int i = 0; i < N; i++) {
+			int bucket = sc.nextInt();
+			if (K % bucket == 0) {
+				if (min > K / bucket) {
+					min = K / bucket;
+				}
+			}
+		}
+		System.out.println(min);
 	}
 
 	private void solveB() {
