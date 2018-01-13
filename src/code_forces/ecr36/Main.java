@@ -1,6 +1,8 @@
 package code_forces.ecr36;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -71,8 +73,57 @@ public class Main {
 
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		String a = sc.next();
+		String b = sc.next();
+		int[] num = new int[10];
+		for (char c : a.toCharArray()) {
+			num[c - '0']++;
+		}
+		long ans = 0;
+		if (a.length() < b.length()) {
+			for (int j = 9; j >= 0; j--) {
+				for (int c = 0; c < num[j]; c++) {
+					ans = ans * 10 + j;
+				}
+			}
+		} else {
+			ans = search(num, 0, b);
+		}
+		System.out.println(ans);
+	}
+
+	private Long search(int[] num, long current, String b) {
+		int keta = current == 0 ? 0 : ("" + current).length();
+		if (b.length() <= keta) {
+			if (Integer.parseInt(b) > current) {
+				return current;
+			} else {
+				return null;
+			}
+		}
+		int degit = b.charAt(keta) - '0';
+		if (num[degit] > 0) {
+			int[] tmp = Arrays.copyOf(num, num.length);
+			tmp[degit]--;
+			Long ans = search(tmp, current * 10 + degit, b);
+			if (ans != null) {
+				return ans;
+			}
+		}
+		for (int i = degit - 1; i > 0; i--) {
+			if (num[i] > 0) {
+				int[] tmp = Arrays.copyOf(num, num.length);
+				tmp[i]--;
+				current = current * 10 + i;
+				for (int j = 9; j >= 0; j--) {
+					for (int c = 0; c < tmp[j]; c++) {
+						current = current * 10 + j;
+					}
+				}
+				return current;
+			}
+		}
+		return null;
 	}
 
 	private void solveD() {
