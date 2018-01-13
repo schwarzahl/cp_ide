@@ -110,7 +110,7 @@ public class Main {
 				return ans;
 			}
 		}
-		for (int i = degit - 1; i > 0; i--) {
+		for (int i = degit - 1; i >= 0; i--) {
 			if (num[i] > 0) {
 				int[] tmp = Arrays.copyOf(num, num.length);
 				tmp[i]--;
