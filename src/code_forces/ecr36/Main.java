@@ -79,21 +79,21 @@ public class Main {
 		for (char c : a.toCharArray()) {
 			num[c - '0']++;
 		}
-		long ans = 0;
+		long ans = 0L;
 		if (a.length() < b.length()) {
 			for (int j = 9; j >= 0; j--) {
 				for (int c = 0; c < num[j]; c++) {
-					ans = ans * 10 + j;
+					ans = ans * 10L + j;
 				}
 			}
 		} else {
-			ans = search(num, 0, b);
+			ans = search(num, 0L, b);
 		}
 		System.out.println(ans);
 	}
 
 	private Long search(int[] num, long current, String b) {
-		int keta = current == 0 ? 0 : ("" + current).length();
+		int keta = current == 0L ? 0 : ("" + current).length();
 		if (b.length() <= keta) {
 			if (Long.parseLong(b) > current) {
 				return current;
@@ -105,7 +105,7 @@ public class Main {
 		if (num[degit] > 0) {
 			int[] tmp = Arrays.copyOf(num, num.length);
 			tmp[degit]--;
-			Long ans = search(tmp, current * 10 + degit, b);
+			Long ans = search(tmp, current * 10L + degit, b);
 			if (ans != null) {
 				return ans;
 			}
@@ -114,10 +114,10 @@ public class Main {
 			if (num[i] > 0) {
 				int[] tmp = Arrays.copyOf(num, num.length);
 				tmp[i]--;
-				current = current * 10 + i;
+				current = current * 10L + i;
 				for (int j = 9; j >= 0; j--) {
 					for (int c = 0; c < tmp[j]; c++) {
-						current = current * 10 + j;
+						current = current * 10L + j;
 					}
 				}
 				return current;
