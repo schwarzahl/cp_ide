@@ -1,6 +1,7 @@
 package dwango04;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -60,7 +61,26 @@ public class Main {
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		long[] x = new long[N + 1];
+		for (int i = 1; i <= N; i++) {
+			x[i] = sc.nextLong();
+		}
+		long[] sum = new long[N + 1];
+		int[] parent = new int[N + 1];
+		parent[1] = 0;
+		sum[1] += x[1];
+		for (int i = 2; i <= N; i++) {
+			parent[i] = sc.nextInt();
+			sum[i] += x[i];
+			sum[parent[i]] += x[i];
+		}
+		long max = 0L;
+		for (long tmp : sum) {
+			if (max < tmp) {
+				max = tmp;
+			}
+		}
+		System.out.println(max);
 	}
 
 	private void solveE() {
