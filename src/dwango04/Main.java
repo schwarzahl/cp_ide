@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveE();
 	}
 
 	private void solveA() {
@@ -86,7 +86,99 @@ public class Main {
 	private void solveE() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int Q = sc.nextInt();
+		boolean[][] graph = new boolean[N + 1][];
+		for (int i = 0; i <= N; i++) {
+			graph[i] = new boolean[N + 1];
+		}
+		for (int i = 1; i < N; i++) {
+			int a = sc.nextInt();
+			int b = sc.nextInt();
+			graph[a][b] = true;
+			graph[b][a] = true;
+		}
+		boolean[] exist = new boolean[N + 1];
+		Arrays.fill(exist, true);
+		for (int tryNum = 0; tryNum < Q; tryNum++){
+			int max1 = 0;
+			int max1_id = 1;
+			for (int i = 1; i <= N; i++) {
+				if (exist[i]) {
+					max1_id = i;
+					break;
+				}
+			}
+			{
+				int[] dist = new int[N + 1];
+				Arrays.fill(dist, N + 1);
+				search(1, 0, dist, graph, N);
+				for (int i = 2; i <= N; i++) {
+					if (exist[i] && max1 < dist[i]) {
+						max1 = dist[i];
+						max1_id = i;
+					}
+				}
+			}
+			int max2 = 0;
+			int max2_id = max1_id;
+			int[] dist1 = new int[N + 1];
+			Arrays.fill(dist1, N + 1);
+			search(max1_id, 0, dist1, graph, N);
+			for (int i = 2; i <= N; i++) {
+				if (exist[i] && max2 < dist1[i]) {
+					max2 = dist1[i];
+					max2_id = i;
+				}
+			}
+			int[] dist2 = new int[N + 1];
+			Arrays.fill(dist2, N + 1);
+			search(max2_id, 0, dist2, graph, N);
+			System.out.println("? " + max1_id + " " + max2_id);
+			int near = sc.nextInt();
+			if (near == 0) {
+				for (int i = 1; i <= N; i++) {
+					if (dist1[i] != dist2[i]) {
+						exist[i] = false;
+					}
+				}
+			} else if (near == max1_id) {
+				for (int i = 1; i <= N; i++) {
+					if (dist1[i] >= dist2[i]) {
+						exist[i] = false;
+					}
+				}
+			} else if (near == max2_id) {
+				for (int i = 1; i <= N; i++) {
+					if (dist1[i] <= dist2[i]) {
+						exist[i] = false;
+					}
+				}
+			}
+			int answer = 0;
+			int answer_num = 0;
+			for (int i = 1; i <= N; i++) {
+				if (exist[i]) {
+					answer = i;
+					answer_num++;
+				}
+			}
+			if (answer_num == 1) {
+				System.out.println("! " + answer);
+				return;
+			}
+		}
+	}
+
+	private void search(int current, int level, int[] dist, boolean[][] graph, int N) {
+		if (dist[current] < level) {
+			return;
+		}
+		dist[current] = level;
+		for (int i = 1; i <= N; i++) {
+			if (graph[current][i]) {
+				search(i, level + 1, dist, graph, N);
+			}
+		}
 	}
 
 	private void solveF() {
