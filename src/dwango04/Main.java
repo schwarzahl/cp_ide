@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveE();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -55,7 +55,56 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int M = sc.nextInt();
+		int[] killA = new int[N + 1];
+		int[] killB = new int[M + 1];
+		int killAsum = 0;
+		killA[0] = -1;
+		for (int i = 1; i <= N; i++) {
+			killA[i] = sc.nextInt();
+			killAsum += killA[i];
+		}
+		int killBsum = 0;
+		killB[0] = -1;
+		for (int i = 1; i <= M; i++) {
+			killB[i] = sc.nextInt();
+			killBsum += killB[i];
+		}
+		long sumA = calc(1, 0, killBsum, killA);
+		long sumB = calc(1, 0, killAsum, killB);
+		System.out.println((sumA * sumB) % 1000000007L);
+	}
+
+	private long calc(int current_id, int death, int restDeath, int[] kills) {
+		/*
+		if (current_id >= kills.length) {
+			if (restDeath == 0) {
+				return 1L;
+			} else {
+				return 0L;
+			}
+		}
+		*/
+		if (current_id == kills.length - 1) {
+			if (kills[current_id] == kills[current_id - 1] && restDeath + 1 - death <= 0) {
+				return 0L;
+			}
+			return 1L;
+			/*
+			if (kills[current_id] == kills[current_id - 1]) {
+				return Math.max(restDeath + 1 - death, 0);
+			}
+			return restDeath + 1;
+			*/
+		}
+		long sum = 0L;
+		for (int nextDeath = 0; nextDeath <= restDeath; nextDeath++) {
+			if (kills[current_id] == kills[current_id - 1] && death > nextDeath) {
+				continue;
+			}
+			sum = (sum + calc(current_id + 1, nextDeath, restDeath - nextDeath, kills)) % 1000000007L;
+		}
+		return sum;
 	}
 
 	private void solveD() {
