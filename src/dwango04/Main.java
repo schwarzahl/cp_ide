@@ -13,19 +13,42 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(2*N+7);
+		int s = sc.nextInt();
+		if (s / 1000 == (s / 10) % 10 && (s / 100) % 10 == s % 10) {
+			System.out.println("Yes");
+		} else {
+			System.out.println("No");
+		}
 	}
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		String s = sc.next();
+		int count = 0;
+		int max = 0;
+		for (char c : s.toCharArray()) {
+			if (c == '2') {
+				count++;
+				if (max < count) {
+					max = count;
+				}
+			} else {
+				count--;
+				if (count < 0) {
+					break;
+				}
+			}
+		}
+		if (count == 0) {
+			System.out.println(max);
+		} else {
+			System.out.println(-1);
+		}
 	}
 
 	private void solveC() {
