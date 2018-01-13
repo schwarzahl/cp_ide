@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -35,7 +35,38 @@ public class Main {
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int pos = sc.nextInt();
+		int l = sc.nextInt();
+		int r = sc.nextInt();
+		int ans = 0;
+		boolean left = 1 < l;
+		boolean right = r < N;
+		int lp = Math.abs(l - pos);
+		int pr = Math.abs(r - pos);
+		boolean leftFirst;
+		if (lp == pr) {
+			leftFirst = left;
+		} else {
+			leftFirst = lp < pr;
+		}
+		if (leftFirst) {
+			if (left) {
+				ans += lp + 1;
+				pos = l;
+			}
+			if (right) {
+				ans += r - pos + 1;
+			}
+		} else {
+			if (right) {
+				ans += pr + 1;
+				pos = r;
+			}
+			if (left) {
+				ans += pos - l + 1;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	private void solveC() {
