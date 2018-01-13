@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveC();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -129,7 +129,56 @@ public class Main {
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int M = sc.nextInt();
+		int[] edge = new int[M];
+		boolean[][] graph = new boolean[N + 1][];
+		int[][] edgeId = new int[N + 1][];
+		int[] roopCount = new int[M];
+		for (int i = 0; i <= N; i++) {
+			graph[i] = new boolean[N + 1];
+			edgeId[i] = new int[N + 1];
+		}
+		for (int i = 0; i < M; i++) {
+			int u = sc.nextInt();
+			int v = sc.nextInt();
+			graph[u][v] = true;
+			edgeId[u][v] = i;
+			edge[i] = u * (N + 1) + v;
+		}
+		int max = 0;
+		for (int start = 1; start <= N; start++) {
+			int[] count = new int[1];
+			search(start, graph, new boolean[N + 1], start, roopCount, edgeId, N, count);
+			if (max < count[0]) {
+				max = count[0];
+			}
+		}
+		for (int i = 0; i < M; i++) {
+			if (max == roopCount[i]) {
+				System.out.println("YES");
+				return;
+			}
+		}
+		System.out.println("NO");
+	}
+
+	private boolean search(int current, boolean[][] graph, boolean[] passed, int start, int[] roopCount, int[][] edgeId, int N, int[] count) {
+		if (passed[current]) {
+			if (current == start) {
+				count[0]++;
+				return true;
+			}
+			return false;
+		}
+		passed[current] = true;
+		for (int dest = 1; dest <= N; dest++) {
+			if (graph[current][dest]) {
+				if (search(dest, graph, Arrays.copyOf(passed, passed.length), start, roopCount, edgeId, N, count)) {
+					roopCount[edgeId[current][dest]]++;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void solveE() {
