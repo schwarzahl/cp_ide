@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -95,7 +95,7 @@ public class Main {
 	private Long search(int[] num, long current, String b) {
 		int keta = current == 0 ? 0 : ("" + current).length();
 		if (b.length() <= keta) {
-			if (Integer.parseInt(b) > current) {
+			if (Long.parseLong(b) > current) {
 				return current;
 			} else {
 				return null;
