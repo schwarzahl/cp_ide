@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -30,8 +30,29 @@ public class Main {
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		int K = sc.nextInt();
+		long[] A = new long[K];
+		for (int i = 0; i < K; i++) {
+			A[i] = sc.nextLong();
+		}
+		long minAns = 2L;
+		long maxAns = 2L;
+		for (int i = K - 1; i >= 0; i--) {
+			long minMul = ((minAns - 1) / A[i]) + 1;
+			long maxMul = (maxAns / A[i]) + 1;
+			if (minMul < maxMul) {
+				minAns = minMul * A[i];
+				maxAns = maxMul * A[i] - 1;
+			} else {
+				minAns = -1L;
+				break;
+			}
+		}
+		if (minAns == -1) {
+			System.out.println(-1);
+		} else {
+			System.out.println(minAns + " " + maxAns);
+		}
 	}
 
 	private void solveC() {
