@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveD();
 	}
 
 	private void solveA() {
@@ -63,8 +63,51 @@ public class Main {
 
 	private void solveD() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		int Q = sc.nextInt();
+		for (int i = 1; i <= Q; i++) {
+			int A = sc.nextInt();
+			int B = sc.nextInt();
+			int C = sc.nextInt();
+			int D = sc.nextInt();
+			String str = "test";
+			char ascA = 'A';
+			char ascB = 'B';
+			if (A < B) {
+				ascA = 'B';
+				ascB = 'A';
+				int esc = A;
+				A = B;
+				B = esc;
+			}
+			int lenA = ((A - 1) / (B + 1)) + 1;
+			int perfectAnum = A / lenA;
+			for (int roopAAB = perfectAnum; roopAAB > 0; roopAAB--) {
+				int partAlen = A % lenA;
+				int restBnum = B - perfectAnum - (partAlen > 0 ? 1 : 0);
+				if (restBnum <= lenA) {
+					str = roopString(roopString(ascA, lenA) + ascB, perfectAnum) + (restBnum > 0 ? roopString(ascB, restBnum) : "");
+				} else {
+					System.err.println(lenA);
+				}
+			}
+			System.out.println(str);
+		}
+	}
+
+	private String roopString(char asc, int num) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < num; i++) {
+			sb.append(asc);
+		}
+		return sb.toString();
+	}
+
+	private String roopString(String str, int num) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < num; i++) {
+			sb.append(str);
+		}
+		return sb.toString();
 	}
 
 	private void solveE() {
