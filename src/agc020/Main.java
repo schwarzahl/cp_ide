@@ -19,7 +19,13 @@ public class Main {
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N * 2 + 11);
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		if ((B - A) % 2 == 0) {
+			System.out.println("Alice");
+		} else {
+			System.out.println("Borys");
+		}
 	}
 
 	private void solveB() {
