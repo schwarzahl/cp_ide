@@ -68,13 +68,9 @@ public class Main {
 		dp.set(0);
 		for (int i = 1; i <= N; i++) {
 			dp.shiftStep(A[i]);
-			for (int j = sum; j >= 0; j--) {
-				System.err.print(dp.get(j) ? 1 : 0);
-			}
-			System.err.println();
 		}
 		int ans;
-		for (ans = sum / 2; !dp.get(ans); ans++);
+		for (ans = (sum + 1) / 2; !dp.get(ans); ans++);
 		System.out.println(ans);
 	}
 
@@ -87,13 +83,13 @@ public class Main {
 		public void set(int num) {
 			int seg = num / 64;
 			int bit = num % 64;
-			status[seg] |= 1 << bit;
+			status[seg] |= 1L << bit;
 		}
 
 		public boolean get(int num) {
 			int seg = num / 64;
 			int bit = num % 64;
-			return (status[seg] & (1L << bit)) != 0;
+			return (status[seg] & (1L << bit)) != 0L;
 		}
 
 		public void shiftStep(int shift) {
@@ -102,7 +98,7 @@ public class Main {
 			for (int i = status.length - 1; i > seg; i--) {
 				status[i] |= status[i - seg] << bit;
 				if (bit > 0) {
-					status[i] |= status[i - seg - 1] >> 64 - bit;
+					status[i] |= (status[i - seg - 1] >>> (64 - bit));
 				}
 			}
 			status[seg] |= status[0] << bit;
