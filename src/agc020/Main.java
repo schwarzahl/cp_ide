@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveD();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -58,7 +58,55 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int[] A = new int[N + 1];
+		int sum = 0;
+		for (int i = 1; i <= N; i++) {
+			A[i] = sc.nextInt();
+			sum += A[i];
+		}
+		BitDP dp = new BitDP(sum + 1);
+		dp.set(0);
+		for (int i = 1; i <= N; i++) {
+			dp.shiftStep(A[i]);
+			for (int j = sum; j >= 0; j--) {
+				System.err.print(dp.get(j) ? 1 : 0);
+			}
+			System.err.println();
+		}
+		int ans;
+		for (ans = sum / 2; !dp.get(ans); ans++);
+		System.out.println(ans);
+	}
+
+	class BitDP {
+		long[] status;
+		public BitDP(int size) {
+			status = new long[((size - 1) / 64) + 1];
+		}
+
+		public void set(int num) {
+			int seg = num / 64;
+			int bit = num % 64;
+			status[seg] |= 1 << bit;
+		}
+
+		public boolean get(int num) {
+			int seg = num / 64;
+			int bit = num % 64;
+			return (status[seg] & (1L << bit)) != 0;
+		}
+
+		public void shiftStep(int shift) {
+			int seg = shift / 64;
+			int bit = shift % 64;
+			for (int i = status.length - 1; i > seg; i--) {
+				status[i] |= status[i - seg] << bit;
+				if (bit > 0) {
+					status[i] |= status[i - seg - 1] >> 64 - bit;
+				}
+			}
+			status[seg] |= status[0] << bit;
+		}
 	}
 
 	private void solveD() {
