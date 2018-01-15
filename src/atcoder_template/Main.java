@@ -332,4 +332,103 @@ public class Main {
 			return true;
 		}
 	}
+
+	interface BitSet {
+		void set(int index, boolean bit);
+		boolean get(int index);
+		void shiftRight(int num);
+		void shiftLeft(int num);
+		void or(BitSet bitset);
+		void and(BitSet bitset);
+	}
+
+	/**
+	 * Longの配列によるBitSetの実装
+	 * get/setはO(1)
+	 * shift/or/andはO(size / 64)
+	 */
+	class LongBit implements BitSet {
+		long[] bitArray;
+
+		public LongBit(int size) {
+			bitArray = new long[((size + 63) / 64)];
+		}
+
+		@Override
+		public void set(int index, boolean bit) {
+			int segment = index / 64;
+			int inIndex = index % 64;
+			if (bit) {
+				bitArray[segment] |= 1L << inIndex;
+			} else {
+				bitArray[segment] &= ~(1L << inIndex);
+			}
+		}
+
+		@Override
+		public boolean get(int index) {
+			int segment = index / 64;
+			int inIndex = index % 64;
+			return (bitArray[segment] & (1L << inIndex)) != 0L;
+		}
+
+		@Override
+		public void shiftRight(int num) {
+			int shiftSeg = num / 64;
+			int shiftInI = num % 64;
+			for (int segment = 0; segment < bitArray.length; segment++) {
+				int sourceSeg = segment + shiftSeg;
+				if (sourceSeg < bitArray.length) {
+					bitArray[segment] = bitArray[sourceSeg] >>> shiftInI;
+					if (shiftInI > 0 && sourceSeg + 1 < bitArray.length) {
+						bitArray[segment] |= bitArray[sourceSeg + 1] << (64 - shiftInI);
+					}
+				} else {
+					bitArray[segment] = 0L;
+				}
+			}
+		}
+
+		@Override
+		public void shiftLeft(int num) {
+			int shiftSeg = num / 64;
+			int shiftInI = num % 64;
+			for (int segment = bitArray.length - 1; segment >= 0; segment--) {
+				int sourceSeg = segment - shiftSeg;
+				if (sourceSeg >= 0) {
+					bitArray[segment] = bitArray[sourceSeg] << shiftInI;
+					if (shiftInI > 0 && sourceSeg > 0) {
+						bitArray[segment] |= bitArray[sourceSeg - 1] >>> (64 - shiftInI);
+					}
+				} else {
+					bitArray[segment] = 0L;
+				}
+			}
+		}
+
+		public long getLong(int segment) {
+			return bitArray[segment];
+		}
+
+		@Override
+		public void or(BitSet bitset) {
+			if (!(bitset instanceof LongBit)) {
+				return;
+			}
+			for (int segment = 0; segment < bitArray.length; segment++) {
+				bitArray[segment] |= ((LongBit)bitset).getLong(segment);
+			}
+		}
+
+		@Override
+		public void and(BitSet bitset) {
+			if (!(bitset instanceof LongBit)) {
+				return;
+			}
+			for (int segment = 0; segment < bitArray.length; segment++) {
+				bitArray[segment] &= ((LongBit)bitset).getLong(segment);
+			}
+		}
+	}
+
 }
