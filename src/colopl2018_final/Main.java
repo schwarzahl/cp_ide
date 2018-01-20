@@ -8,12 +8,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.IntStream;
 
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -69,8 +70,21 @@ public class Main {
 
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		String S = sc.next();
+		Stack<Character> stack = new Stack<>();
+		for (char asc : S.toCharArray()) {
+			if (asc == '+' || asc == '-' || asc == '*' || asc == '/') {
+				stack.push(asc);
+			} else if (asc == ',') {
+				System.out.print(stack.peek());
+			} else if (asc == ')') {
+				stack.pop();
+				System.out.print(asc);
+			} else {
+				System.out.print(asc);
+			}
+		}
+		System.out.println();
 	}
 
 	private void solveC() {
