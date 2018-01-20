@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -90,7 +90,31 @@ public class Main {
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		long[] A = new long[N];
+		long[] B = new long[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = sc.nextLong();
+			B[i] = A[i];
+		}
+		for (int i = 0; i < N; i++) {
+			for (int left = 1; i - left >= 0; left++) {
+				if (A[i - left] > B[i] + 1L * left * left) {
+					A[i - left] = B[i] + 1L * left * left;
+				} else if (B[i - left] < B[i] + 1L * left * left) {
+					break;
+				}
+			}
+			for (int right = 1; i + right < N; right++) {
+				if (A[i + right] > B[i] + 1L * right * right) {
+					A[i + right] = B[i] + 1L * right * right;
+				} else if (B[i + right] <= B[i] + 1L * right * right){
+					break;
+				}
+			}
+		}
+		for (int i = 0; i < N; i++) {
+			System.out.println(A[i]);
+		}
 	}
 
 	private void solveD() {
