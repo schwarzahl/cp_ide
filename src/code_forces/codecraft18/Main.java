@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveB();
+		main.solveC();
 	}
 
 	private void solveA() {
@@ -54,8 +54,72 @@ public class Main {
 
 	private void solveC() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
+		final long MOD_NUM = 1000000007L;
+		String N = sc.next();
+		int K = sc.nextInt();
+		int[] level = new int[1001];
+		level[0] = -1;
+		level[1] = 0;
+		for (int i = 2; i < 1001; i++) {
+			level[i] = level[countOne(i)] + 1;
+		}
+		if (K == 0) {
+			System.out.println(1);
+			return;
+		}
+		ModComb mc = new ModComb(1001, MOD_NUM);
+		int L = N.length();
+		long ans = 0L;
+		int one = 0;
+		for (char c : N.toCharArray()) {
+			L--;
+			if (c == '1') {
+				for (int i = 1; i < 1001; i++) {
+					if (level[i] == K - 1) {
+						ans = (ans + mc.comb(L, i - one)) % MOD_NUM;
+					}
+				}
+				one++;
+			}
+		}
+		if (level[one] == K - 1) {
+			ans++;
+		}
+		System.out.println(ans);
+	}
+
+	private int countOne(int n) {
+		int ans = 0;
+		for (; n > 0; n /= 2) {
+			if (n % 2 == 1) {
+				ans++;
+			}
+		}
+		return ans;
+	}
+
+	class ModComb {
+		long[][] diag;
+		public ModComb(int size, long mod_num) {
+			diag = new long[size][];
+			diag[0] = new long[1];
+			diag[0][0] = 1L;
+			for (int n = 1; n < size; n++) {
+				diag[n] = new long[n + 1];
+				diag[n][0] = 1L;
+				diag[n][n] = 1L;
+				for (int m = 1; m < n; m++) {
+					diag[n][m] = (diag[n - 1][m - 1] + diag[n - 1][m]) % mod_num;
+				}
+			}
+		}
+
+		public long comb(int n, int m) {
+			if (n < 0 || m < 0 || n < m) {
+				return 0L;
+			}
+			return diag[n][m];
+		}
 	}
 
 	private void solveD() {
