@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.solveA();
+		main.solveB();
 	}
 
 	private void solveA() {
@@ -39,7 +39,17 @@ public class Main {
 	private void solveB() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
+		int[] A = new int[100001];
+		for (int i = 0; i < N; i++) {
+			A[sc.nextInt()]++;
+		}
+		for (int i = 100000; i > 0; i--) {
+			if (A[i] % 2 == 1) {
+				System.out.println("Conan");
+				return;
+			}
+		}
+		System.out.println("Agasa");
 	}
 
 	private void solveC() {
