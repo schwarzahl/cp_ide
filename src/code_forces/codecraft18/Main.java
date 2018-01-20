@@ -19,7 +19,21 @@ public class Main {
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N*18);
+		final int TH = 1000000;
+		boolean[] A = new boolean[TH * 2 + 1];
+		boolean[] perfect = new boolean[TH * 2 + 1];
+		for (int i = 0; i < 1000; i++) {
+			perfect[i * i + TH] = true;
+		}
+		for (int i = 0; i < N; i++) {
+			A[sc.nextInt() + TH] = true;
+		}
+		for (int i = TH * 2; i >=0; i--) {
+			if (A[i] && !perfect[i]) {
+				System.out.println(i - TH);
+				return;
+			}
+		}
 	}
 
 	private void solveB() {
