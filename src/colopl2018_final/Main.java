@@ -32,34 +32,39 @@ public class Main {
 			}
 		}
 		list.add(a_num);
-		long ans = 0L;
-		if (N > 2) {
-			for (int j = 1; j < list.size() - 1; j++) {
-				int tmp = list.get(j);
-				ans += tmp * (tmp + 1) / 2;
+		if (list.size() > 1) {
+			long ans = 0L;
+			if (N > 2) {
+				for (int j = 1; j < list.size() - 1; j++) {
+					int tmp = list.get(j);
+					ans += tmp * (tmp + 1) / 2;
+				}
+				int tmp_2 = (list.get(0) + list.get(list.size() - 1));
+				ans += tmp_2 * (tmp_2 + 1) / 2;
+				ans *= N - 2;
 			}
-			int tmp_2 = (list.get(0) + list.get(list.size() - 1));
-			ans += tmp_2 * (tmp_2 + 1) / 2;
-			ans *= N - 2;
-		}
-		if (N > 1) {
-			for (int i = 0; i < list.size() - 1; i++) {
-				int tmp = list.get(i);
-				ans += tmp * (tmp + 1) / 2;
+			if (N > 1) {
+				for (int i = 0; i < list.size() - 1; i++) {
+					int tmp = list.get(i);
+					ans += tmp * (tmp + 1) / 2;
+				}
+				int tmp_2 = (list.get(0) + list.get(list.size() - 1));
+				ans += tmp_2 * (tmp_2 + 1) / 2;
+				for (int i = 1; i < list.size(); i++) {
+					int tmp = list.get(i);
+					ans += tmp * (tmp + 1) / 2;
+				}
+			} else {
+				for (int i = 0; i < list.size(); i++) {
+					int tmp = list.get(i);
+					ans += tmp * (tmp + 1) / 2;
+				}
 			}
-			int tmp_2 = (list.get(0) + list.get(list.size() - 1));
-			ans += tmp_2 * (tmp_2 + 1) / 2;
-			for (int i = 1; i < list.size(); i++) {
-				int tmp = list.get(i);
-				ans += tmp * (tmp + 1) / 2;
-			}
+			System.out.println(ans);
 		} else {
-			for (int i = 0; i < list.size(); i++) {
-				int tmp = list.get(i);
-				ans += tmp * (tmp + 1) / 2;
-			}
+			long ans = 1L * list.get(0) * N;
+			System.out.println(ans * (ans + 1L) / 2L);
 		}
-		System.out.println(ans);
 	}
 
 	private void solveB() {
