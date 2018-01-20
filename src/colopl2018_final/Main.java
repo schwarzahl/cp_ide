@@ -18,17 +18,17 @@ public class Main {
 
 	private void solveA() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
+		long N = sc.nextLong();
 		String S = sc.next();
-		List<Integer> list = new ArrayList<>();
-		int a_num = 0;
+		List<Long> list = new ArrayList<>();
+		long a_num = 0;
 		for (char c : S.toCharArray()) {
 			if (c == 'A') {
 				a_num++;
 			}
 			if (c == 'B') {
 				list.add(a_num);
-				a_num = 0;
+				a_num = 0L;
 			}
 		}
 		list.add(a_num);
@@ -36,28 +36,28 @@ public class Main {
 			long ans = 0L;
 			if (N > 2) {
 				for (int j = 1; j < list.size() - 1; j++) {
-					int tmp = list.get(j);
-					ans += tmp * (tmp + 1) / 2;
+					long tmp = list.get(j);
+					ans += tmp * (tmp + 1L) / 2L;
 				}
-				int tmp_2 = (list.get(0) + list.get(list.size() - 1));
-				ans += tmp_2 * (tmp_2 + 1) / 2;
-				ans *= N - 2;
+				long tmp_2 = (list.get(0) + list.get(list.size() - 1));
+				ans += tmp_2 * (tmp_2 + 1L) / 2L;
+				ans *= N - 2L;
 			}
 			if (N > 1) {
 				for (int i = 0; i < list.size() - 1; i++) {
-					int tmp = list.get(i);
-					ans += tmp * (tmp + 1) / 2;
+					long tmp = list.get(i);
+					ans += tmp * (tmp + 1L) / 2L;
 				}
-				int tmp_2 = (list.get(0) + list.get(list.size() - 1));
-				ans += tmp_2 * (tmp_2 + 1) / 2;
+				long tmp_2 = (list.get(0) + list.get(list.size() - 1));
+				ans += tmp_2 * (tmp_2 + 1L) / 2L;
 				for (int i = 1; i < list.size(); i++) {
-					int tmp = list.get(i);
-					ans += tmp * (tmp + 1) / 2;
+					long tmp = list.get(i);
+					ans += tmp * (tmp + 1L) / 2L;
 				}
 			} else {
 				for (int i = 0; i < list.size(); i++) {
-					int tmp = list.get(i);
-					ans += tmp * (tmp + 1) / 2;
+					long tmp = list.get(i);
+					ans += tmp * (tmp + 1L) / 2L;
 				}
 			}
 			System.out.println(ans);
