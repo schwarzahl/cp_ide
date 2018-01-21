@@ -20,7 +20,10 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		int K = sc.nextInt();
-		BinaryIndexedTree2D bit2d = new BinaryIndexedTree2D(2 * K);
+		int[][] table = new int[2 * K][];
+		for (int i = 0; i < 2 * K; i++) {
+			table[i] = new int[2 * K];
+		}
 		for (int i = 0; i < N; i++) {
 			{
 				int x = sc.nextInt() % (K * 2);
@@ -30,47 +33,57 @@ public class Main {
 					x = (x + K) % (K * 2);
 				}
 				{
-					bit2d.add(Math.max(x - K, 0) + 1, Math.max(y - K, 0) + 1, 1);
-					bit2d.add(x + 1, Math.max(y - K, 0) + 1, -1);
-					bit2d.add(Math.max(x - K, 0) + 1, y + 1, -1);
-					bit2d.add(x + 1, y + 1, 1);
+					table[Math.max(x - K, 0)][Math.max(y - K, 0)]++;
+					table[x][Math.max(y - K, 0)]--;
+					table[Math.max(x - K, 0)][y]--;
+					table[x][y]++;
 					if (y + K < 2 * K) {
-						bit2d.add(Math.max(x - K, 0) + 1, y + K + 1, 1);
-						bit2d.add(x + 1, y + K + 1, -1);
+						table[Math.max(x - K, 0)][y + K]++;
+						table[x][y + K]--;
 					}
 					if (x + K < 2 * K) {
-						bit2d.add(x + K + 1, Math.max(y - K, 0) + 1, 1);
-						bit2d.add(x + K + 1, y + 1, -1);
+						table[x + K][Math.max(y - K, 0)]++;
+						table[x + K][y]--;
 						if (y + K < 2 * K) {
-							bit2d.add(x + K + 1, y + K + 1, 1);
+							table[x + K][y + K]++;
 						}
 					}
 				}
 				x = (x + K) % (K * 2);
 				y = (y + K) % (K * 2);
 				{
-					bit2d.add(Math.max(x - K, 0) + 1, Math.max(y - K, 0) + 1, 1);
-					bit2d.add(x + 1, Math.max(y - K, 0) + 1, -1);
-					bit2d.add(Math.max(x - K, 0) + 1, y + 1, -1);
-					bit2d.add(x + 1, y + 1, 1);
+					table[Math.max(x - K, 0)][Math.max(y - K, 0)]++;
+					table[x][Math.max(y - K, 0)]--;
+					table[Math.max(x - K, 0)][y]--;
+					table[x][y]++;
 					if (y + K < 2 * K) {
-						bit2d.add(Math.max(x - K, 0) + 1, y + K + 1, 1);
-						bit2d.add(x + 1, y + K + 1, -1);
+						table[Math.max(x - K, 0)][y + K]++;
+						table[x][y + K]--;
 					}
 					if (x + K < 2 * K) {
-						bit2d.add(x + K + 1, Math.max(y - K, 0) + 1, 1);
-						bit2d.add(x + K + 1, y + 1, -1);
+						table[x + K][Math.max(y - K, 0)]++;
+						table[x + K][y]--;
 						if (y + K < 2 * K) {
-							bit2d.add(x + K + 1, y + K + 1, 1);
+							table[x + K][y + K]++;
 						}
 					}
 				}
 			}
 		}
 		long max = 0L;
-		for (int x = 1; x <= 2 * K; x++) {
-			for (int y = 1; y <= 2 * K; y++) {
-				max = Math.max(max, bit2d.getSum(x, y));
+		for (int x = 0; x < 2 * K; x++) {
+			for (int y = 1; y < 2 * K; y++) {
+				table[x][y] += table[x][y - 1];
+			}
+		}
+		for (int y = 0; y < 2 * K; y++) {
+			for (int x = 1; x < 2 * K; x++) {
+				table[x][y] += table[x - 1][y];
+			}
+		}
+		for (int x = 0; x < 2 * K; x++) {
+			for (int y = 0; y < 2 * K; y++) {
+				max = Math.max(max, table[x][y]);
 			}
 		}
 		System.out.println(max);
