@@ -19,8 +19,102 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int K = sc.nextInt();
+		BinaryIndexedTree2D bit2d = new BinaryIndexedTree2D(2 * K);
+		for (int i = 0; i < N; i++) {
+			{
+				int x = sc.nextInt() % (K * 2);
+				int y = sc.nextInt() % (K * 2);
+				String c = sc.next();
+				if (c.equals("B")) {
+					x = (x + K) % (K * 2);
+				}
+				{
+					bit2d.add(Math.max(x - K, 0) + 1, Math.max(y - K, 0) + 1, 1);
+					bit2d.add(x + 1, Math.max(y - K, 0) + 1, -1);
+					bit2d.add(Math.max(x - K, 0) + 1, y + 1, -1);
+					bit2d.add(x + 1, y + 1, 1);
+					if (y + K < 2 * K) {
+						bit2d.add(Math.max(x - K, 0) + 1, y + K + 1, 1);
+						bit2d.add(x + 1, y + K + 1, -1);
+					}
+					if (x + K < 2 * K) {
+						bit2d.add(x + K + 1, Math.max(y - K, 0) + 1, 1);
+						bit2d.add(x + K + 1, y + 1, -1);
+						if (y + K < 2 * K) {
+							bit2d.add(x + K + 1, y + K + 1, 1);
+						}
+					}
+				}
+				x = (x + K) % (K * 2);
+				y = (y + K) % (K * 2);
+				{
+					bit2d.add(Math.max(x - K, 0) + 1, Math.max(y - K, 0) + 1, 1);
+					bit2d.add(x + 1, Math.max(y - K, 0) + 1, -1);
+					bit2d.add(Math.max(x - K, 0) + 1, y + 1, -1);
+					bit2d.add(x + 1, y + 1, 1);
+					if (y + K < 2 * K) {
+						bit2d.add(Math.max(x - K, 0) + 1, y + K + 1, 1);
+						bit2d.add(x + 1, y + K + 1, -1);
+					}
+					if (x + K < 2 * K) {
+						bit2d.add(x + K + 1, Math.max(y - K, 0) + 1, 1);
+						bit2d.add(x + K + 1, y + 1, -1);
+						if (y + K < 2 * K) {
+							bit2d.add(x + K + 1, y + K + 1, 1);
+						}
+					}
+				}
+			}
+		}
+		long max = 0L;
+		for (int x = 0; x < 2 * K; x++) {
+			for (int y = 0; y < 2 * K; y++) {
+				max = Math.max(max, bit2d.getSum(x, y));
+			}
+		}
+		System.out.println(max);
+	}
+
+	class BinaryIndexedTree2D {
+		private long[][] array;
+
+		public BinaryIndexedTree2D(int size) {
+			this.array = new long[size + 1][];
+			for (int i = 0; i <= size; i++) {
+				this.array[i] = new long[size + 1];
+			}
+		}
+
+		/**
+		 * 指定した要素に値を加算する
+		 * 計算量はO(logN)
+		 * @param index 加算する要素の添字
+		 * @param value 加算する量
+		 */
+		public void add(int index_1, int index_2, long value) {
+			for (int i = index_1; i < array.length; i += (i & -i)) {
+				for (int j = index_2; j < array.length; j += (j & -j)) {
+					array[i][j] += value;
+				}
+			}
+		}
+
+		/**
+		 * 1〜指定した要素までの和を取得する
+		 * 計算量はO(logN)
+		 * @param index 和の終端
+		 * @return 1〜indexまでの和
+		 */
+		public long getSum(int index_1, int index_2) {
+			long sum = 0L;
+			for (int i = index_1; i > 0; i -= (i & -i)) {
+				for (int j = index_2; j > 0; j -= (j & -j)) {
+					sum += array[i][j];
+				}
+			}
+			return sum;
+		}
 	}
 
 	interface CombCalculator {
