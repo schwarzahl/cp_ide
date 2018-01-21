@@ -27,7 +27,7 @@ public class Main {
 			int tmp_x = sc.nextInt();
 			int tmp_y = sc.nextInt();
 			int r = Math.abs(tmp_x - x) + Math.abs(tmp_y - y);
-			if (tmp_t - t < r || r - (tmp_t - t) % 2 == 1) {
+			if (tmp_t - t < r || Math.abs((r - (tmp_t - t)) % 2) == 1) {
 				System.out.println("No");
 				return;
 			}
