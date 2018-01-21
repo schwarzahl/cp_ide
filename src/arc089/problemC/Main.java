@@ -19,8 +19,20 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int t = 0;
+		int x = 0;
+		int y = 0;
+		for (int i = 0; i < N; i++) {
+			int tmp_t = sc.nextInt();
+			int tmp_x = sc.nextInt();
+			int tmp_y = sc.nextInt();
+			int r = Math.abs(tmp_x - x) + Math.abs(tmp_y - y);
+			if (tmp_t - t < r || r - (tmp_t - t) % 2 == 1) {
+				System.out.println("No");
+				return;
+			}
+		}
+		System.out.println("Yes");
 	}
 
 	interface CombCalculator {
