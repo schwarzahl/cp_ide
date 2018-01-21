@@ -23,6 +23,47 @@ public class Main {
 		System.err.println(Main.class.getPackage().getName());
 	}
 
+	interface CombCalculator {
+		long comb(int n, int m);
+	}
+
+	/**
+	 * 組み合わせ計算をテーブルで実装したクラスです(MOD対応)
+	 * 前計算でO(N^2), combはO(1)で実行できます
+	 * sizeを2 * 1e4より大きい値で実行するとMLEの危険性があります
+	 */
+	class TableCombCalculator implements CombCalculator {
+		long[][] table;
+		int size;
+
+		public TableCombCalculator(int size, long mod) {
+			this.size = size;
+			table = new long[size + 1][];
+
+			table[0] = new long[1];
+			table[0][0] = 1L;
+			for (int n = 1; n <= size; n++) {
+				table[n] = new long[n + 1];
+				table[n][0] = 1L;
+				for (int m = 1; m < n; m++) {
+					table[n][m] = (table[n - 1][m - 1] + table[n - 1][m]) % mod;
+				}
+				table[n][n] = 1L;
+			}
+		}
+
+		@Override
+		public long comb(int n, int m) {
+			if (n > size) {
+				throw new RuntimeException("n is greater than size.");
+			}
+			if (n < 0 || m < 0 || n < m) {
+				return 0L;
+			}
+			return table[n][m];
+		}
+	}
+
 	interface Graph {
 		void link(int from, int to, long cost);
 		Optional<Long> getCost(int from, int to);
