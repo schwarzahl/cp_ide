@@ -89,7 +89,8 @@ public class Main {
 		/**
 		 * 指定した要素に値を加算する
 		 * 計算量はO(logN)
-		 * @param index 加算する要素の添字
+		 * @param index_1 加算する要素の添字
+		 * @param index_2 加算する要素の添字
 		 * @param value 加算する量
 		 */
 		public void add(int index_1, int index_2, long value) {
@@ -103,7 +104,8 @@ public class Main {
 		/**
 		 * 1〜指定した要素までの和を取得する
 		 * 計算量はO(logN)
-		 * @param index 和の終端
+		 * @param index_1 和の終端
+		 * @param index_2 和の終端
 		 * @return 1〜indexまでの和
 		 */
 		public long getSum(int index_1, int index_2) {
