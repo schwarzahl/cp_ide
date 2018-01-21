@@ -189,13 +189,59 @@ public class Main {
 		/**
 		 * 1〜指定した要素までの和を取得する
 		 * 計算量はO(logN)
-		 * @param index 和の終端
+		 * @param index 和の終端となる要素の添字
 		 * @return 1〜indexまでの和
 		 */
 		public long getSum(int index) {
 			long sum = 0L;
 			for (int i = index; i > 0; i -= (i & -i)) {
 				sum += array[i];
+			}
+			return sum;
+		}
+	}
+
+	/**
+	 * 1-indexedの2次元BIT配列
+	 */
+	class BinaryIndexedTree2D {
+		private long[][] array;
+
+		public BinaryIndexedTree2D(int size1, int size2) {
+			this.array = new long[size1 + 1][];
+			for (int i = 1; i <= size1; i++) {
+				this.array[i] = new long[size2 + 1];
+			}
+		}
+
+		/**
+		 * 指定した要素に値を加算する
+		 * 計算量はO(logN * logN)
+		 * @param index1 加算する要素の1次元目の添字
+		 * @param index2 加算する要素の2次元目の添字
+		 * @param value 加算する量
+		 */
+		public void add(int index1, int index2, long value) {
+			for (int i1 = index1; i1 < array.length; i1 += (i1 & -i1)) {
+				for (int i2 = index2; i2 < array.length; i2 += (i2 & -i2)) {
+					array[i1][i2] += value;
+				}
+			}
+		}
+
+		/**
+		 * (1,1)〜指定した要素までの矩形和を取得する
+		 * 計算量はO(logN * logN)
+		 * @param index1 和の終端となる要素の1次元目の添字
+		 * @param index2 和の終端となる要素の2次元目の添字
+		 * @return (1,1)〜(index1,index2)までの矩形和
+		 */
+		public long getSum(int index1, int index2) {
+			long sum = 0L;
+			for (int i1 = index1; i1 > 0; i1 -= (i1 & -i1)) {
+				for (int i2 = index2; i2 > 0; i2 -= (i2 & -i2)) {
+					sum += array[i1][i2];
+				}
 			}
 			return sum;
 		}
