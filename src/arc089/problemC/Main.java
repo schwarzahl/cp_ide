@@ -31,6 +31,9 @@ public class Main {
 				System.out.println("No");
 				return;
 			}
+			t = tmp_t;
+			x = tmp_x;
+			y = tmp_y;
 		}
 		System.out.println("Yes");
 	}
