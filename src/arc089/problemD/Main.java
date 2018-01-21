@@ -68,8 +68,8 @@ public class Main {
 			}
 		}
 		long max = 0L;
-		for (int x = 0; x < 2 * K; x++) {
-			for (int y = 0; y < 2 * K; y++) {
+		for (int x = 1; x <= 2 * K; x++) {
+			for (int y = 1; y <= 2 * K; y++) {
 				max = Math.max(max, bit2d.getSum(x, y));
 			}
 		}
