@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -19,8 +20,20 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int L = sc.nextInt();
+		int R = sc.nextInt();
+		StringJoiner sj = new StringJoiner(" ");
+		for (int i = 0; i < N; i++) {
+			int input = sc.nextInt();
+			if (input < L) {
+				sj.add("" + L);
+			} else if (input > R) {
+				sj.add("" + R);
+			} else {
+				sj.add("" + input);
+			}
+		}
+		System.out.println(sj.toString());
 	}
 
 	interface CombCalculator {

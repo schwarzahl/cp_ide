@@ -18,9 +18,13 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		String X = sc.next();
+		String Y = sc.next();
+		if (X.charAt(0) == 'S' && Y.charAt(0) == 'H') {
+			System.out.println("YES");
+		} else {
+			System.out.println("NO");
+		}
 	}
 
 	interface CombCalculator {
