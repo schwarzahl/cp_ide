@@ -21,78 +21,43 @@ public class Main {
 		int r = sc.nextInt();
 		int c = sc.nextInt();
 		char[][] map = new char[r][];
-		int[][] score = new int[r][];
+		Graph graph = new ArrayGraph(r * c + 2);
+		int count = 0;
 		for (int r_i = 0; r_i < r; r_i++) {
 			map[r_i] = new char[c];
-			score[r_i] = new int[c];
 			String line = sc.next();
 			for (int c_i = 0; c_i < c; c_i++) {
 				map[r_i][c_i] = line.charAt(c_i);
-			}
-		}
-		for (int r_i = 0; r_i < r; r_i++) {
-			for (int c_i = 0; c_i < c; c_i++) {
 				if (map[r_i][c_i] == '.') {
-					if (r_i > 0) {
-						score[r_i - 1][c_i]++;
+					count++;
+					if ((r_i + c_i) % 2 == 0) {
+						graph.link(0, getId(r_i, c_i, c), 1);
+					} else {
+						graph.link(getId(r_i, c_i, c), r * c + 1, 1);
 					}
-					if (c_i > 0) {
-						score[r_i][c_i - 1]++;
+					if (r_i > 0 && map[r_i - 1][c_i] == '.') {
+						if ((r_i + c_i) % 2 == 0) {
+							graph.link(getId(r_i, c_i, c), getId(r_i - 1, c_i, c), 1);
+						} else {
+							graph.link(getId(r_i - 1, c_i, c),getId(r_i, c_i, c), 1);
+						}
 					}
-					if (r_i + 1 < r) {
-						score[r_i + 1][c_i]++;
-					}
-					if (c_i + 1 < c) {
-						score[r_i][c_i + 1]++;
-					}
-				}
-			}
-		}
-		int count = 0;
-		for (int i = 0; i <= 4; i++) {
-			for (int r_i = 0; r_i < r; r_i++) {
-				for (int c_i = 0; c_i < c; c_i++) {
-					if (score[r_i][c_i] == i && isOK(map, r_i, c_i, r, c)) {
-						count++;
-						map[r_i][c_i] = '#';
+					if (c_i > 0 && map[r_i][c_i - 1] == '.') {
+						if ((r_i + c_i) % 2 == 0) {
+							graph.link(getId(r_i, c_i, c), getId(r_i, c_i - 1, c), 1);
+						} else {
+							graph.link(getId(r_i, c_i - 1, c),getId(r_i, c_i, c), 1);
+						}
 					}
 				}
 			}
 		}
-		/*
-		for (int r_i = 0; r_i < r; r_i++) {
-			for (int c_i = 0; c_i < c; c_i++) {
-				System.err.print(map[r_i][c_i]);
-			}
-			System.err.println();
-		}
-		*/
-		for (int r_i = 0; r_i < r; r_i++) {
-			for (int c_i = 0; c_i < c; c_i++) {
-				System.err.print(score[r_i][c_i]);
-			}
-			System.err.println();
-		}
-		//System.out.println(count);
+		FlowResolver fr = new DfsFlowResolver(graph);
+		System.out.println(count - fr.maxFlow(0, r * c + 1));
 	}
 
-	private boolean isOK(char[][] map, int r, int c, int R, int C) {
-		if (map[r][c] != '.') {
-			return false;
-		}
-		if (r - 1 >= 0 && map[r - 1][c] == '#') {
-			return false;
-		}
-		if (c - 1 >= 0 && map[r][c - 1] == '#') {
-			return false;
-		}
-		if (r + 1 < R && map[r + 1][c] == '#') {
-			return false;
-		}
-		if (c + 1 < C && map[r][c + 1] == '#') {
-			return false;
-		}
-		return true;
+	private int getId(int r, int c, int c_size) {
+		return r * c_size + c + 1;
 	}
 
 	interface CombCalculator {
