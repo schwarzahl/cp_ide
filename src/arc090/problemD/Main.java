@@ -3,9 +3,11 @@ package arc090.problemD;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -19,8 +21,54 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		Map<Integer, List<ToInfo>> map = new HashMap<>();
+		for (int i = 0; i < M; i++) {
+			int L = sc.nextInt();
+			int R = sc.nextInt();
+			long D = sc.nextLong();
+			if (!map.containsKey(L)) {
+				map.put(L, new ArrayList<>());
+			}
+			map.get(L).add(new ToInfo(R, D));
+			if (!map.containsKey(R)) {
+				map.put(R, new ArrayList<>());
+			}
+			map.get(R).add(new ToInfo(L, -D));
+		}
+		Long[] x = new Long[N + 1];
+		for (int i = 1; i <= N; i++) {
+			if (x[i] == null) {
+				Queue<ToInfo> queue = new LinkedList<>();
+				queue.add(new ToInfo(i, 0L));
+				while (!queue.isEmpty()) {
+					ToInfo ti = queue.poll();
+					if (x[ti.toId] != null) {
+						if (x[ti.toId] != ti.distance) {
+							System.out.println("No");
+							return;
+						}
+					} else {
+						x[ti.toId] = ti.distance;
+						if (map.containsKey(ti.toId)) {
+							for (ToInfo cti : map.get(ti.toId)) {
+								queue.add(new ToInfo(cti.toId, ti.distance + cti.distance));
+							}
+						}
+					}
+				}
+			}
+		}
+		System.out.println("Yes");
+	}
+
+	class ToInfo {
+		int toId;
+		long distance;
+		public ToInfo(int toId, long distance) {
+			this.toId = toId;
+			this.distance = distance;
+		}
 	}
 
 	interface CombCalculator {
