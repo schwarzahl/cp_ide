@@ -3,9 +3,11 @@ package arc090.problemE;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -19,8 +21,139 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		int S = sc.nextInt();
+		int T = sc.nextInt();
+		Map<Integer, List<ToInfo>> map = new HashMap<>();
+		for (int i = 1 ; i <= M; i++) {
+			int U = sc.nextInt();
+			int V = sc.nextInt();
+			long D = sc.nextLong() * 2L;
+			if (!map.containsKey(U)) {
+				map.put(U, new ArrayList<>());
+			}
+			map.get(U).add(new ToInfo(V, D));
+			if (!map.containsKey(V)) {
+				map.put(V, new ArrayList<>());
+			}
+			map.get(V).add(new ToInfo(U, D));
+		}
+		Long[] minDist = new Long[N + 1];
+		{
+			Queue<ToInfo> queue = new LinkedList<>();
+			queue.add(new ToInfo(S, 0L));
+			while (!queue.isEmpty()) {
+				ToInfo ti = queue.poll();
+				if (minDist[ti.toId] == null) {
+					minDist[ti.toId] = ti.distance;
+					if (map.containsKey(ti.toId)) {
+						for (ToInfo cti : map.get(ti.toId)) {
+							queue.add(new ToInfo(cti.toId, ti.distance + cti.distance));
+						}
+					}
+				} else {
+					if (minDist[ti.toId] > ti.distance) {
+						minDist[ti.toId] = ti.distance;
+						if (map.containsKey(ti.toId)) {
+							for (ToInfo cti : map.get(ti.toId)) {
+								queue.add(new ToInfo(cti.toId, ti.distance + cti.distance));
+							}
+						}
+					}
+				}
+			}
+		}
+		long halfDistance = minDist[T] / 2;
+		Map<Long, Long> startMap = new HashMap<>();
+		{
+			Queue<ToInfo> queue = new LinkedList<>();
+			queue.add(new ToInfo(S, 0L));
+			while (!queue.isEmpty()) {
+				ToInfo ti = queue.poll();
+				if (map.containsKey(ti.toId)) {
+					for (ToInfo cti : map.get(ti.toId)) {
+						if (minDist[cti.toId] == ti.distance + cti.distance) {
+							if (ti.distance < halfDistance) {
+								if (ti.distance + cti.distance == halfDistance) {
+									if (!startMap.containsKey(cti.toId + 0L)) {
+										startMap.put(cti.toId + 0L, 0L);
+									}
+									startMap.put(cti.toId + 0L, startMap.get(cti.toId + 0L) + 1L);
+								} else if (ti.distance + cti.distance > halfDistance) {
+									if (!startMap.containsKey(1L * ti.toId * (N + 1) + cti.toId)) {
+										startMap.put(1L * ti.toId * (N + 1) + cti.toId, 0L);
+									}
+									startMap.put(1L * ti.toId * (N + 1) + cti.toId, startMap.get(1L * ti.toId * (N + 1) + cti.toId) + 1L);
+								}
+							}
+							queue.add(new ToInfo(cti.toId, ti.distance + cti.distance));
+						}
+					}
+				}
+			}
+		}
+		Map<Long, Long> termMap = new HashMap<>();
+		{
+			Queue<ToInfo> queue = new LinkedList<>();
+			queue.add(new ToInfo(T, minDist[T]));
+			while (!queue.isEmpty()) {
+				ToInfo ti = queue.poll();
+				if (map.containsKey(ti.toId)) {
+					for (ToInfo cti : map.get(ti.toId)) {
+						if (minDist[cti.toId] == ti.distance - cti.distance) {
+							if (ti.distance > halfDistance) {
+								if (ti.distance - cti.distance == halfDistance) {
+									if (!termMap.containsKey(cti.toId + 0L)) {
+										termMap.put(cti.toId + 0L, 0L);
+									}
+									termMap.put(cti.toId + 0L, termMap.get(cti.toId + 0L) + 1L);
+								} else if (ti.distance - cti.distance < halfDistance) {
+									if (!termMap.containsKey(1L * ti.toId * (N + 1) + cti.toId)) {
+										termMap.put(1L * cti.toId * (N + 1) + ti.toId, 0L);
+									}
+									termMap.put(1L * cti.toId * (N + 1) + ti.toId, termMap.get(1L * cti.toId * (N + 1) + ti.toId) + 1L);
+								}
+							}
+							queue.add(new ToInfo(cti.toId, ti.distance - cti.distance));
+						}
+					}
+				}
+			}
+		}
+		/*
+		for (Map.Entry<Long, Long> entry : startMap.entrySet()) {
+			long V = entry.getKey() / (N + 1);
+			long U = entry.getKey() % (N + 1);
+			System.err.println(entry.getValue() + ":" + V + "-" + U);
+		}
+		for (Map.Entry<Long, Long> entry : termMap.entrySet()) {
+			long V = entry.getKey() / (N + 1);
+			long U = entry.getKey() % (N + 1);
+			System.err.println(entry.getValue() + ":" + V + "-" + U);
+		}
+		*/
+		List<Long> ansList = new ArrayList<>();
+		long sum = 0L;
+		for (long id : startMap.keySet()) {
+			if (termMap.containsKey(id)) {
+				ansList.add(startMap.get(id) * termMap.get(id));
+				sum += startMap.get(id) * termMap.get(id);
+			}
+		}
+		long ans = 0L;
+		for (long num : ansList) {
+			ans = (ans + num * (sum - num)) % 1000000007;
+		}
+		System.out.println(ans);
+	}
+
+	class ToInfo {
+		int toId;
+		long distance;
+		public ToInfo(int toId, long distance) {
+			this.toId = toId;
+			this.distance = distance;
+		}
 	}
 
 	interface CombCalculator {
