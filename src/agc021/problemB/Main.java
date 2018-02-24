@@ -1,5 +1,6 @@
 package agc021.problemB;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,45 +21,56 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		double[] x = new double[N];
-		double[] y = new double[N];
+		BigDecimal[] x = new BigDecimal[N];
+		BigDecimal[] y = new BigDecimal[N];
 		for (int i = 0; i < N; i++) {
-			x[i] = sc.nextDouble();
-			y[i] = sc.nextDouble();
+			x[i] = BigDecimal.valueOf(sc.nextDouble());
+			y[i] = BigDecimal.valueOf(sc.nextDouble());
 		}
-		TreeMap<Double, Integer> radToId = new TreeMap<>();
+		BigDecimal SEVEN = BigDecimal.valueOf(1e7);
+		BigDecimal FIFTEEN = BigDecimal.valueOf(1e15);
+		TreeMap<BigDecimal, Integer> radToId = new TreeMap<>();
 		for (int rad_id = 0; rad_id <= 4; rad_id++) {
 			double rad = Math.PI * rad_id / 2;
-			double tmp_x = 1e7 * Math.cos(rad);
-			double tmp_y = 1e7 * Math.sin(rad);
-			double min = 1e15;
+			BigDecimal tmp_x = BigDecimal.valueOf(Math.cos(rad));
+			tmp_x = tmp_x.multiply(SEVEN);
+			BigDecimal tmp_y = BigDecimal.valueOf(Math.sin(rad));
+			tmp_y = tmp_y.multiply(SEVEN);
+			BigDecimal min = FIFTEEN;
 			int min_id = -1;
 			for (int i = 0; i < N; i++) {
-				double dist = (tmp_x - x[i]) * (tmp_x - x[i]) + (tmp_y - y[i]) * (tmp_y - y[i]);
-				if (min > dist) {
+				BigDecimal x_diff = tmp_x.subtract(x[i]);
+				BigDecimal y_diff = tmp_y.subtract(y[i]);
+				x_diff = x_diff.multiply(x_diff);
+				y_diff = y_diff.multiply(y_diff);
+				BigDecimal dist = x_diff.add(y_diff);
+				if (min.compareTo(dist) > 0) {
 					min = dist;
 					min_id = i;
 				}
 			}
-			radToId.put(rad, min_id);
+			radToId.put(BigDecimal.valueOf(rad), min_id);
 		}
-		int prev_size = 0;
-		while (radToId.keySet().size() > prev_size) {
+		while (radToId.keySet().size() < 1e3) {
 			int size = radToId.keySet().size();
-			Double[] rads = new Double[size];
+			BigDecimal[] rads = new BigDecimal[size];
 			Integer[] ids = new Integer[size];
 			rads = radToId.keySet().toArray(rads);
 			ids = radToId.values().toArray(ids);
 			for (int i = 1; i < size; i++) {
 				if (ids[i] != ids[i - 1]) {
-					double tmp_rad = (rads[i] + rads[i - 1]) / 2;
-					double tmp_x = 1e7 * Math.cos(tmp_rad);
-					double tmp_y = 1e7 * Math.sin(tmp_rad);
-					double min = 1e15;
+					BigDecimal tmp_rad = rads[i].add(rads[i - 1]).divide(BigDecimal.valueOf(2));
+					double tmp_x = 1e7 * Math.cos(tmp_rad.doubleValue());
+					double tmp_y = 1e7 * Math.sin(tmp_rad.doubleValue());
+					BigDecimal min = FIFTEEN;
 					int min_id = -1;
 					for (int j = 0; j < N; j++) {
-						double dist = (tmp_x - x[j]) * (tmp_x - x[j]) + (tmp_y - y[j]) * (tmp_y - y[j]);
-						if (min > dist) {
+						BigDecimal x_diff = BigDecimal.valueOf(tmp_x).subtract(x[j]);
+						BigDecimal y_diff = BigDecimal.valueOf(tmp_y).subtract(y[j]);
+						x_diff = x_diff.multiply(x_diff);
+						y_diff = y_diff.multiply(y_diff);
+						BigDecimal dist = x_diff.add(y_diff);
+						if (min.compareTo(dist) > 0) {
 							min = dist;
 							min_id = j;
 						}
@@ -67,39 +79,42 @@ public class Main {
 				}
 			}
 			if (ids[0] != ids[size - 1]) {
-				double tmp_rad = (Math.PI * 2 + rads[size - 1]) / 2;
-				double tmp_x = 1e7 * Math.cos(tmp_rad);
-				double tmp_y = 1e7 * Math.sin(tmp_rad);
-				double min = 1e15;
+				BigDecimal tmp_rad = BigDecimal.valueOf(Math.PI * 2).add(rads[size - 1]).divide(BigDecimal.valueOf(2));
+				double tmp_x = 1e7 * Math.cos(tmp_rad.doubleValue());
+				double tmp_y = 1e7 * Math.sin(tmp_rad.doubleValue());
+				BigDecimal min = FIFTEEN;
 				int min_id = -1;
 				for (int j = 0; j < N; j++) {
-					double dist = (tmp_x - x[j]) * (tmp_x - x[j]) + (tmp_y - y[j]) * (tmp_y - y[j]);
-					if (min > dist) {
+					BigDecimal x_diff = BigDecimal.valueOf(tmp_x).subtract(x[j]);
+					BigDecimal y_diff = BigDecimal.valueOf(tmp_y).subtract(y[j]);
+					x_diff = x_diff.multiply(x_diff);
+					y_diff = y_diff.multiply(y_diff);
+					BigDecimal dist = x_diff.add(y_diff);
+					if (min.compareTo(dist) > 0) {
 						min = dist;
 						min_id = j;
 					}
 				}
 				radToId.put(tmp_rad, min_id);
 			}
-			prev_size = size;
 		}
-		double start_rad = 0;
-		double prev_rad = 0;
+		BigDecimal start_rad = BigDecimal.ZERO;
+		BigDecimal prev_rad = BigDecimal.ZERO;
 		int prev_id = 0;
-		double[] rads = new double[radToId.keySet().size()];
-		for (Map.Entry<Double, Integer> entry : radToId.entrySet()) {
-			double rad = entry.getKey();
+		BigDecimal[] rads = new BigDecimal[radToId.keySet().size()];
+		for (Map.Entry<BigDecimal, Integer> entry : radToId.entrySet()) {
+			BigDecimal rad = entry.getKey();
 			int id = entry.getValue();
 			if (id != prev_id) {
-				rads[prev_id] += prev_rad - start_rad;
+				rads[prev_id] = rads[prev_id].add(prev_rad.subtract(start_rad));
 				start_rad = rad;
 			}
 			prev_rad = rad;
 			prev_id = id;
 		}
-		rads[prev_id] += prev_rad - start_rad;
+		rads[prev_id] = rads[prev_id].add(prev_rad.subtract(start_rad));
 		for (int i = 0; i < N; i++) {
-			System.out.println(rads[i] / 2 / Math.PI);
+			System.out.println(rads[i].divide(BigDecimal.valueOf(Math.PI * 2)));
 		}
 	}
 
