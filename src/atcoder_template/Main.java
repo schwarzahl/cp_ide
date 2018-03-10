@@ -28,6 +28,63 @@ public class Main {
 	}
 
 	/**
+	 * 組み合わせ計算を階乗の値で行うクラスです(MOD対応)
+	 * 階乗とその逆元は前計算してテーブルに格納します。
+	 * C(N, N) % M の計算量は O(1)、 前計算でO(max(N, logM))です。
+	 * sizeを1e8より大きい値で実行するとMLEの危険性があります。
+	 * また素数以外のMODには対応していません(逆元の計算に素数の剰余環の性質を利用しているため)。
+	 */
+	class FactorialTableCombCalculator implements CombCalculator {
+		int size;
+		long[] factorialTable;
+		long[] inverseFactorialTable;
+		long mod;
+
+		public FactorialTableCombCalculator(int size, long mod) {
+			this.size = size;
+			factorialTable = new long[size + 1];
+			inverseFactorialTable = new long[size + 1];
+			this.mod = mod;
+
+			factorialTable[0] = 1L;
+			for (int i = 1; i <= size; i++) {
+				factorialTable[i] = (factorialTable[i - 1] * i) % mod;
+			}
+			inverseFactorialTable[size] = inverse(factorialTable[size], mod);
+			for (int i = size - 1; i >= 0; i--) {
+				inverseFactorialTable[i] = (inverseFactorialTable[i + 1] * (i + 1)) % mod;
+			}
+		}
+
+		private long inverse(long n, long mod) {
+			return pow(n, mod - 2, mod);
+		}
+
+		private long pow(long n, long p, long mod) {
+			if (p == 0) {
+				return 1L;
+			}
+			long half = pow(n, p / 2, mod);
+			long ret = (half * half) % mod;
+			if (p % 2 == 1) {
+				ret = (ret * n) % mod;
+			}
+			return ret;
+		}
+
+		@Override
+		public long comb(int n, int m) {
+			if (n > size) {
+				throw new RuntimeException("n is greater than size.");
+			}
+			if (n < 0 || m < 0 || n < m) {
+				return 0L;
+			}
+			return (((factorialTable[n] * inverseFactorialTable[m]) % mod) * inverseFactorialTable[n - m]) % mod;
+		}
+	}
+
+	/**
 	 * 組み合わせ計算をテーブルで実装したクラスです(MOD対応)
 	 * 前計算でO(N^2), combはO(1)で実行できます
 	 * sizeを2 * 1e4より大きい値で実行するとMLEの危険性があります
