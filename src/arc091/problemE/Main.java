@@ -1,6 +1,7 @@
 package arc091.problemE;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -18,51 +20,38 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		int A = sc.nextInt();
-		int B = sc.nextInt();
-		int x = -1;
-		int num;
-		{
-			for (num = 1; num < N / B; num++) {
-				x = (1 - B) * num + N + 1 - A;
-				if (0 <= x && x <= B) {
-					break;
-				}
-			}
-		}
-		if (A == 1 && B == N) {
-			System.out.print(N);
-			for (int i = N - 1; i > 0; i--) {
-				System.out.print(" " + i);
-			}
-		} else if (B == 1 && A == N) {
-			System.out.print(1);
-			for (int i = 2; i <= N; i++) {
-				System.out.print(" " + i);
-			}
-		} else if (0 <= x && x <= B) {
-			System.out.print(B);
-			for (int i = B - 1; i >= 1; i--) {
-				System.out.print(" " + i);
-			}
-			{
-				for (int n = 1; n < num; n++) {
-					for (int i = n * B + B; i > n * B; i--) {
-						System.out.print(" " + i);
-					}
-				}
-				for (int i = num * B + x; i > num * B; i--) {
-					System.out.print(" " + i);
-				}
-			}
-			for (int i = num * B + x + 1; i <= N; i++) {
-				System.out.print(" " + i);
-			}
+		long n = sc.nextLong();
+		long A = sc.nextLong();
+		long B = sc.nextLong();
+		if (A * B < n || A + B > n + 1) {
+			System.out.println(-1);
 		} else {
-			System.out.print(-1);
+			long large = A;
+			long small = B;
+			if (A < B) {
+				large = B;
+				small = A;
+			}
+			List<Long> list = new ArrayList<>();
+			for (long i = small; i > 0; i--) {
+				list.add(i);
+			}
+			for (long j = 1; j < large; j++) {
+				long last = (n - small) * j / (large - 1);
+				long first = (n - small) * (j - 1) / (large - 1);
+				for (long i = last; i > first; i--) {
+					list.add(i + small);
+				}
+			}
+			if (A < B) {
+				Collections.reverse(list);
+			}
+			StringJoiner sj = new StringJoiner(" ");
+			for (long num : list) {
+				sj.add(Long.toString(num));
+			}
+			System.out.println(sj.toString());
 		}
-		System.out.println();
 	}
 
 	interface CombCalculator {
