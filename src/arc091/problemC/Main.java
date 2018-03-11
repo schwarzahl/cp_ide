@@ -18,9 +18,21 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long N = sc.nextLong();
+		long M = sc.nextLong();
+		if (N == 2 || M == 2) {
+			System.out.println(0);
+		} else if (N == 1 && M == 1) {
+			System.out.println(1);
+		} else {
+			if (N == 1) {
+				System.out.println(M - 2);
+			} else if (M == 1) {
+				System.out.println(N - 2);
+			} else {
+				System.out.println((N - 2) * (M - 2));
+			}
+		}
 	}
 
 	interface CombCalculator {
