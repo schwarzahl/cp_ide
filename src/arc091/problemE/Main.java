@@ -19,8 +19,50 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		int x = -1;
+		int num;
+		{
+			for (num = 1; num < N / B; num++) {
+				x = (1 - B) * num + N + 1 - A;
+				if (0 <= x && x <= B) {
+					break;
+				}
+			}
+		}
+		if (A == 1 && B == N) {
+			System.out.print(N);
+			for (int i = N - 1; i > 0; i--) {
+				System.out.print(" " + i);
+			}
+		} else if (B == 1 && A == N) {
+			System.out.print(1);
+			for (int i = 2; i <= N; i++) {
+				System.out.print(" " + i);
+			}
+		} else if (0 <= x && x <= B) {
+			System.out.print(B);
+			for (int i = B - 1; i >= 1; i--) {
+				System.out.print(" " + i);
+			}
+			{
+				for (int n = 1; n < num; n++) {
+					for (int i = n * B + B; i > n * B; i--) {
+						System.out.print(" " + i);
+					}
+				}
+				for (int i = num * B + x; i > num * B; i--) {
+					System.out.print(" " + i);
+				}
+			}
+			for (int i = num * B + x + 1; i <= N; i++) {
+				System.out.print(" " + i);
+			}
+		} else {
+			System.out.print(-1);
+		}
+		System.out.println();
 	}
 
 	interface CombCalculator {
