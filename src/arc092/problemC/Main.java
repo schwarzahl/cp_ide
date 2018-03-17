@@ -19,8 +19,32 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int[] a = new int[N + 1];
+		int[] b = new int[N + 1];
+		int[] c = new int[N + 1];
+		int[] d = new int[N + 1];
+		for (int i = 1; i <= N; i++) {
+			a[i] = sc.nextInt();
+			b[i] = sc.nextInt();
+		}
+		for (int i = 1; i <= N; i++) {
+			c[i] = sc.nextInt();
+			d[i] = sc.nextInt();
+		}
+		Graph g = new ArrayGraph(2 * N + 2);
+		for (int r_i = 1; r_i <= N; r_i++) {
+			g.link(0, r_i, 1L);
+			for (int b_i = 1; b_i <= N; b_i++) {
+				if (a[r_i] < c[b_i] && b[r_i] < d[b_i]) {
+					g.link(r_i, N + b_i, 1L);
+				}
+			}
+		}
+		for (int b_i = 1; b_i <= N; b_i++) {
+			g.link(N + b_i, 2 * N + 1, 1L);
+		}
+		FlowResolver fr = new DfsFlowResolver(g);
+		System.out.println(fr.maxFlow(0, 2 * N + 1));
 	}
 
 	interface CombCalculator {
