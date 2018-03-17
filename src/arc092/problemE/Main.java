@@ -19,8 +19,97 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long[] a = new long[N + 3];
+		long even_pos_sum = 0L;
+		long odd_pos_sum = 0L;
+		for (int i = 1; i <= N; i++) {
+			a[i] = sc.nextLong();
+			if (a[i] > 0) {
+				if (i % 2 == 0) {
+					even_pos_sum += a[i];
+				} else {
+					odd_pos_sum += a[i];
+				}
+			}
+		}
+		if (even_pos_sum <= 0 && odd_pos_sum <= 0) {
+			long max = Long.MIN_VALUE / 3;
+			int max_index = -1;
+			for (int i = 1; i <= N; i++) {
+				if (max < a[i]) {
+					max = a[i];
+					max_index = i;
+				}
+			}
+			System.out.println(max);
+			System.out.println(N - 1);
+			for (int i = N; i > max_index; i--) {
+				System.out.println(i);
+			}
+			for (int i = 1; i < max_index; i++) {
+				System.out.println(1);
+			}
+		} else {
+			List<Integer> opList = new ArrayList<>();
+			int eraseIndex;
+			if (even_pos_sum < odd_pos_sum) {
+				eraseIndex = 0;
+				System.out.println(odd_pos_sum);
+			} else {
+				opList.add(1);
+				for (int i = 1; i <= N; i++) {
+					a[i] = a[i + 1];
+				}
+				N--;
+				eraseIndex = 1;
+				System.out.println(even_pos_sum);
+			}
+			if (N % 2 == 0) {
+				opList.add(N);
+				a[N] = 0;
+				N--;
+			}
+			for (int i = N; i > 1; i -= 2) {
+				if (a[i] > 0) {
+					break;
+				} else {
+					opList.add(i);
+					opList.add(i - 1);
+					a[i] = 0;
+					a[i - 1] = 0;
+					N -= 2;
+				}
+			}
+			for (int i = 1; i <= N; i += 2) {
+				if (a[i] > 0) {
+					break;
+				} else {
+					opList.add(1);
+					opList.add(1);
+					for (int j = 1; j <= N; j++) {
+						a[j] = a[j + 2];
+					}
+					N -= 2;
+				}
+			}
+			for (int i = N - 2; i > 1; i -= 2) {
+				if (a[i] < 0) {
+					opList.add(i);
+					a[i - 1] = -1;
+					for (int j = i; j <= N; j++) {
+						a[j] = a[j + 2];
+					}
+					N -= 2;
+				}
+			}
+			for (int i = N - 1; i > 1; i -= 2) {
+				opList.add(i);
+			}
+			System.out.println(opList.size());
+			for (int index : opList) {
+				System.out.println(index);
+			}
+		}
 	}
 
 	interface CombCalculator {
