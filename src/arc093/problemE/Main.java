@@ -18,6 +18,7 @@ public class Main {
 	}
 
 	private void solve() {
+		long MOD = 1000000007L;
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
 		int M = sc.nextInt();
@@ -30,26 +31,50 @@ public class Main {
 			edges.add(new Edge(U, V, W));
 		}
 		Collections.sort(edges, (o1, o2) -> (o1.cost - o2.cost));
-		UnionFind uf = new SetUnionFind(N + 1);
-		long minCost = 0L;
-		for (Edge e : edges) {
-			if (!uf.judge(e.index1, e.index2)) {
-				uf.union(e.index1, e.index2);
-				minCost += e.cost;
+		int lowNum = 0;
+		int justNum = 0;
+		for (Edge usedEdge : edges) {
+			if (usedEdge.minCost == null) {
+				UnionFind uf = new ArrayUnionFind(N + 1);
+				long minCost = 0L;
+				uf.union(usedEdge.index1, usedEdge.index2);
+				minCost += usedEdge.cost;
+				for (Edge e : edges) {
+					if (!uf.judge(e.index1, e.index2)) {
+						uf.union(e.index1, e.index2);
+						minCost += e.cost;
+					}
+				}
+				usedEdge.minCost = minCost;
+			}
+			if (usedEdge.minCost < X) {
+				lowNum++;
+			}
+			if (usedEdge.minCost == X) {
+				justNum++;
 			}
 		}
-		System.out.println(minCost);
+		System.out.println((pow2(M - lowNum + (lowNum == 0 ? 0 : 1), MOD) - pow2(M - lowNum - justNum + (lowNum + justNum == 0 ? 0 : 1), MOD) + MOD) % MOD);
 	}
 
 	class Edge {
 		int index1;
 		int index2;
 		int cost;
+		Long minCost = null;
 		public Edge(int index1, int index2, int cost) {
 			this.index1 = index1;
 			this.index2 = index2;
 			this.cost = cost;
 		}
+	}
+
+	public long pow2(int n, long MOD) {
+		long ret = 1L;
+		for (int i = 0; i < n; i++) {
+			ret = ret * 2L % MOD;
+		}
+		return ret;
 	}
 
 	interface CombCalculator {
