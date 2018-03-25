@@ -18,9 +18,30 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		System.out.println("100 100");
+		for (int row = 0; row < 100; row++) {
+			boolean white = row < 50;
+			for (int col = 0; col < 100; col++) {
+				boolean color = white;
+				if (row % 2 == 1 && col % 2 == 1) {
+					if (white) {
+						if (B > 1) {
+							B--;
+							color = !color;
+						}
+					} else {
+						if (A > 1) {
+							A--;
+							color = !color;
+						}
+					}
+				}
+				System.out.print(color ? "." : "#");
+			}
+			System.out.println();
+		}
 	}
 
 	interface CombCalculator {
