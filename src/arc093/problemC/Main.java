@@ -19,8 +19,27 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int[] A = new int[N + 2];
+		int[] diff1 = new int[N + 2];
+		int[] diff2 = new int[N + 2];
+		{
+			A[1] = sc.nextInt();
+			diff1[1] = Math.abs(A[1]);
+			for (int i = 2; i <= N; i++) {
+				A[i] = sc.nextInt();
+				diff1[i] = Math.abs(A[i] - A[i - 1]);
+				diff2[i] = Math.abs(A[i] - A[i - 2]);
+			}
+			diff1[N + 1] = Math.abs(A[N]);
+			diff2[N + 1] = Math.abs(A[N - 1]);
+		}
+		long sum = 0L;
+		for (int i = 1; i <= N + 1; i++) {
+			sum += diff1[i];
+		}
+		for (int i = 1; i <= N; i++) {
+			System.out.println(sum - diff1[i] - diff1[i + 1] + diff2[i + 1]);
+		}
 	}
 
 	interface CombCalculator {
