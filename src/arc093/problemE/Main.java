@@ -1,6 +1,7 @@
 package arc093.problemE;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,36 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		long X = sc.nextLong();
+		List<Edge> edges = new ArrayList<>();
+		for (int i = 1; i <= M; i++) {
+			int U = sc.nextInt();
+			int V = sc.nextInt();
+			int W = sc.nextInt();
+			edges.add(new Edge(U, V, W));
+		}
+		Collections.sort(edges, (o1, o2) -> (o1.cost - o2.cost));
+		UnionFind uf = new SetUnionFind(N + 1);
+		long minCost = 0L;
+		for (Edge e : edges) {
+			if (!uf.judge(e.index1, e.index2)) {
+				uf.union(e.index1, e.index2);
+				minCost += e.cost;
+			}
+		}
+		System.out.println(minCost);
+	}
+
+	class Edge {
+		int index1;
+		int index2;
+		int cost;
+		public Edge(int index1, int index2, int cost) {
+			this.index1 = index1;
+			this.index2 = index2;
+			this.cost = cost;
+		}
 	}
 
 	interface CombCalculator {
