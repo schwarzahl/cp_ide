@@ -18,9 +18,48 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		int C = sc.nextInt();
+		int max = A;
+		if (max < B) {
+			max = B;
+		}
+		if (max < C) {
+			max = C;
+		}
+		int ans = 0;
+		int same = 0;
+		{
+			int tmp = (max - A) / 2;
+			A += tmp * 2;
+			ans += tmp;
+			if (A == max) {
+				same++;
+			}
+		}
+		{
+			int tmp = (max - B) / 2;
+			B += tmp * 2;
+			ans += tmp;
+			if (B == max) {
+				same++;
+			}
+		}
+		{
+			int tmp = (max - C) / 2;
+			C += tmp * 2;
+			ans += tmp;
+			if (C == max) {
+				same++;
+			}
+		}
+		if (same == 1) {
+			ans++;
+		} else if (same == 2) {
+			ans += 2;
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
