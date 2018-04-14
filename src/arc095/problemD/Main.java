@@ -1,6 +1,7 @@
 package arc095.problemD;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,26 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long[] A = new long[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = sc.nextLong();
+		}
+		Arrays.sort(A);
+		System.out.print(A[N - 1]);
+		System.out.print(" ");
+		long max = 0;
+		long orig = 0;
+		for (int i = 0; i < N; i++) {
+			long tmp = A[i];
+			if (tmp > A[N - 1] / 2) {
+				tmp = A[N - 1] - tmp;
+			}
+			if (max < tmp) {
+				max = tmp;
+				orig = A[i];
+			}
+		}
+		System.out.println(orig);
 	}
 
 	interface CombCalculator {
