@@ -18,9 +18,51 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int H = sc.nextInt();
+		int W = sc.nextInt();
+		sc.nextLine();
+		String[] S = new String[H];
+		char[][] map = new char[H][];
+		for (int i = 0; i < H; i++) {
+			S[i] = sc.nextLine();
+			map[i] = S[i].toCharArray();
+		}
+		Graph g = new ArrayGraph(H * H + W * W + 2 + H + W);
+		for (int r = 0; r < H; r++) {
+			g.link(0, H * H + W * W + 2 + r, 1L);
+		}
+		for (int c = 0; c < W; c++) {
+			g.link(H * H + W * W + 2 + H + c, H * H + W * W + 1, 1L);
+		}
+		for (int r = 0; r < H; r++) {
+			for (int t_r = r + 1; t_r < H; t_r++) {
+				int r_index = r * H + t_r;
+				g.link(H * H + W * W + 2 + r, r_index + 1, 1L);
+				g.link(H * H + W * W + 2 + t_r, r_index + 1, 1L);
+				for (int c = 0; c < W; c++) {
+					for (int t_c = c + 1; t_c < W; t_c++) {
+						int c_index = H * H + c * W + t_c;
+						if (map[r][c] == map[t_r][t_c] && map[r][t_c] == map[t_r][c]) {
+							g.link(r_index + 1, c_index + 1, 1L);
+						}
+					}
+				}
+			}
+		}
+		for (int c = 0; c < W; c++) {
+			for (int t_c = c + 1; t_c < W; t_c++) {
+				int c_index = H * H + c * W + t_c;
+				g.link(c_index + 1, H * H + W * W + 2 + H + c, 1L);
+				g.link(c_index + 1, H * H + W * W + 2 + H + t_c, 1L);
+			}
+		}
+		FlowResolver fr = new DfsFlowResolver(g);
+
+		if (Math.min(H / 2, W / 2) == fr.maxFlow(0, H * H + W * W + 1) / 2) {
+			System.out.println("YES");
+		} else {
+			System.out.println("NO");
+		}
 	}
 
 	interface CombCalculator {
