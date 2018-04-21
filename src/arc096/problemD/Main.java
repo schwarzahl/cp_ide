@@ -19,8 +19,51 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long C = sc.nextLong();
+		long[] x = new long[N];
+		long[] x_rev = new long[N];
+		long[] v = new long[N];
+		long[] v_sum = new long[N + 1];
+		long[] v_sum_rev = new long[N + 1];
+		for (int i = 0; i < N; i++) {
+			x[i] = sc.nextLong();
+			v[i] = sc.nextLong();
+			x_rev[i] = C - x[i];
+			v_sum[i + 1] = v_sum[i] + v[i];
+		}
+		for (int i = N - 1; i >= 0; i--) {
+			v_sum_rev[i] = v_sum_rev[i + 1] + v[i];
+		}
+		long ans = 0L;
+		for (int right_lim = 0; right_lim <= N; right_lim++) {
+			long rl = 0L;
+			long lr = 0L;
+			for (int right = 0; right < right_lim; right++) {
+				if (rl < v_sum[right + 1] - x[right] * 2) {
+					rl = v_sum[right + 1] - x[right] * 2;
+				}
+				if (lr < v_sum[right + 1] - x[right]) {
+					lr = v_sum[right + 1] - x[right];
+				}
+			}
+			long tmp_rl = 0;
+			long tmp_lr = 0;
+			for (int left = right_lim; left < N; left++) {
+				if (tmp_rl < v_sum_rev[left] - x_rev[left]) {
+					tmp_rl = v_sum_rev[left] - x_rev[left];
+				}
+				if (tmp_lr < v_sum_rev[left] - x_rev[left] * 2) {
+					tmp_lr = v_sum_rev[left] - x_rev[left] * 2;
+				}
+			}
+			if (ans < rl + tmp_rl) {
+				ans = rl + tmp_rl;
+			}
+			if (ans < lr + tmp_lr) {
+				ans = lr + tmp_lr;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
