@@ -18,9 +18,26 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long A = sc.nextLong();
+		long B = sc.nextLong();
+		long C = sc.nextLong();
+		long X = sc.nextLong();
+		long Y = sc.nextLong();
+		long ans = Long.MAX_VALUE;
+		long max = Math.max(X, Y);
+		for (long AB_num = 0L; AB_num <= max * 2; AB_num += 2) {
+			long tmp = C * AB_num;
+			if (X - AB_num / 2 > 0) {
+				tmp += A * (X - AB_num / 2);
+			}
+			if (Y - AB_num / 2 > 0) {
+				tmp += B * (Y - AB_num / 2);
+			}
+			if (ans > tmp) {
+				ans = tmp;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
