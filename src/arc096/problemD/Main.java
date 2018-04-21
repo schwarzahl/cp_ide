@@ -34,33 +34,40 @@ public class Main {
 		for (int i = N - 1; i >= 0; i--) {
 			v_sum_rev[i] = v_sum_rev[i + 1] + v[i];
 		}
+		long right_ret = 0L;
+		long right_end = 0L;
 		long ans = 0L;
 		for (int right_lim = 0; right_lim <= N; right_lim++) {
-			long rl = 0L;
-			long lr = 0L;
-			for (int right = 0; right < right_lim; right++) {
-				if (rl < v_sum[right + 1] - x[right] * 2) {
-					rl = v_sum[right + 1] - x[right] * 2;
+			if (right_lim > 0) {
+				{
+					long tmp = v_sum[right_lim] - x[right_lim - 1] * 2;
+					if (right_ret < tmp) {
+						right_ret = tmp;
+					}
 				}
-				if (lr < v_sum[right + 1] - x[right]) {
-					lr = v_sum[right + 1] - x[right];
-				}
-			}
-			long tmp_rl = 0;
-			long tmp_lr = 0;
-			for (int left = right_lim; left < N; left++) {
-				if (tmp_rl < v_sum_rev[left] - x_rev[left]) {
-					tmp_rl = v_sum_rev[left] - x_rev[left];
-				}
-				if (tmp_lr < v_sum_rev[left] - x_rev[left] * 2) {
-					tmp_lr = v_sum_rev[left] - x_rev[left] * 2;
+				{
+					long tmp = v_sum[right_lim] - x[right_lim - 1];
+					if (right_end < tmp) {
+						right_end = tmp;
+					}
 				}
 			}
-			if (ans < rl + tmp_rl) {
-				ans = rl + tmp_rl;
+			if (right_lim < N) {
+				{
+					long left_ret = v_sum_rev[right_lim] - x_rev[right_lim] * 2;
+					if (ans < left_ret + right_end) {
+						ans = left_ret + right_end;
+					}
+				}
+				{
+					long left_end = v_sum_rev[right_lim] - x_rev[right_lim];
+					if (ans < right_ret + left_end) {
+						ans = right_ret + left_end;
+					}
+				}
 			}
-			if (ans < lr + tmp_lr) {
-				ans = lr + tmp_lr;
+			if (ans < right_end) {
+				ans = right_end;
 			}
 		}
 		System.out.println(ans);
