@@ -18,9 +18,73 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
+		long H = sc.nextLong();
+		long W = sc.nextLong();
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		String[] A = new String[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = sc.next();
+		}
+		int[] left = new int[N];
+		int[] right = new int[N];
+		for (int row = 0; row < N; row++) {
+			int leftIndex = A[row].indexOf("#");
+			int rightIndex = A[row].lastIndexOf("#");
+			left[row] = leftIndex >= 0 ? leftIndex : M;
+			right[row] = rightIndex;
+		}
+		int[] minLeftUpper = new int[N];
+		int[] maxRightUpper = new int[N];
+		{
+			int minLeft = N + 1;
+			int maxRight = -1;
+			for (int row = 0; row < N; row++) {
+				if (minLeft > left[row]) {
+					minLeft = left[row];
+				}
+				if (maxRight < right[row]) {
+					maxRight = right[row];
+				}
+				minLeftUpper[row] = minLeft;
+				maxRightUpper[row] = maxRight;
+			}
+		}
+		int[] minLeftDowner = new int[N];
+		int[] maxRightDowner = new int[N];
+		{
+			int minLeft = N + 1;
+			int maxRight = -1;
+			for (int row = N - 1; row >= 0; row--) {
+				if (minLeft > left[row]) {
+					minLeft = left[row];
+				}
+				if (maxRight < right[row]) {
+					maxRight = right[row];
+				}
+				minLeftDowner[row] = minLeft;
+				maxRightDowner[row] = maxRight;
+			}
+		}
+		long ans = 0L;
+		if (M <= W / 2) {
+			if (N <= H / 2) {
+				for (int row = 0; row < N - 1; row++) {
+					ans += (W - minLeftUpper[row] + maxRightUpper[row] - M - 1);
+				}
+				if (maxRightDowner[0] >= 0) {
+					ans += (H - 2L * (N - 1)) * (W - minLeftDowner[0] + maxRightDowner[0] - M - 1);
+				}
+				for (int row = N - 1; row > 0; row--) {
+					ans += (W - minLeftDowner[row] + maxRightDowner[row] - M - 1);
+				}
+			} else {
+				// 愚直にシミュレート
+			}
+		} else {
+			// 愚直にシミュレート
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
