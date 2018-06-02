@@ -19,8 +19,35 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long D = sc.nextLong();
+		long[] X = new long[N];
+		for (int i = 0; i < N; i++) {
+			X[i] = sc.nextLong();
+		}
+
+		int[] ableId = new int[N];
+		int a = 0;
+		int b = 0;
+		while (a < N) {
+			if (X[b] - X[a] <= D) {
+				ableId[a] = b;
+				if (b + 1 < N) {
+					b++;
+				} else {
+					a++;
+				}
+			} else {
+				a++;
+				ableId[a] = ableId[a - 1];
+			}
+		}
+		long ans = 0L;
+		for (int left = 0; left < N; left++) {
+			for (int mid = left + 1; mid <= ableId[left]; mid++) {
+				ans += ableId[mid] - ableId[left];
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
