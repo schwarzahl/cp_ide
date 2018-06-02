@@ -25,26 +25,61 @@ public class Main {
 			X[i] = sc.nextLong();
 		}
 
-		int[] ableId = new int[N];
-		int a = 0;
-		int b = 0;
-		while (a < N) {
-			if (X[b] - X[a] <= D) {
-				ableId[a] = b;
-				if (b + 1 < N) {
+		int[] ableRightId = new int[N];
+		{
+			int a = 0;
+			int b = 0;
+			while (a < N) {
+				if (X[b] - X[a] <= D) {
+					ableRightId[a] = b;
+					if (b + 1 < N) {
+						b++;
+					} else {
+						a++;
+					}
+				} else {
+					a++;
+					ableRightId[a] = ableRightId[a - 1];
+				}
+			}
+		}
+		int[] ableLeftId = new int[N];
+		{
+			int a = 0;
+			int b = 0;
+			while (b < N) {
+				if (X[b] - X[a] <= D) {
+					ableLeftId[b] = a;
 					b++;
 				} else {
 					a++;
 				}
-			} else {
-				a++;
-				ableId[a] = ableId[a - 1];
 			}
 		}
 		long ans = 0L;
-		for (int left = 0; left < N; left++) {
-			for (int mid = left + 1; mid <= ableId[left]; mid++) {
-				ans += ableId[mid] - ableId[left];
+		int left = 0;
+		int right = 2;
+		while (left < N) {
+			if (right >= N) {
+				left++;
+				if (left < N) {
+					right = ableRightId[left];
+				}
+			} else {
+				if (right > ableRightId[left]) {
+					int num = ableRightId[left] - ableLeftId[right] + 1;
+					if (num > 0) {
+						ans += num;
+						right++;
+					} else {
+						left++;
+						if (left < N) {
+							right = ableRightId[left];
+						}
+					}
+				} else {
+					right++;
+				}
 			}
 		}
 		System.out.println(ans);
