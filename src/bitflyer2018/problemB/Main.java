@@ -18,9 +18,35 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
+		int A = sc.nextInt();
+		int B = sc.nextInt();
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		String X = sc.next();
+		for (char c : X.toCharArray()) {
+			if (c == 'S') {
+				if (A > 0) {
+					A--;
+				}
+			}
+			if (c == 'C') {
+				if (B > 0) {
+					B--;
+				}
+			}
+			if (c == 'E') {
+				if (A < B) {
+					if (B > 0) {
+						B--;
+					}
+				} else {
+					if (A > 0) {
+						A--;
+					}
+				}
+			}
+		}
+		System.out.println(A);
+		System.out.println(B);
 	}
 
 	interface CombCalculator {
