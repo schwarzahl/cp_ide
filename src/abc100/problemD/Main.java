@@ -29,9 +29,9 @@ public class Main {
 			z[i] = sc.nextLong();
 		}
 		long max = Long.MIN_VALUE;
-		for (int x_sign = -1; x_sign <= 1; x_sign += 2) {
-			for (int y_sign = -1; y_sign <= 1; y_sign += 2) {
-				for (int z_sign = -1; z_sign <= 1; z_sign += 2) {
+		for (long x_sign = -1L; x_sign <= 1L; x_sign += 2L) {
+			for (long y_sign = -1L; y_sign <= 1L; y_sign += 2L) {
+				for (long z_sign = -1L; z_sign <= 1L; z_sign += 2L) {
 					long[][] dp = new long[N + 1][];
 					dp[0] = new long[M + 1];
 					for (int i = 0; i < N; i++) {
