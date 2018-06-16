@@ -28,16 +28,19 @@ public class Main {
 			y[i] = sc.nextLong();
 			z[i] = sc.nextLong();
 		}
-		long max = Long.MIN_VALUE;
+		long max = Long.MIN_VALUE / 3;
 		for (long x_sign = -1L; x_sign <= 1L; x_sign += 2L) {
 			for (long y_sign = -1L; y_sign <= 1L; y_sign += 2L) {
 				for (long z_sign = -1L; z_sign <= 1L; z_sign += 2L) {
 					long[][] dp = new long[N + 1][];
 					dp[0] = new long[M + 1];
+					for (int i = 1; i <= M; i++) {
+						dp[0][i] = Long.MIN_VALUE / 3;
+					}
 					for (int i = 0; i < N; i++) {
 						dp[i + 1] = new long[M + 1];
 						for (int j = 0; j <= M; j++) {
-							long tmp = Long.MIN_VALUE;
+							long tmp = Long.MIN_VALUE / 3;
 							if (j > 0) {
 								tmp = dp[i][j - 1] + x_sign * x[i] + y_sign * y[i] + z_sign * z[i];
 							}
