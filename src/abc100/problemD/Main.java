@@ -19,8 +19,41 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		long[] x = new long[N];
+		long[] y = new long[N];
+		long[] z = new long[N];
+		for (int i = 0; i < N; i++) {
+			x[i] = sc.nextLong();
+			y[i] = sc.nextLong();
+			z[i] = sc.nextLong();
+		}
+		long max = Long.MIN_VALUE;
+		for (int x_sign = -1; x_sign <= 1; x_sign += 2) {
+			for (int y_sign = -1; y_sign <= 1; y_sign += 2) {
+				for (int z_sign = -1; z_sign <= 1; z_sign += 2) {
+					long[][] dp = new long[N + 1][];
+					dp[0] = new long[M + 1];
+					for (int i = 0; i < N; i++) {
+						dp[i + 1] = new long[M + 1];
+						for (int j = 0; j <= M; j++) {
+							long tmp = Long.MIN_VALUE;
+							if (j > 0) {
+								tmp = dp[i][j - 1] + x_sign * x[i] + y_sign * y[i] + z_sign * z[i];
+							}
+							if (tmp < dp[i][j]) {
+								tmp = dp[i][j];
+							}
+							dp[i + 1][j] = tmp;
+						}
+					}
+					if (max < dp[N][M]) {
+						max = dp[N][M];
+					}
+				}
+			}
+		}
+		System.out.println(max);
 	}
 
 	interface CombCalculator {

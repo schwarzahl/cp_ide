@@ -18,9 +18,15 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
+		int D = sc.nextInt();
 		int N = sc.nextInt();
+		if (N == 100) {
+			N = 101;
+		}
+		for (int i = 0; i < D; i++) {
+			N *= 100;
+		}
 		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
 	}
 
 	interface CombCalculator {

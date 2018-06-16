@@ -18,9 +18,13 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int A = sc.nextInt();
+		int B = sc.nextInt();
+		if (A <= 8 && B <= 8) {
+			System.out.println("Yay!");
+		} else {
+			System.out.println(":(");
+		}
 	}
 
 	interface CombCalculator {
