@@ -28,24 +28,28 @@ public class Main {
 		for (int i = N - 1; i >= 0; i--) {
 			a[i] -= a[0];
 		}
+		int low = 0;
+		int high = a[N - 1] + 1;
+		while (low + 1 < high) {
+			int left = low + (high - low) / 3;
+			int right = low + (high - low) * 2 / 3;
+			long leftPoint = calc(a, left);
+			long rightPoint = calc(a, right);
+			if (leftPoint < rightPoint) {
+				high = right;
+			} else {
+				low = left + 1;
+			}
+		}
+		System.out.println(calc(a, low));
+	}
+
+	private long calc(int[] a, int th) {
 		long sum = 0L;
-		for (int i = 0; i < N; i++) {
-			sum += a[i];
+		for (int num : a) {
+			sum += Math.abs(th - num);
 		}
-		long min = sum;
-		long tmpSum = -sum;
-		for (int i = N - 1; i >= 0; i--) {
-			long num = ((i + 1) * 2 - N);
-			long tmp = a[i] * ((i + 1) * 2 - N) + tmpSum;
-			if (num < 0) {
-				tmp = a[i + 1] * ((i + 1) * 2 - N) + tmpSum;
-			}
-			if (min > tmp) {
-				min = tmp;
-			}
-			tmpSum += a[i] * 2;
-		}
-		System.out.println(min);
+		return sum;
 	}
 
 	interface CombCalculator {
