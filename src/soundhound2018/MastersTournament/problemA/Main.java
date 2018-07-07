@@ -18,9 +18,15 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int a = sc.nextInt();
+		int b = sc.nextInt();
+		if (a + b == 15) {
+			System.out.println("+");
+		} else if (a * b == 15) {
+			System.out.println("*");
+		} else {
+			System.out.println("x");
+		}
 	}
 
 	interface CombCalculator {

@@ -18,9 +18,14 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		String S = sc.next();
+		int w = sc.nextInt();
+		for (int i = 0; i < S.length(); i++) {
+			if (i % w == 0) {
+				System.out.print(S.charAt(i));
+			}
+		}
+		System.out.println();
 	}
 
 	interface CombCalculator {
