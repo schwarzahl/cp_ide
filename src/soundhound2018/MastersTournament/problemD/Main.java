@@ -68,9 +68,15 @@ public class Main {
 		for (int i = n; i > 0; i--) {
 			costMap.put(0L + i * (2 * n + 2) + n + i, 0L);
 			nextSet.get(i).add(n + i);
-			queue.add(new State(minCost[i], i));
+			if (minCost[n + i] > minCost[i]) {
+				minCost[n + i] = minCost[i];
+				queue.add(new State(minCost[n + i], n + i));
+			}
 			while (!queue.isEmpty()) {
 				State tmp = queue.poll();
+				if (minCost[tmp.pos] < tmp.cost) {
+					continue;
+				}
 				for (int j : nextSet.get(tmp.pos)) {
 					Long cost = costMap.get(0L + tmp.pos * (2 * n + 2) + j);
 					if (cost != null) {
