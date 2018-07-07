@@ -89,6 +89,9 @@ public class Main {
 						}
 					}
 				}
+				if (tmp.cost > minCost[2 * n + 1]) {
+					break;
+				}
 			}
 			ans[i - 1] = 1000000000000000L - minCost[2 * n + 1];
 		}
