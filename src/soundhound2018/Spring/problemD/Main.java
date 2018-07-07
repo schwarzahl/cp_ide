@@ -1,4 +1,4 @@
-package soundhound2018.problemE;
+package soundhound2018.Spring.problemD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,55 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int H = sc.nextInt();
+		int W = sc.nextInt();
+		long[][] P = new long[H][];
+		for (int r = 0; r < H; r++) {
+			P[r] = new long[W];
+			for (int c = 0; c < W; c++) {
+				P[r][c] = sc.nextLong();
+			}
+		}
+		long[][] F = new long[H][];
+		for (int r = 0; r < H; r++) {
+			F[r] = new long[W];
+			for (int c = 0; c < W; c++) {
+				F[r][c] = sc.nextLong();
+			}
+		}
+		long[][] ans = new long[H][];
+		for (int r = 0; r < H; r++) {
+			ans[r] = new long[W];
+			{
+				long max = r > 0 ? ans[r - 1][0] : 0;
+				for (int c = 0; c < W; c++) {
+					if (r > 0) {
+						max = Math.max(max, ans[r - 1][c]);
+					}
+					max += P[r][c] - F[r][c];
+					ans[r][c] = max;
+				}
+				for (int c = W - 2; c >= 0; c--) {
+					max -= F[r][c];
+					ans[r][c] = Math.max(ans[r][c], max);
+				}
+			}
+			if (r > 0) {
+				long max = ans[r - 1][W - 1];
+				for (int c = W - 1; c >= 0; c--) {
+					max = Math.max(max, ans[r - 1][c]);
+					max += P[r][c] - F[r][c];
+					ans[r][c] = Math.max(ans[r][c], max);
+				}
+				for (int c = 0; c < W; c++) {
+					max -= F[r][c];
+					ans[r][c] = Math.max(ans[r][c], max);
+				}
+			}
+		}
+		for (int c = 0; c < W; c++) {
+			System.out.println(ans[H - 1][c]);
+		}
 	}
 
 	interface CombCalculator {

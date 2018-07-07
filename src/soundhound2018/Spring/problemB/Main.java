@@ -1,4 +1,4 @@
-package soundhound2018.problemA;
+package soundhound2018.Spring.problemB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -18,13 +19,21 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		String X = sc.next();
-		String Y = sc.next();
-		if (X.charAt(0) == 'S' && Y.charAt(0) == 'H') {
-			System.out.println("YES");
-		} else {
-			System.out.println("NO");
+		int N = sc.nextInt();
+		int L = sc.nextInt();
+		int R = sc.nextInt();
+		StringJoiner sj = new StringJoiner(" ");
+		for (int i = 0; i < N; i++) {
+			int input = sc.nextInt();
+			if (input < L) {
+				sj.add("" + L);
+			} else if (input > R) {
+				sj.add("" + R);
+			} else {
+				sj.add("" + input);
+			}
 		}
+		System.out.println(sj.toString());
 	}
 
 	interface CombCalculator {
