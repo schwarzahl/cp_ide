@@ -1,11 +1,13 @@
 package soundhound2018.MastersTournament.problemD;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -18,9 +20,82 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		int s = sc.nextInt();
+		int t = sc.nextInt();
+		Map<Long, Long> costMap = new HashMap<>();
+		Map<Integer, Set<Integer>> nextSet = new HashMap<>();
+		for (int i = 0; i < 2 * n + 2; i++) {
+			nextSet.put(i, new HashSet<>());
+		}
+		costMap.put(0L * (2 * n + 2) + s, 0L);
+		nextSet.get(0).add(s);
+		costMap.put(0L + (n + t) * (2 * n + 2) + 2 * n + 1, 0L);
+		nextSet.get(n + t).add(2 * n + 1);
+		for (int i = 1; i <= m; i++) {
+			int u = sc.nextInt();
+			int v = sc.nextInt();
+			long a = sc.nextLong();
+			long b = sc.nextLong();
+			costMap.put(0L + u * (2 * n + 2) + v, a);
+			nextSet.get(u).add(v);
+			costMap.put(0L + v * (2 * n + 2) + u, a);
+			nextSet.get(v).add(u);
+			costMap.put(0L + (n + u) * (2 * n + 2) + n + v, b);
+			nextSet.get(n + u).add(n + v);
+			costMap.put(0L + (n + v) * (2 * n + 2) + n + u, b);
+			nextSet.get(n + v).add(n + u);
+		}
+		long[] minCost = new long[2 * n + 2];
+		for (int i = 1; i < 2 * n + 2; i++) {
+			minCost[i] = Long.MAX_VALUE / 3;
+		}
+		long[] ans = new long[n];
+		PriorityQueue<State> queue = new PriorityQueue<>(new Comparator<State>() {
+			@Override
+			public int compare(State o1, State o2) {
+				if (o1.cost > o2.cost) {
+					return 1;
+				} else if (o1.cost < o2.cost) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		queue.add(new State(0L, 0));
+		for (int i = n; i > 0; i--) {
+			costMap.put(0L + i * (2 * n + 2) + n + i, 0L);
+			nextSet.get(i).add(n + i);
+			queue.add(new State(minCost[i], i));
+			while (!queue.isEmpty()) {
+				State tmp = queue.poll();
+				for (int j : nextSet.get(tmp.pos)) {
+					Long cost = costMap.get(0L + tmp.pos * (2 * n + 2) + j);
+					if (cost != null) {
+						if (minCost[j] >= tmp.cost + cost) {
+							minCost[j] = tmp.cost + cost;
+							queue.add(new State(tmp.cost + cost, j));
+						}
+					}
+				}
+			}
+			ans[i - 1] = 1000000000000000L - minCost[2 * n + 1];
+		}
+		for (long out : ans) {
+			System.out.println(out);
+		}
+	}
+
+	private class State {
+		long cost;
+		int pos;
+
+		public State(long cost, int pos) {
+			this.cost = cost;
+			this.pos = pos;
+		}
 	}
 
 	interface CombCalculator {
@@ -160,6 +235,17 @@ public class Main {
 		@Override
 		public int getVertexNum() {
 			return vertexNum;
+		}
+
+		@Override
+		public ArrayGraph clone() {
+			ArrayGraph dest = new ArrayGraph(vertexNum);
+			for (int i = 0; i < vertexNum; i++) {
+				for (int j = 0; j < vertexNum; j++) {
+					dest.costArray[i][j] = this.costArray[i][j];
+				}
+			}
+			return dest;
 		}
 	}
 
