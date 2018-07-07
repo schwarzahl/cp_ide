@@ -66,6 +66,7 @@ public class Main {
 		});
 		queue.add(new State(0L, 0));
 		for (int i = n; i > 0; i--) {
+			Set<Integer> okSet = new HashSet<>();
 			costMap.put(0L + i * (2 * n + 2) + n + i, 0L);
 			nextSet.get(i).add(n + i);
 			if (minCost[n + i] > minCost[i]) {
@@ -74,8 +75,10 @@ public class Main {
 			}
 			while (!queue.isEmpty()) {
 				State tmp = queue.poll();
-				if (minCost[tmp.pos] < tmp.cost) {
+				if (okSet.contains(tmp.pos)) {
 					continue;
+				} else {
+					okSet.add(tmp.pos);
 				}
 				for (int j : nextSet.get(tmp.pos)) {
 					Long cost = costMap.get(0L + tmp.pos * (2 * n + 2) + j);
