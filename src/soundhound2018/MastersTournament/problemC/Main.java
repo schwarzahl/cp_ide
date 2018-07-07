@@ -1,5 +1,6 @@
 package soundhound2018.MastersTournament.problemC;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,9 +19,10 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long n = sc.nextLong();
+		long m = sc.nextLong();
+		long d = sc.nextLong();
+		System.out.println(BigDecimal.valueOf((d == 0 ? 1.0d : 2.0d) * (m - 1) * (n - d) / n / n).toPlainString());
 	}
 
 	interface CombCalculator {
