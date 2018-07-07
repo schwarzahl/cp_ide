@@ -24,79 +24,103 @@ public class Main {
 		int m = sc.nextInt();
 		int s = sc.nextInt();
 		int t = sc.nextInt();
-		Map<Long, Long> costMap = new HashMap<>();
-		Map<Integer, Set<Integer>> nextSet = new HashMap<>();
-		for (int i = 0; i < 2 * n + 2; i++) {
-			nextSet.put(i, new HashSet<>());
+
+		CostSet[] yenSet = new CostSet[n + 1];
+		CostSet[] snuSet = new CostSet[n + 1];
+
+		for (int i = 1; i <= n; i++) {
+			yenSet[i] = new CostSet();
+			snuSet[i] = new CostSet();
 		}
-		costMap.put(0L * (2 * n + 2) + s, 0L);
-		nextSet.get(0).add(s);
-		costMap.put(0L + (n + t) * (2 * n + 2) + 2 * n + 1, 0L);
-		nextSet.get(n + t).add(2 * n + 1);
 		for (int i = 1; i <= m; i++) {
 			int u = sc.nextInt();
 			int v = sc.nextInt();
 			long a = sc.nextLong();
 			long b = sc.nextLong();
-			costMap.put(0L + u * (2 * n + 2) + v, a);
-			nextSet.get(u).add(v);
-			costMap.put(0L + v * (2 * n + 2) + u, a);
-			nextSet.get(v).add(u);
-			costMap.put(0L + (n + u) * (2 * n + 2) + n + v, b);
-			nextSet.get(n + u).add(n + v);
-			costMap.put(0L + (n + v) * (2 * n + 2) + n + u, b);
-			nextSet.get(n + v).add(n + u);
+			yenSet[u].set.add(new State(a, v));
+			yenSet[v].set.add(new State(a, u));
+			snuSet[u].set.add(new State(b, v));
+			snuSet[v].set.add(new State(b, u));
 		}
-		long[] minCost = new long[2 * n + 2];
-		for (int i = 1; i < 2 * n + 2; i++) {
-			minCost[i] = Long.MAX_VALUE / 3;
+		long[] minYen = new long[n + 1];
+		long[] minSnu = new long[n + 1];
+		for (int i = 1; i <= n; i++) {
+			minYen[i] = Long.MAX_VALUE / 3;
+			minSnu[i] = Long.MAX_VALUE / 3;
 		}
-		long[] ans = new long[n];
-		PriorityQueue<State> queue = new PriorityQueue<>(new Comparator<State>() {
-			@Override
-			public int compare(State o1, State o2) {
-				if (o1.cost > o2.cost) {
-					return 1;
-				} else if (o1.cost < o2.cost) {
-					return -1;
-				} else {
-					return 0;
-				}
-			}
-		});
-		queue.add(new State(0L, 0));
-		for (int i = n; i > 0; i--) {
-			Set<Integer> okSet = new HashSet<>();
-			costMap.put(0L + i * (2 * n + 2) + n + i, 0L);
-			nextSet.get(i).add(n + i);
-			if (minCost[n + i] > minCost[i]) {
-				minCost[n + i] = minCost[i];
-				queue.add(new State(minCost[n + i], n + i));
-			}
-			while (!queue.isEmpty()) {
-				State tmp = queue.poll();
-				if (okSet.contains(tmp.pos)) {
-					continue;
-				} else {
-					okSet.add(tmp.pos);
-				}
-				for (int j : nextSet.get(tmp.pos)) {
-					Long cost = costMap.get(0L + tmp.pos * (2 * n + 2) + j);
-					if (cost != null) {
-						if (minCost[j] >= tmp.cost + cost) {
-							minCost[j] = tmp.cost + cost;
-							queue.add(new State(tmp.cost + cost, j));
-						}
+		{
+			PriorityQueue<State> queue = new PriorityQueue<>(new Comparator<State>() {
+				@Override
+				public int compare(State o1, State o2) {
+					if (o1.cost > o2.cost) {
+						return 1;
+					} else if (o1.cost < o2.cost) {
+						return -1;
+					} else {
+						return 0;
 					}
 				}
-				if (tmp.cost > minCost[2 * n + 1]) {
-					break;
+			});
+			queue.add(new State(0L, s));
+			minYen[s] = 0L;
+			while (!queue.isEmpty()) {
+				State tmp = queue.poll();
+				if (minYen[tmp.pos] < tmp.cost) {
+					continue;
+				}
+				for (State edge : yenSet[tmp.pos].set) {
+					if (minYen[edge.pos] > tmp.cost + edge.cost) {
+						minYen[edge.pos] = tmp.cost + edge.cost;
+						queue.add(new State(minYen[edge.pos], edge.pos));
+					}
 				}
 			}
-			ans[i - 1] = 1000000000000000L - minCost[2 * n + 1];
+		}
+		{
+			PriorityQueue<State> queue = new PriorityQueue<>(new Comparator<State>() {
+				@Override
+				public int compare(State o1, State o2) {
+					if (o1.cost > o2.cost) {
+						return 1;
+					} else if (o1.cost < o2.cost) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			});
+			queue.add(new State(0L, t));
+			minSnu[t] = 0L;
+			while (!queue.isEmpty()) {
+				State tmp = queue.poll();
+				if (minSnu[tmp.pos] < tmp.cost) {
+					continue;
+				}
+				for (State edge : snuSet[tmp.pos].set) {
+					if (minSnu[edge.pos] > tmp.cost + edge.cost) {
+						minSnu[edge.pos] = tmp.cost + edge.cost;
+						queue.add(new State(minSnu[edge.pos], edge.pos));
+					}
+				}
+			}
+		}
+		long[] ans = new long[n];
+		long min = Long.MAX_VALUE / 3;
+		for (int i = n; i > 0; i--) {
+			if (min > minYen[i] + minSnu[i]) {
+				min = minYen[i] + minSnu[i];
+			}
+			ans[i - 1] = min;
 		}
 		for (long out : ans) {
-			System.out.println(out);
+			System.out.println(1000000000000000L - out);
+		}
+	}
+
+	private class CostSet {
+		Set<State> set;
+		public CostSet() {
+			set = new HashSet<>();
 		}
 	}
 
