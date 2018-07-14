@@ -18,9 +18,50 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int T = sc.nextInt();
+		for (int i = 0; i < T; i++) {
+			System.out.println(answer(sc.nextLong(), sc.nextLong(), sc.nextLong(), sc.nextLong()) ? "Yes" : "No");
+		}
+	}
+
+	private boolean answer(long A, long B, long C, long D) {
+		long day = (A - C - 1) / B;
+		if (day > 0) {
+			A -= B * day;
+		}
+		// A - B <= C
+		if (A < B) {
+			return false;
+		}
+		// A - B >= 0
+		if (D < B) {
+			return false;
+		}
+		if (D == B) {
+			return true;
+		}
+		// D - B > 0
+		if (C >= B - 1) {
+			return true;
+		}
+		// X is exist if C < X < B
+		// 0 <= A - B <= C
+		// 0 < D - B
+		if (D - B > C) {
+			D -= B * ((D - C - 1) / B);
+		}
+		// D - B <= C
+		long move = D - B;
+		if (move == 0) {
+			return true;
+		}
+		move = C % (D - B);
+		if (move == 0 || move > D - B) {
+			move = D - B;
+		}
+		long start = A - B;
+		start += move * ((C - start + move) / move);
+		return start >= B;
 	}
 
 	interface CombCalculator {
