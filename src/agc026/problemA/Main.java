@@ -19,8 +19,18 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int prev = -1;
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			int color = sc.nextInt();
+			if (color == prev) {
+				ans++;
+				prev = -1;
+			} else {
+				prev = color;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
