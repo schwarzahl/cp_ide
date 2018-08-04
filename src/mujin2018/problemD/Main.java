@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -18,9 +19,92 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
+		boolean[][] out = new boolean[1000][];
+		for (int i = 0; i < 1000; i++) {
+			out[i] = new boolean[1000];
+		}
+		ConcurrentLinkedDeque<Integer> deque = new ConcurrentLinkedDeque<>();
+		for (int x = 0; x < 1000; x++) {
+			deque.addLast(x * 1000);
+			out[x][0] = true;
+		}
+		for (int y = 0; y < 1000; y++) {
+			deque.addLast(y);
+			out[0][y] = true;
+		}
+		while (!deque.isEmpty()) {
+			int next = deque.poll();
+			int pre_x = next / 1000;
+			int pre_y = next % 1000;
+			if (pre_x + pre_y >= pre_y && pre_x + pre_y < 1000) {
+				int x = pre_x + pre_y;
+				int y = pre_y;
+				if (x % 10 > 0) {
+					for (int kx = 1; kx < 1000; kx *= 10) {
+						int tmp_x = rev(x);
+						tmp_x *= kx;
+						if (tmp_x < 1000 && tmp_x < y && !out[tmp_x][y]) {
+							deque.addLast(tmp_x * 1000 + y);
+							out[tmp_x][y] = true;
+						}
+					}
+				}
+				if (y % 10 > 0) {
+					for (int ky = 1; ky < 1000; ky *= 10) {
+						int tmp_y = rev(y);
+						tmp_y *= ky;
+						if (tmp_y < 1000 && x >= tmp_y && !out[x][tmp_y]) {
+							deque.addLast(x * 1000 + tmp_y);
+							out[x][tmp_y] = true;
+						}
+					}
+				}
+			}
+			if (pre_x + pre_y >= pre_x && pre_x + pre_y < 1000) {
+				int x = pre_x;
+				int y = pre_x + pre_y;
+				if (x % 10 > 0) {
+					for (int kx = 1; kx < 1000; kx *= 10) {
+						int tmp_x = rev(x);
+						tmp_x *= kx;
+						if (tmp_x < 1000 && tmp_x < y && !out[tmp_x][y]) {
+							deque.addLast(tmp_x * 1000 + y);
+							out[tmp_x][y] = true;
+						}
+					}
+				}
+				if (y % 10 > 0) {
+					for (int ky = 1; ky < 1000; ky *= 10) {
+						int tmp_y = rev(y);
+						tmp_y *= ky;
+						if (tmp_y < 1000 && x >= tmp_y && !out[x][tmp_y]) {
+							deque.addLast(x * 1000 + tmp_y);
+							out[x][tmp_y] = true;
+						}
+					}
+				}
+			}
+		}
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		long ans = 0L;
+		for (int x = 1; x <= N; x++) {
+			for (int y = 1; y <= M; y++) {
+				if (!out[x][y]) {
+					ans++;
+				}
+			}
+		}
+		System.out.println(ans);
+	}
+
+	private int rev(int n) {
+		int ret = 0;
+		while (n > 0) {
+			ret = ret * 10 + (n % 10);
+			n /= 10;
+		}
+		return ret;
 	}
 
 	interface CombCalculator {
