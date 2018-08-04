@@ -64,46 +64,10 @@ public class Main {
 		}
 		int ans = 0;
 		for (int r = 1; r <= N; r++) {
-			int k = 0;
 			for (int c = 1; c <= M; c++) {
-				k++;
-				if (lengthMap[r][c][2] > 0 && lengthMap[r][c][3] > 0) {
-					ans += lengthMap[r][c][2] * k;
-				} else {
-					k = 0;
-				}
-			}
-		}
-		for (int r = 1; r <= N; r++) {
-			int k = 0;
-			for (int c = M; c > 0; c--) {
-				k++;
-				if (lengthMap[r][c][0] > 0 && lengthMap[r][c][1] > 0) {
-					ans += lengthMap[r][c][0] * k;
-				} else {
-					k = 0;
-				}
-			}
-		}
-		for (int c = 1; c <= M; c++) {
-			int k = 0;
-			for (int r = 1; r <= N; r++) {
-				k++;
-				if (lengthMap[r][c][1] > 0 && lengthMap[r][c][2] > 0) {
-					ans += lengthMap[r][c][1] * k;
-				} else {
-					k = 0;
-				}
-			}
-		}
-		for (int c = 1; c <= M; c++) {
-			int k = 0;
-			for (int r = N; r > 0; r--) {
-				k++;
-				if (lengthMap[r][c][3] > 0 && lengthMap[r][c][0] > 0) {
-					ans += lengthMap[r][c][3] * k;
-				} else {
-					k = 0;
+				for (int dir = 0; dir < 4; dir++) {
+					int second_dir = (dir + 1) % 4;
+					ans += lengthMap[r][c][dir] * lengthMap[r][c][second_dir];
 				}
 			}
 		}
