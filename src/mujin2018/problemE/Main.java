@@ -19,6 +19,63 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
+		int M = sc.nextInt();
+		int K = sc.nextInt();
+		String d = sc.next();
+		int s_r = -1;
+		int s_c = -1;
+		int g_r = -1;
+		int g_c = -1;
+		char[][] map = new char[N + 2][];
+		for (int r = 0; r < N + 2; r += N + 1) {
+			map[r] = new char[M + 2];
+			for (int c = 0; c < M + 2; c++) {
+				map[r][c] = '#';
+			}
+		}
+		for (int r = 1; r < N + 1; r++) {
+			map[r] = new char[M + 2];
+			String s = sc.next();
+			map[r][0] = '#';
+			for (int c = 1; c <= M; c++) {
+				map[r][c] = s.charAt(c - 1);
+				if (map[r][c] == 'S') {
+					s_r = r;
+					s_c = c;
+				}
+				if (map[r][c] == 'G') {
+					g_r = r;
+					g_c = c;
+				}
+			}
+			map[r][M + 1] = '#';
+		}
+		int[][] lmap = new int[N + 2][];
+		for (int r = 0; r < N + 2; r++) {
+			lmap[r] = new int[M + 2];
+			for (int c = 0; c < N + 2; c++) {
+				lmap[r][c] = Integer.MAX_VALUE / 3;
+			}
+		}
+		Map<Character, List<Integer>> dp = new HashMap<>();
+		for (char dir : "LRUD".toCharArray()) {
+			List<Integer> list = new ArrayList<>();
+			list.add(s_r * 10000 + s_c);
+			dp.put(dir, list);
+		}
+		boolean change = true;
+		int step = 0;
+		while (change) {
+			change = false;
+			for (char dir : d.toCharArray()) {
+				step++;
+				for (int pos : dp.get(dir)) {
+					int r = pos / 10000;
+					int c = pos % 10000;
+					
+				}
+			}
+		}
 		System.out.println(N);
 		System.err.println(Main.class.getPackage().getName());
 	}
