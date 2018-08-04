@@ -38,31 +38,58 @@ public class Main {
 		for (int c = 0; c < M + 2; c++) {
 			map[N + 1][c] = '#';
 		}
-		int[] r_diff = {-1, 0, 1, 0};
-		int[] c_diff = {0, -1, 0, 1};
 		int[][][] lengthMap = new int[N + 2][][];
 		for (int r = 0; r < N + 2; r++) {
 			lengthMap[r] = new int[M + 2][];
 			for (int c = 0; c < M + 2; c++) {
 				lengthMap[r][c] = new int[4];
-				for (int dir = 0; dir < 4; dir++) {
-					int tmp_r = r;
-					int tmp_c = c;
-					if (map[tmp_r][tmp_c] == '.') {
-						tmp_r += r_diff[dir];
-						tmp_c += c_diff[dir];
-						int tmp_length = 0;
-						while (map[tmp_r][tmp_c] == '.') {
-							tmp_r += r_diff[dir];
-							tmp_c += c_diff[dir];
-							tmp_length++;
-						}
-						lengthMap[r][c][dir] = tmp_length;
-					}
+			}
+		}
+		for (int r = 1; r <= N; r++) {
+			int k = 0;
+			for (int c = 1; c <= M; c++) {
+				if (map[r][c] == '#') {
+					k = 0;
+				} else {
+					lengthMap[r][c][1] = k;
+					k++;
 				}
 			}
 		}
-		int ans = 0;
+		for (int r = 1; r <= N; r++) {
+			int k = 0;
+			for (int c = M; c > 0; c--) {
+				if (map[r][c] == '#') {
+					k = 0;
+				} else {
+					lengthMap[r][c][3] = k;
+					k++;
+				}
+			}
+		}
+		for (int c = 1; c <= M; c++) {
+			int k = 0;
+			for (int r = 1; r <= N; r++) {
+				if (map[r][c] == '#') {
+					k = 0;
+				} else {
+					lengthMap[r][c][2] = k;
+					k++;
+				}
+			}
+		}
+		for (int c = 1; c <= M; c++) {
+			int k = 0;
+			for (int r = N; r > 0; r--) {
+				if (map[r][c] == '#') {
+					k = 0;
+				} else {
+					lengthMap[r][c][0] = k;
+					k++;
+				}
+			}
+		}
+		long ans = 0;
 		for (int r = 1; r <= N; r++) {
 			for (int c = 1; c <= M; c++) {
 				for (int dir = 0; dir < 4; dir++) {
