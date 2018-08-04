@@ -18,9 +18,24 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int A = sc.nextInt();
+		String S = sc.next();
+		if (A == 0) {
+			System.out.println("Yes");
+			return;
+		}
+		for (char c : S.toCharArray()) {
+			if (c == '+') {
+				A++;
+			} else {
+				A--;
+			}
+			if (A == 0) {
+				System.out.println("Yes");
+				return;
+			}
+		}
+		System.out.println("No");
 	}
 
 	interface CombCalculator {
