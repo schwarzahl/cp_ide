@@ -19,8 +19,95 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int M = sc.nextInt();
+		char[][] map = new char[N + 2][];
+		map[0] = new char[M + 2];
+		for (int c = 0; c < M + 2; c++) {
+			map[0][c] = '#';
+		}
+		for (int r = 1; r <= N; r++) {
+			String s = sc.next();
+			map[r] = new char[M + 2];
+			map[r][0] = '#';
+			for (int c = 1; c <= M; c++) {
+				map[r][c] = s.charAt(c - 1);
+			}
+			map[r][M + 1] = '#';
+		}
+		map[N + 1] = new char[M + 2];
+		for (int c = 0; c < M + 2; c++) {
+			map[N + 1][c] = '#';
+		}
+		int[] r_diff = {-1, 0, 1, 0};
+		int[] c_diff = {0, -1, 0, 1};
+		int[][][] lengthMap = new int[N + 2][][];
+		for (int r = 0; r < N + 2; r++) {
+			lengthMap[r] = new int[M + 2][];
+			for (int c = 0; c < M + 2; c++) {
+				lengthMap[r][c] = new int[4];
+				for (int dir = 0; dir < 4; dir++) {
+					int tmp_r = r;
+					int tmp_c = c;
+					if (map[tmp_r][tmp_c] == '.') {
+						tmp_r += r_diff[dir];
+						tmp_c += c_diff[dir];
+						int tmp_length = 0;
+						while (map[tmp_r][tmp_c] == '.') {
+							tmp_r += r_diff[dir];
+							tmp_c += c_diff[dir];
+							tmp_length++;
+						}
+						lengthMap[r][c][dir] = tmp_length;
+					}
+				}
+			}
+		}
+		int ans = 0;
+		for (int r = 1; r <= N; r++) {
+			int k = 0;
+			for (int c = 1; c <= M; c++) {
+				k++;
+				if (lengthMap[r][c][2] > 0 && lengthMap[r][c][3] > 0) {
+					ans += lengthMap[r][c][2] * k;
+				} else {
+					k = 0;
+				}
+			}
+		}
+		for (int r = 1; r <= N; r++) {
+			int k = 0;
+			for (int c = M; c > 0; c--) {
+				k++;
+				if (lengthMap[r][c][0] > 0 && lengthMap[r][c][1] > 0) {
+					ans += lengthMap[r][c][0] * k;
+				} else {
+					k = 0;
+				}
+			}
+		}
+		for (int c = 1; c <= M; c++) {
+			int k = 0;
+			for (int r = 1; r <= N; r++) {
+				k++;
+				if (lengthMap[r][c][1] > 0 && lengthMap[r][c][2] > 0) {
+					ans += lengthMap[r][c][1] * k;
+				} else {
+					k = 0;
+				}
+			}
+		}
+		for (int c = 1; c <= M; c++) {
+			int k = 0;
+			for (int r = N; r > 0; r--) {
+				k++;
+				if (lengthMap[r][c][3] > 0 && lengthMap[r][c][0] > 0) {
+					ans += lengthMap[r][c][3] * k;
+				} else {
+					k = 0;
+				}
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
