@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -50,34 +51,76 @@ public class Main {
 			}
 			map[r][M + 1] = '#';
 		}
-		int[][] lmap = new int[N + 2][];
-		for (int r = 0; r < N + 2; r++) {
-			lmap[r] = new int[M + 2];
-			for (int c = 0; c < N + 2; c++) {
-				lmap[r][c] = Integer.MAX_VALUE / 3;
+		long[][] costMap = new long[256][];
+		for (char dir : "LRUD".toCharArray()) {
+			costMap[dir] = new long[K];
+		}
+		{
+			long[] firstIndexes = new long[256];
+			for (char dir : "LRUD".toCharArray()) {
+				firstIndexes[dir] = Long.MAX_VALUE / 3;
+			}
+			char[] ddArray = (d + d).toCharArray();
+			for (int index = K * 2 - 1; index >= 0; index--) {
+				for (char dir : "LRUD".toCharArray()) {
+					costMap[dir][index % K] = firstIndexes[dir] - index;
+				}
+				char dir = ddArray[index];
+				firstIndexes[dir] = index;
 			}
 		}
-		Map<Character, List<Integer>> dp = new HashMap<>();
-		for (char dir : "LRUD".toCharArray()) {
-			List<Integer> list = new ArrayList<>();
-			list.add(s_r * 10000 + s_c);
-			dp.put(dir, list);
-		}
-		boolean change = true;
-		int step = 0;
-		while (change) {
-			change = false;
-			for (char dir : d.toCharArray()) {
-				step++;
-				for (int pos : dp.get(dir)) {
-					int r = pos / 10000;
-					int c = pos % 10000;
-					
+
+		long[][] lmap = new long[N + 2][];
+		for (int r = 0; r < N + 2; r++) {
+			lmap[r] = new long[M + 2];
+			for (int c = 0; c < M + 2; c++) {
+				if (map[r][c] == '#') {
+					lmap[r][c] = -1;
+				} else {
+					lmap[r][c] = Long.MAX_VALUE / 3;
 				}
 			}
 		}
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+
+		int[] r_diff = new int[256];
+		int[] c_diff = new int[256];
+		r_diff['L'] =  0; c_diff['L'] = -1;
+		r_diff['R'] =  0; c_diff['R'] =  1;
+		r_diff['U'] = -1; c_diff['U'] =  0;
+		r_diff['D'] =  1; c_diff['D'] =  0;
+
+		PriorityQueue<Point> queue = new PriorityQueue<>((o1, o2) -> o1.time > o2.time ? 1 : o2.time > o1.time ? -1 : 0);
+		lmap[s_r][s_c] = 0L;
+		queue.add(new Point(0L, s_r, s_c));
+		while (!queue.isEmpty()) {
+			Point p = queue.poll();
+			for (char dir : "LRUD".toCharArray()) {
+				int next_r = p.r + r_diff[dir];
+				int next_c = p.c + c_diff[dir];
+				long next_time = p.time + costMap[dir][(int)((p.time + K - 1) % K)];
+				if (lmap[next_r][next_c] > next_time) {
+					queue.add(new Point(next_time, next_r, next_c));
+					lmap[next_r][next_c] = next_time;
+				}
+			}
+		}
+		if (lmap[g_r][g_c] > Long.MAX_VALUE / 4) {
+			System.out.println(-1);
+		} else {
+			System.out.println(lmap[g_r][g_c]);
+		}
+	}
+
+	class Point {
+		long time;
+		int r;
+		int c;
+
+		public Point(long time, int r, int c) {
+			this.time = time;
+			this.r = r;
+			this.c = c;
+		}
 	}
 
 	interface CombCalculator {
