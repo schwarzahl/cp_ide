@@ -1,4 +1,4 @@
-package atcoder_template;
+package abc104.problemD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,53 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		String S = sc.next();
+		int L = S.length();
+		long MOD = 1000000007L;
+		long[] pow_3 = new long[L + 1];
+		pow_3[0] = 1L;
+		for (int i = 1; i <= L; i++) {
+			pow_3[i] = (pow_3[i - 1] * 3L) % MOD;
+		}
+		long ans = 0L;
+		int[] A_count = new int[L + 1];
+		int[] C_count = new int[L + 1];
+		int[] Q_count = new int[L + 1];
+		A_count[0] = 0;
+		C_count[0] = 0;
+		Q_count[0] = 0;
+		for (int index = 1; index <= L; index++) {
+			A_count[index] = A_count[index - 1];
+			C_count[index] = C_count[index - 1];
+			Q_count[index] = Q_count[index - 1];
+			if (S.charAt(index - 1) == 'A') {
+				A_count[index]++;
+			}
+			if (S.charAt(index - 1) == 'C') {
+				C_count[index]++;
+			}
+			if (S.charAt(index - 1) == '?') {
+				Q_count[index]++;
+			}
+		}
+		for (int B_index = 1; B_index < L - 1; B_index++) {
+			if (S.charAt(B_index) == 'B' || S.charAt(B_index) == '?') {
+				long left = 3L * A_count[B_index] + Q_count[B_index];
+				if (Q_count[B_index] > 0) {
+					left = (left * pow_3[Q_count[B_index] - 1]) % MOD;
+				} else {
+					left /= 3L;
+				}
+				long right = 3L * (C_count[L] - C_count[B_index + 1]) + (Q_count[L] - Q_count[B_index + 1]);
+				if (Q_count[L] - Q_count[B_index + 1] > 0) {
+					right = (right * pow_3[Q_count[L] - Q_count[B_index + 1] - 1]) % MOD;
+				} else {
+					right /= 3L;
+				}
+				ans = (ans + left * right) % MOD;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {

@@ -1,4 +1,4 @@
-package atcoder_template;
+package abc104.problemA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,14 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int R = sc.nextInt();
+		if (R < 1200) {
+			System.out.println("ABC");
+		} else if (R < 2800) {
+			System.out.println("ARC");
+		} else {
+			System.out.println("AGC");
+		}
 	}
 
 	interface CombCalculator {

@@ -1,6 +1,7 @@
-package atcoder_template;
+package abc104.problemC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,9 +19,54 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int D = sc.nextInt();
+		long G = sc.nextLong();
+		ProblemSet[] set = new ProblemSet[D];
+		int sum = 0;
+		for (int i = 0; i < D; i++) {
+			int p = sc.nextInt();
+			long c = sc.nextLong();
+			set[i] = new ProblemSet(p, c, 100L * (i + 1));
+			sum += p;
+		}
+		long[][] dp = new long[D + 1][];
+		dp[0] = new long[sum + 1];
+		for (int k = 1; k <= D; k++) {
+			dp[k] = new long[sum + 1];
+			for (int r = 0; r <= sum; r++) {
+				for (int next_r = 0; next_r <= r; next_r++) {
+					int solve_num = r - next_r;
+					if (solve_num > set[k - 1].num) {
+						continue;
+					}
+					long next_score = dp[k - 1][r] + set[k-1].score * solve_num;
+					if (solve_num == set[k - 1].num) {
+						next_score += set[k - 1].bonus;
+					}
+					if (dp[k][next_r] < next_score) {
+						dp[k][next_r] = next_score;
+					}
+				}
+			}
+		}
+		for (int r = sum; r >= 0; r--) {
+			if (dp[D][r] >= G) {
+				System.out.println(sum - r);
+				return;
+			}
+		}
+		System.out.println(sum);
+	}
+
+	private class ProblemSet {
+		int num;
+		long bonus;
+		long score;
+		public ProblemSet(int num, long bonus, long score) {
+			this.num = num;
+			this.bonus = bonus;
+			this.score = score;
+		}
 	}
 
 	interface CombCalculator {

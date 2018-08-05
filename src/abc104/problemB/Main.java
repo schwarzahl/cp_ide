@@ -1,4 +1,4 @@
-package atcoder_template;
+package abc104.problemB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,33 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		String S = sc.next();
+		System.out.println(judge(S) ? "AC" : "WA");
+	}
+
+	private boolean judge(String S) {
+		if (S.charAt(0) != 'A') {
+			return false;
+		}
+		if (S.charAt(1) <= 'Z') {
+			return false;
+		}
+		if (S.charAt(S.length() - 1) <= 'Z') {
+			return false;
+		}
+		int C_count = 0;
+		for (int index = 2; index < S.length() - 1; index++) {
+			char asc = S.charAt(index);
+			if (asc == 'C') {
+				C_count++;
+			} else if (asc <= 'Z') {
+				return false;
+			}
+		}
+		if (C_count != 1) {
+			return false;
+		}
+		return true;
 	}
 
 	interface CombCalculator {
