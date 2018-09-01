@@ -19,8 +19,25 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int K = sc.nextInt();
+		long ans = 0L;
+		if (K % 2 == 1) {
+			long tmp = N / K;
+			for (int a = K; a <= N; a+= K) {
+				ans += tmp * tmp;
+			}
+		} else {
+			for (int a = K / 2; a <= N; a+= K / 2) {
+				long tmp;
+				if (a % K == 0) {
+					tmp = (N / K);
+				} else {
+					tmp = ((N + (K / 2)) / K);
+				}
+				ans += tmp * tmp;
+			}
+		}
+		System.out.println(ans);
 	}
 
 	interface CombCalculator {
