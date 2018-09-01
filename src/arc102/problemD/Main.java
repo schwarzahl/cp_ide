@@ -18,9 +18,43 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int L = sc.nextInt() - 1;
+		int[] base = new int[20];
+		base[0] = 1;
+		for (int i = 1; i < 20; i++) {
+			base[i] = base[i - 1] * 2;
+		}
+		int max = 0;
+		int spedge = 0;
+		Integer[] jump = new Integer[20];
+		for (int i = 19; i >= 0; i--) {
+			if (L >= base[i] - 1) {
+				L -= base[i];
+				jump[i] = L + 1;
+				spedge++;
+				if (max < i) {
+					max = i;
+				}
+			}
+		}
+		System.out.println((max + 1) + " " + (2 * max + spedge - 1));
+		boolean start = false;
+		int boost = 0;
+		for (int i = max; i >= 0; i--) {
+			if (start) {
+				System.out.println((i + 1) + " " + (i + 2) + " " + (0 + boost));
+				System.out.println((i + 1) + " " + (i + 2) + " " + (base[i] + boost));
+				boost = 0;
+			}
+			if (jump[i] != null) {
+				if (!start) {
+					boost = jump[i];
+				} else {
+					System.out.println((i + 1) + " " + (max + 1) + " " + jump[i]);
+				}
+				start = true;
+			}
+		}
 	}
 
 	interface CombCalculator {
