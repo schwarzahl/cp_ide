@@ -25,26 +25,31 @@ public class Main {
 		long[] cap = new long[N];
 		for (int i = 0; i < N; i++) {
 			x[i] = sc.nextLong();
-			cap[i] = ((5 + X / x[i]) - 1) / 2;
+			long tmp = ((5L + X / x[i]) - 1L) / 2L;
+			for (long p = tmp - 1L; p <= tmp + 1L; p++) {
+				if (5L * x[i] + X > (p * 2L + 1L) * x[i]) {
+					cap[i] = p;
+				}
+			}
 		}
 		long car = 0;
 		long ans = x[N - 1];
 		for (int i = N - 1; i >= 0; i--) {
 			if (i + 1 < N) {
-				ans += (car + 1) * (car + 1) * (x[i + 1] - x[i]);
+				ans += (car + 1L) * (car + 1L) * (x[i + 1] - x[i]);
 			}
 			if (cap[i] > car) {
 				car++;
 				ans += X;
 			} else {
-				ans += (car + 1) * (car + 1) * x[i];
+				ans += (car + 1L) * (car + 1L) * x[i];
 				ans += X;
 				ans += x[i];
 				ans += X;
-				car = 1;
+				car = 1L;
 			}
 		}
-		ans += (car + 1) * (car + 1) * x[0];
+		ans += (car + 1L) * (car + 1L) * x[0];
 		ans += X;
 		System.out.println(ans);
 	}
