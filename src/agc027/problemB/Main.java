@@ -32,19 +32,32 @@ public class Main {
 				}
 			}
 		}
-		boolean[] fix = new boolean[N];
+		int[] min = new int[N];
+		for (int i = 0; i < N; i++) {
+			min[i] = 1;
+		}
+		int[] set = new int[N];
+		int z_index = 0;
 		for (int i = N - 1; i >= 0; i--) {
-			if (!fix[i]) {
-				long real_cap = 1L;
-				cap[i] = real_cap;
-				fix[i] = true;
-				for (int j = i - 1; j >= 0; j--) {
-					if (cap[j] > real_cap) {
-						real_cap++;
-						cap[j] = real_cap;
-						fix[j] = true;
-					}
+			int min_num = N;
+			int min_index = -1;
+			for (int j = 0; j < N; j++) {
+				if (set[j] > 0 && min_num > set[j]) {
+					min_num = set[j];
+					min_index = j;
 				}
+			}
+			if (cap[i] > min_num) {
+				if (min_index == -1) {
+					cap[i] = 1;
+					set[z_index++] = 1;
+				} else {
+					cap[i] = min_num + 1;
+					set[min_index]++;
+				}
+			} else {
+				cap[i] = 1;
+				set[z_index++] = 1;
 			}
 		}
 		long ans = 0L;
