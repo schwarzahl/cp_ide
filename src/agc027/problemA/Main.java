@@ -20,10 +20,10 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int x = sc.nextInt();
-		int[] a = new int[N];
+		long x = sc.nextInt();
+		long[] a = new long[N];
 		for (int i = 0; i < N; i++) {
-			a[i] = sc.nextInt();
+			a[i] = sc.nextLong();
 		}
 		Arrays.sort(a);
 		int ans = 0;
