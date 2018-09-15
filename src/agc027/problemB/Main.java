@@ -32,25 +32,41 @@ public class Main {
 				}
 			}
 		}
-		long car = 0;
-		long ans = x[N - 1];
+		boolean[] fix = new boolean[N];
 		for (int i = N - 1; i >= 0; i--) {
-			if (i + 1 < N) {
-				ans += (car + 1L) * (car + 1L) * (x[i + 1] - x[i]);
-			}
-			if (cap[i] > car) {
-				car++;
-				ans += X;
-			} else {
-				ans += (car + 1L) * (car + 1L) * x[i];
-				ans += X;
-				ans += x[i];
-				ans += X;
-				car = 1L;
+			if (!fix[i]) {
+				long real_cap = 1L;
+				cap[i] = real_cap;
+				fix[i] = true;
+				for (int j = i - 1; j >= 0; j--) {
+					if (cap[j] > real_cap) {
+						real_cap++;
+						cap[j] = real_cap;
+						fix[j] = true;
+					}
+				}
 			}
 		}
-		ans += (car + 1L) * (car + 1L) * x[0];
-		ans += X;
+		long ans = 0L;
+		boolean[] get = new boolean[N];
+		for (int i = N - 1; i >= 0; i--) {
+			if (!get[i]) {
+				ans += x[i];
+				ans += X;
+				get[i] = true;
+				long car = 1L;
+				for (int j = i - 1; j >= 0; j--) {
+					ans += (car + 1L) * (car + 1L) * (x[j + 1] - x[j]);
+					if (cap[j] > car && !get[j]) {
+						car++;
+						ans += X;
+						get[j] = true;
+					}
+				}
+				ans += (car + 1L) * (car + 1L) * x[0];
+				ans += X;
+			}
+		}
 		System.out.println(ans);
 	}
 
