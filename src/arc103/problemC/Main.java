@@ -1,6 +1,7 @@
 package arc103.problemC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,51 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int[] odd = new int[100001];
+		int[] even = new int[100001];
+		for (int i = 0; i < N; i++) {
+			int v = sc.nextInt();
+			if (i % 2 == 0) {
+				even[v]++;
+			} else {
+				odd[v]++;
+			}
+		}
+		int max_odd = 0;
+		int max_odd_id = 0;
+		int max_even = 0;
+		int max_even_id = 0;
+		int max2_odd = 0;
+		int max2_odd_id = 0;
+		int max2_even = 0;
+		int max2_even_id = 0;
+		for (int i = 1; i < 100001; i++) {
+			if (max_odd < odd[i]) {
+				max2_odd = max_odd;
+				max2_odd_id = max_odd_id;
+				max_odd = odd[i];
+				max_odd_id = i;
+			} else if (max2_odd < odd[i]) {
+				max2_odd = odd[i];
+				max2_odd_id = i;
+			}
+			if (max_even < even[i]) {
+				max2_even = max_even;
+				max2_even_id = max_even_id;
+				max_even = even[i];
+				max_even_id = i;
+			} else if (max2_even < even[i]) {
+				max2_even = even[i];
+				max2_even_id = i;
+			}
+		}
+		if (max_odd_id != max_even_id) {
+			System.out.println(N - max_odd - max_even);
+		} else {
+			int oe = max_odd + max2_even;
+			int eo = max_even + max2_odd;
+			System.out.println(N - Math.max(oe, eo));
+		}
 	}
 
 	interface CombCalculator {
