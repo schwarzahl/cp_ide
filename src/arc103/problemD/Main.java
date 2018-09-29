@@ -19,13 +19,13 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int[] X = new int[N];
-		int[] Y = new int[N];
+		long[] X = new long[N];
+		long[] Y = new long[N];
 		boolean odd = false;
 		boolean even = false;
 		for (int i = 0; i < N; i++) {
-			X[i] = sc.nextInt();
-			Y[i] = sc.nextInt();
+			X[i] = sc.nextLong();
+			Y[i] = sc.nextLong();
 			if ((X[i] + Y[i]) % 2 == 0) {
 				even = true;
 			} else {
@@ -35,49 +35,53 @@ public class Main {
 		if (even && odd) {
 			System.out.println(-1);
 		} else {
-			System.out.println(even ? 31 : 30);
-			if (even) {
-				System.out.print("1 ");
-			}
-			System.out.print(1);
-			long tmp = 2;
-			for (int i = 2; i < 30; i++) {
-				System.out.print(" " + tmp);
-				tmp *= 2;
-			}
-			System.out.println();
-			for (int i = 0; i < N; i++) {
-				int x = Math.abs(X[i]);
-				int y = Math.abs(Y[i]);
-				if (even) {
-					if (X[i] > 0) {
-						System.out.print("R");
-						x--;
-					} else if (X[i] < 0) {
-						System.out.print("L");
-						x--;
-					} else {
-						System.out.print("R");
-						x++;
-					}
+			{
+				System.out.println(even ? 32 : 31);
+				long tmp = 536870912L * 2L;
+				System.out.print(tmp);
+				for (int i = 29; i >= 0; i--) {
+					tmp /= 2;
+					System.out.print(" " + tmp);
 				}
-				int minus = (1073741823 - x - y) / 2;
-				int sum = x + minus;
-				int and = sum & minus;
-				int xplus = sum - and;
-				int xminus = minus - and;
-				int bit = 1;
-				for (int j = 1; j <= 30; j++) {
-					if ((xplus & bit) > 0) {
-						System.out.print(X[i] >= 0 ? "R" : "L");
-					} else if ((xminus & bit) > 0) {
-						System.out.print(X[i] >= 0 ? "L" : "R");
-					} else if ((minus & bit) > 0) {
-						System.out.print(Y[i] >= 0 ? "D" : "U");
-					} else {
-						System.out.print(Y[i] >= 0 ? "U" : "D");
+				if (even) {
+					System.out.print(" 1");
+				}
+				System.out.println();
+			}
+			char[] dirChar = {'R', 'U', 'L', 'D'};
+			long[] dirX = {1, 0, -1, 0};
+			long[] dirY = {0, 1, 0, -1};
+			for (int i = 0; i < N; i++) {
+				long x = 0;
+				long y = 0;
+				long tmp = 536870912L * 2L;
+				for (int j = 30; j >= 0; j--) {
+					int clDir = -1;
+					long minDis = Long.MAX_VALUE / 3;
+					for (int dir = 0; dir < 4; dir++) {
+						long nextDis = Math.abs(X[i] - x - dirX[dir] * tmp) + Math.abs(Y[i] - y - dirY[dir] * tmp);
+						if (minDis > nextDis) {
+							minDis = nextDis;
+							clDir = dir;
+						}
 					}
-					bit *= 2;
+					x += dirX[clDir] * tmp;
+					y += dirY[clDir] * tmp;
+					System.out.print(dirChar[clDir]);
+					tmp /= 2L;
+				}
+				if (even) {
+					tmp = 1L;
+					int clDir = -1;
+					long minDis = Long.MAX_VALUE / 3;
+					for (int dir = 0; dir < 4; dir++) {
+						long nextDis = Math.abs(X[i] - x - dirX[dir] * tmp) + Math.abs(Y[i] - y - dirY[dir] * tmp);
+						if (minDis > nextDis) {
+							minDis = nextDis;
+							clDir = dir;
+						}
+					}
+					System.out.print(dirChar[clDir]);
 				}
 				System.out.println();
 			}
