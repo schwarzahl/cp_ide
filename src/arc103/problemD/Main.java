@@ -19,8 +19,45 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int[] X = new int[N];
+		int[] Y = new int[N];
+		boolean odd = false;
+		boolean even = false;
+		for (int i = 0; i < N; i++) {
+			X[i] = sc.nextInt();
+			Y[i] = sc.nextInt();
+			if ((X[i] + Y[i]) % 2 == 0) {
+				even = true;
+			} else {
+				odd = true;
+			}
+		}
+		if (even && odd) {
+			System.out.println(-1);
+		} else {
+			int m = even ? 20 : 19;
+			System.out.println(m);
+			System.out.print(1);
+			for (int i = 1; i < m; i++) {
+				System.out.print(" 1");
+			}
+			System.out.println();
+			for (int i = 0; i < N; i++) {
+				int tmp = m;
+				for (int j = 0; j < Math.abs(X[i]); j++) {
+					System.out.print(X[i] > 0 ? "R" : "L");
+					tmp--;
+				}
+				for (int j = 0; j < Math.abs(Y[i]); j++) {
+					System.out.print(Y[i] > 0 ? "U" : "D");
+					tmp--;
+				}
+				for (int j = 0; j < tmp / 2; j++) {
+					System.out.print("UD");
+				}
+				System.out.println();
+			}
+		}
 	}
 
 	interface CombCalculator {
