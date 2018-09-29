@@ -35,25 +35,49 @@ public class Main {
 		if (even && odd) {
 			System.out.println(-1);
 		} else {
-			int m = even ? 20 : 19;
-			System.out.println(m);
+			System.out.println(even ? 31 : 30);
+			if (even) {
+				System.out.print("1 ");
+			}
 			System.out.print(1);
-			for (int i = 1; i < m; i++) {
-				System.out.print(" 1");
+			long tmp = 2;
+			for (int i = 2; i < 30; i++) {
+				System.out.print(" " + tmp);
+				tmp *= 2;
 			}
 			System.out.println();
 			for (int i = 0; i < N; i++) {
-				int tmp = m;
-				for (int j = 0; j < Math.abs(X[i]); j++) {
-					System.out.print(X[i] > 0 ? "R" : "L");
-					tmp--;
+				int x = Math.abs(X[i]);
+				int y = Math.abs(Y[i]);
+				if (even) {
+					if (X[i] > 0) {
+						System.out.print("R");
+						x--;
+					} else if (X[i] < 0) {
+						System.out.print("L");
+						x--;
+					} else {
+						System.out.print("R");
+						x++;
+					}
 				}
-				for (int j = 0; j < Math.abs(Y[i]); j++) {
-					System.out.print(Y[i] > 0 ? "U" : "D");
-					tmp--;
-				}
-				for (int j = 0; j < tmp / 2; j++) {
-					System.out.print("UD");
+				int minus = (1073741823 - x - y) / 2;
+				int sum = x + minus;
+				int and = sum & minus;
+				int xplus = sum - and;
+				int xminus = minus - and;
+				int bit = 1;
+				for (int j = 1; j <= 30; j++) {
+					if ((xplus & bit) > 0) {
+						System.out.print(X[i] >= 0 ? "R" : "L");
+					} else if ((xminus & bit) > 0) {
+						System.out.print(X[i] >= 0 ? "L" : "R");
+					} else if ((minus & bit) > 0) {
+						System.out.print(Y[i] >= 0 ? "D" : "U");
+					} else {
+						System.out.print(Y[i] >= 0 ? "U" : "D");
+					}
+					bit *= 2;
 				}
 				System.out.println();
 			}
