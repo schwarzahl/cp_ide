@@ -20,10 +20,22 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		long N = sc.nextLong();
 		long M = sc.nextLong();
-		for (long i = N; i <= M; i++) {
-			if (M % i == 0) {
-				System.out.println(M / i);
-				break;
+		if (Math.sqrt(M) < N) {
+			for (long i = N; i <= M; i++) {
+				if (M % i == 0) {
+					System.out.println(M / i);
+					break;
+				}
+			}
+		} else {
+			for (long i = M; i >= 1; i--) {
+				if (M / i < N) {
+					continue;
+				}
+				if (M % i == 0) {
+					System.out.println(i);
+					break;
+				}
 			}
 		}
 	}
