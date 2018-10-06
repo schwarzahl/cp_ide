@@ -19,43 +19,38 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		int[] x = new int[N];
-		int[] y = new int[N];
-		long[] h = new long[N];
+		long[][] max = new long[101][];
+		long[][] min = new long[101][];
+		for (int x = 0; x <= 100; x++) {
+			max[x] = new long[101];
+			min[x] = new long[101];
+			for (int y = 0; y <= 100; y++) {
+				max[x][y] = Long.MAX_VALUE / 3;
+				min[x][y] = 1;
+			}
+		}
 		for (int i = 0; i < N; i++) {
-			x[i] = sc.nextInt();
-			y[i] = sc.nextInt();
-			h[i] = sc.nextLong();
+			int tx = sc.nextInt();
+			int ty = sc.nextInt();
+			long th = sc.nextLong();
+			for (int x = 0; x <= 100; x++) {
+				for (int y = 0; y <= 100; y++) {
+					int dx = Math.abs(tx - x);
+					int dy = Math.abs(ty - y);
+					long tmp = th + dx + dy;
+					if (max[x][y] > tmp) {
+						max[x][y] = tmp;
+					}
+					if (th > 0 && min[x][y] < tmp) {
+						min[x][y] = tmp;
+					}
+				}
+			}
 		}
 		for (int cx = 0; cx <= 100; cx++) {
 			for (int cy = 0; cy <= 100; cy++) {
-				Long H = null;
-				long border = Long.MAX_VALUE / 3;
-				for (int i = 0; i < N; i++) {
-					int dx = Math.abs(x[i] - cx);
-					int dy = Math.abs(y[i] - cy);
-					if (h[i] > 0) {
-						long tmp_h = h[i] + dx + dy;
-						if (border < tmp_h) {
-							H = null;
-							break;
-						}
-						if (H == null) {
-							H = tmp_h;
-						} else {
-							if (H != tmp_h) {
-								H = null;
-								break;
-							}
-						}
-					} else {
-						if (border > dx + dy) {
-							border = dx + dy;
-						}
-					}
-				}
-				if (H != null) {
-					System.out.println(cx + " " + cy + " " + H);
+				if (max[cx][cy] == min[cx][cy] && min[cx][cy] > 0) {
+					System.out.println(cx + " " + cy + " " + min[cx][cy]);
 					return;
 				}
 			}
