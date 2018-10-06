@@ -20,24 +20,17 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		long N = sc.nextLong();
 		long M = sc.nextLong();
-		if (Math.sqrt(M) < N) {
-			for (long i = N; i <= M; i++) {
-				if (M % i == 0) {
-					System.out.println(M / i);
-					break;
-				}
-			}
-		} else {
-			for (long i = M; i >= 1; i--) {
-				if (M / i < N) {
-					continue;
-				}
-				if (M % i == 0) {
-					System.out.println(i);
-					break;
+		PrimeNumberUtils pnu = new PrimeNumberUtils(100001);
+		long min = M;
+		for (int prime : pnu.getPrimeNumberList()) {
+			if (M % prime == 0) {
+				long tmp = prime * (((N - 1) / prime) + 1);
+				if (min > tmp && M % tmp == 0) {
+					min = tmp;
 				}
 			}
 		}
+		System.out.println(M / min);
 	}
 
 	interface CombCalculator {
