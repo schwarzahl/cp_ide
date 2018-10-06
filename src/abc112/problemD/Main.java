@@ -21,16 +21,27 @@ public class Main {
 		long N = sc.nextLong();
 		long M = sc.nextLong();
 		PrimeNumberUtils pnu = new PrimeNumberUtils(100001);
-		long min = M;
+		boolean divable = false;
 		for (int prime : pnu.getPrimeNumberList()) {
 			if (M % prime == 0) {
-				long tmp = prime * (((N - 1) / prime) + 1);
-				if (min > tmp && M % tmp == 0) {
-					min = tmp;
-				}
+				divable = true;
+				break;
 			}
 		}
-		System.out.println(M / min);
+		if (divable) {
+			for (long i = N; i <= M; i++) {
+				if (M % i == 0) {
+					System.out.println(M / i);
+					break;
+				}
+			}
+		} else {
+			if (N == 1) {
+				System.out.println(M);
+			} else {
+				System.out.println(1);
+			}
+		}
 	}
 
 	interface CombCalculator {
