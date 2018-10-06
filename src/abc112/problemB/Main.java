@@ -19,8 +19,20 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int T = sc.nextInt();
+		int minCost = Integer.MAX_VALUE / 3;
+		for (int i = 0; i < N; i++) {
+			int c = sc.nextInt();
+			int t = sc.nextInt();
+			if (T >= t && minCost > c) {
+				minCost = c;
+			}
+		}
+		if (minCost == Integer.MAX_VALUE / 3) {
+			System.out.println("TLE");
+		} else {
+			System.out.println(minCost);
+		}
 	}
 
 	interface CombCalculator {
