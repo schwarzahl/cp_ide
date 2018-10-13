@@ -1,6 +1,7 @@
 package abc112.problemD;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,27 +21,20 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		long N = sc.nextLong();
 		long M = sc.nextLong();
-		PrimeNumberUtils pnu = new PrimeNumberUtils(100001);
-		boolean divable = false;
-		for (int prime : pnu.getPrimeNumberList()) {
-			if (M % prime == 0) {
-				divable = true;
-				break;
+		List<Long> list = new ArrayList<>();
+		for (long i = 1; i <= Math.sqrt(M); i++) {
+			if (M % i == 0) {
+				list.add(i);
+				list.add(M / i);
 			}
 		}
-		if (divable) {
-			for (long i = N; i <= M; i++) {
-				if (M % i == 0) {
-					System.out.println(M / i);
-					break;
-				}
+		Collections.sort(list);
+		for (long tmp : list) {
+			if (tmp < N) {
+				continue;
 			}
-		} else {
-			if (N == 1) {
-				System.out.println(M);
-			} else {
-				System.out.println(1);
-			}
+			System.out.println(M / tmp);
+			return;
 		}
 	}
 
