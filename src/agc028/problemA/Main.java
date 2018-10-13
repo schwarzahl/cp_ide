@@ -18,9 +18,26 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long N = sc.nextLong();
+		long M = sc.nextLong();
+		String S = sc.next();
+		String T = sc.next();
+		long ans = mcm(N, M);
+
+		long check_num = N * M / ans;
+		for (long index = 0; index < check_num; index++) {
+			if (S.charAt((int)(index * ans / M)) != T.charAt((int)(index * ans / N))) {
+				System.out.println(-1);
+				return;
+			}
+		}
+		System.out.println(ans);
+	}
+
+	private long mcm(long a, long b) {
+		long ans = a;
+		for (; ans % b > 0; ans += a);
+		return ans;
 	}
 
 	interface CombCalculator {
