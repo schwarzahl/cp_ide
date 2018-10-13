@@ -19,8 +19,34 @@ public class Main {
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
 		int N = sc.nextInt();
+		long[] A = new long[N];
+		for (int i = 0; i < N; i++) {
+			A[i] = sc.nextLong();
+		}
+		long[] sum = new long[N + 1];
+		for (int i = 1; i <= N; i++) {
+			sum[i] = sum[i - 1] + A[i - 1];
+		}
+		long[][] dp = new long[N][];
+		dp[0] = new long[N];
+		for (int i = 0; i < N; i++) {
+			dp[0][i] = A[i];
+		}
+		for (int phase = 1; phase < N; phase++) {
+			dp[phase] = new long[N];
+			for (int i = 0; i + phase < N; i++) {
+				dp[phase][i] = sum[i + phase + 1] - sum[i];
+				for (int j = 0; j <= phase; j++) {
+					if (j > 0) {
+						dp[phase][i] += dp[j - 1][i];
+					}
+					if (j < phase) {
+						dp[phase][i] += dp[phase - 1 - j][i + j + 1];
+					}
+				}
+			}
+		}
 		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
 	}
 
 	interface CombCalculator {
