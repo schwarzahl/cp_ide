@@ -1,0 +1,3 @@
+[submodule "src/cp_library"]
+	path = src/cp_library
+	url = https://github.com/schwarzahl/cp_library.git
