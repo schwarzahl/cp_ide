@@ -1,3 +1,6 @@
 [submodule "src/cp_library"]
 	path = src/cp_library
 	url = https://github.com/schwarzahl/cp_library.git
+[submodule "src/atcoder"]
+	path = src/atcoder
+	url = https://github.com/schwarzahl/atcoder.git
