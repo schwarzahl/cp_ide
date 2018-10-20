@@ -1,4 +1,4 @@
-package atcoder_template;
+package cp_library.atcoder_template;
 
 import java.util.ArrayList;
 import java.util.HashMap;
