@@ -4,3 +4,6 @@
 [submodule "src/atcoder"]
 	path = src/atcoder
 	url = https://github.com/schwarzahl/atcoder.git
+[submodule "src/topcoder"]
+	path = src/topcoder
+	url = git@github.com:schwarzahl/topcoder.git
