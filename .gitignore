@@ -1,5 +1,5 @@
 bin/
 .idea/
-atcoder.iml
+cp_ide.iml
 out/
 src/practice/
