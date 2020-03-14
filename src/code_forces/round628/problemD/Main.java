@@ -19,9 +19,26 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		long u = sc.nextLong();
+		long v = sc.nextLong();
+		if (u > v || u % 2 != v % 2) {
+			System.out.println(-1);
+			return;
+		}
+		if (u == v) {
+			System.out.println(1);
+			System.out.println(u);
+			return;
+		}
+		// u < v && u % 2 == v % 2
+		long same = (v - u) / 2L;
+		if ((u + same) == (u ^ same)) {
+			System.out.println(2);
+			System.out.println(same + " " + (u + same));
+		} else {
+			System.out.println(3);
+			System.out.println(same + " " + same + " " + u);
+		}
 	}
 
 	class Scanner {
