@@ -19,9 +19,15 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int t = sc.nextInt();
+		for (int i = 0; i < t; i++) {
+			int n = sc.nextInt();
+			Set<Integer> set = new HashSet<>();
+			for (int j = 0; j < n; j++) {
+				set.add(sc.nextInt());
+			}
+			System.out.println(set.size());
+		}
 	}
 
 	class Scanner {
