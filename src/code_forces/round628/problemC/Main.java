@@ -19,9 +19,37 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int n = sc.nextInt();
+		int[] count = new int[n + 1];
+		int[] a = new int[n + 1];
+		int[] b = new int[n + 1];
+		for (int i = 1; i < n; i++) {
+			a[i] = sc.nextInt();
+			b[i] = sc.nextInt();
+			count[a[i]]++;
+			count[b[i]]++;
+		}
+		int g3_vertex = -1;
+		for (int i = 1; i <= n; i++) {
+			if (count[i] >= 3) {
+				g3_vertex = i;
+			}
+		}
+		if (g3_vertex == -1) {
+			for (int i = 1; i < n; i++) {
+				System.out.println(i - 1);
+			}
+		} else {
+			int index = count[g3_vertex];
+			int g3_index = 0;
+			for (int i = 1; i < n; i++) {
+				if (a[i] == g3_vertex || b[i] == g3_vertex) {
+					System.out.println(g3_index++);
+				} else {
+					System.out.println(index++);
+				}
+			}
+		}
 	}
 
 	class Scanner {
