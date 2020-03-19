@@ -19,10 +19,10 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int k = sc.nextInt();
-		int limit = n - k + 1;
-		System.out.print((n + limit) * k / 2 + " ");
+		long n = sc.nextLong();
+		long k = sc.nextLong();
+		long limit = n - k + 1;
+		System.out.print((n + limit) * k / 2L + " ");
 		long ans = 1L;
 		long MOD = 998244353L;
 		int pre_index = -1;
