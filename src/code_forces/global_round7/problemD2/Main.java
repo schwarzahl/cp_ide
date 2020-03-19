@@ -19,9 +19,66 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int t = sc.nextInt();
+		for (int i = 0; i < t; i++) {
+			String orig_s = sc.next();
+			StringBuilder sb = new StringBuilder();
+			for (char c : orig_s.toCharArray()) {
+				sb.append(c);
+				sb.append("_");
+			}
+			String ds = sb.substring(0, sb.length() - 1);
+			char[] s = ds.toCharArray();
+			int same_index = 0;
+			for (; same_index < (s.length + 1) / 2; same_index++) {
+				if (s[same_index] != s[s.length - 1 - same_index]) {
+					break;
+				}
+			}
+			same_index--;
+			if (same_index >= (s.length - 1) / 2) {
+				System.out.println(orig_s);
+			} else {
+				String rest = ds.substring(same_index + 1, ds.length() - same_index - 1);
+				char[] rs = rest.toCharArray();
+				int[] radius = new int[rs.length];
+				int l = 0;
+				int j = 0;
+				while (l < rs.length) {
+					while (l - j >= 0 && l + j < rs.length && rs[l - j] == rs[l + j]) {
+						j++;
+					}
+					radius[l] = j;
+					int k = 1;
+					while (l - k >= 0 && l + k < rs.length && k + radius[l - k] < j) {
+						radius[l + k] = radius[l - k];
+						k++;
+					}
+					l += k;
+					j -= k;
+				}
+				int max = -1;
+				for (int k = 0; k < rs.length; k++) {
+					if (radius[k] == k + 1) {
+						max = k + 1;
+					}
+				}
+				boolean isLongerSuffix = false;
+				for (int k = 1; k <= rs.length; k++) {
+					if (radius[rs.length - k] == k && max < k) {
+						max = k;
+						isLongerSuffix = true;
+					}
+				}
+				System.out.print(orig_s.substring(0, (same_index + 1) / 2));
+				if (isLongerSuffix) {
+					System.out.print(rest.substring(rest.length() - max * 2 + 1).replace("_", ""));
+				} else {
+					System.out.print(rest.substring(0, max * 2 - 1).replace("_", ""));
+				}
+				System.out.println(orig_s.substring(orig_s.length() - (same_index + 1) / 2));
+			}
+		}
 	}
 
 	class Scanner {
