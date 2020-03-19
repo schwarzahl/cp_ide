@@ -19,9 +19,19 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int n = sc.nextInt();
+		int pre = sc.nextInt();
+		int max = 0;
+		System.out.print(pre - max);
+		max = pre;
+		for (int i = 1; i < n; i++) {
+			int b = sc.nextInt();
+			System.out.print(" " + (max + b));
+			if (b > 0) {
+				max += b;
+			}
+		}
+		System.out.println();
 	}
 
 	class Scanner {
