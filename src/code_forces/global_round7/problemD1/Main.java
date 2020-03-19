@@ -19,9 +19,61 @@ public class Main {
 
 	private void solve() {
 		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		System.out.println(N);
-		System.err.println(Main.class.getPackage().getName());
+		int t = sc.nextInt();
+		for (int i = 0; i < t; i++) {
+			String orig_s = sc.next();
+			char[] s = orig_s.toCharArray();
+			int same_index = 0;
+			for (; same_index < (s.length + 1) / 2; same_index++) {
+				if (s[same_index] != s[s.length - 1 - same_index]) {
+					break;
+				}
+			}
+			same_index--;
+			if (same_index >= (s.length - 1) / 2) {
+				System.out.println(s);
+			} else {
+				String longprefix_ans = "";
+				{
+					int end_index = s.length - 2 - same_index;
+					for (; end_index > same_index; end_index--) {
+						boolean isOK = true;
+						for (int j = 1; same_index + j <= end_index - j; j++) {
+							if (s[same_index + j] != s[end_index - j]) {
+								isOK = false;
+								break;
+							}
+						}
+						if (isOK) {
+							longprefix_ans = orig_s.substring(0, end_index) + orig_s.substring(s.length - same_index - 1);
+							break;
+						}
+					}
+				}
+				String longsuffix_ans = "";
+				{
+					int start_index = same_index + 2;
+					for (; start_index < s.length - same_index; start_index++) {
+						boolean isOK = true;
+						for (int j = 0; start_index + j <= s.length - same_index - 2 - j; j++) {
+							if (s[start_index + j] != s[s.length - same_index - 2 - j]) {
+								isOK = false;
+								break;
+							}
+						}
+						if (isOK) {
+							longsuffix_ans = orig_s.substring(0, same_index + 1) + orig_s.substring(start_index);
+							break;
+						}
+					}
+				}
+				if (longprefix_ans.length() > longsuffix_ans.length()) {
+					System.out.println(longprefix_ans);
+				} else {
+					System.out.println(longsuffix_ans);
+				}
+			}
+		}
 	}
 
 	class Scanner {
